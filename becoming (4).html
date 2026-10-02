@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Inter:wght@400;500;600;700&amp;family=Caveat:wght@400;500&amp;family=Homemade+Apple&amp;family=Reenie+Beanie&amp;family=Nothing+You+Could+Do&amp;family=Kalam:wght@300;400&amp;family=Shadows+Into+Light+Two&amp;family=Gochi+Hand&amp;family=Covered+By+Your+Grace&amp;family=Permanent+Marker&amp;family=Rock+Salt&amp;family=La+Belle+Aurore&amp;family=Cedarville+Cursive&amp;family=Just+Me+Again+Down+Here&amp;family=Zeyada&amp;family=Sue+Ellen+Francisco&amp;family=Architects+Daughter&amp;display=swap" rel="stylesheet">
+  <script src="https://sdks.shopifycdn.com/js-buy-sdk/v3/latest/index.umd.min.js" async=""></script>
+  <title>What are you becoming? — N-CREASE</title>
+  <meta name="description" content="A living wall of handwritten answers from the N-CREASE community. Leave yours — no account, no email.">
+  <meta property="og:title" content="What are you becoming? — N-CREASE">
+  <meta property="og:description" content="Leave one thought on the wall. You don't have to tell us who you are.">
+  <style>
+    body{margin:0;background:#F7F6F2;color:#0E0E0D;font-family:'Inter',sans-serif;}
+    *{box-sizing:border-box;}
+    a{color:#0E0E0D;text-decoration:none;}
+    a:hover{color:#0A8F87;}
+    input::placeholder{color:rgba(14,14,13,0.5);}
+    @media (max-width:1100px){ [data-wall-hint]{display:none !important;} }
+    @media (max-width:640px){
+      [data-wall-row]{flex-direction:column !important;align-items:stretch !important;}
+      [data-wall-btn]{width:100% !important;margin-left:0 !important;}
+      [data-wall-hint]{display:none !important;}
+      [data-wall-count]{display:none !important;}
+      [data-wall-sub]{display:none !important;}
+      [data-wall-composer]{bottom:12px !important;padding:14px 16px !important;}
+      [data-wall-products]{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+    }
+  </style>
+</helmet>
+
+<dc-import name="Nav" active="becoming" theme="dark" chrome="solid" hint-size="100%,0"></dc-import>
+
+<section data-screen-label="Wall" style="position:relative;height:calc(100svh - 84px);min-height:380px;margin-top:84px;overflow:hidden;background:#F7F6F2;">
+  <div ref="{{ refVp }}" onClick="{{ onBgClick }}" style="position:absolute;inset:0;overflow:hidden;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;">
+    <div ref="{{ refWorld }}" style="position:absolute;left:0;top:0;width:0;height:0;transform-origin:0 0;will-change:transform;">
+      <div style="position:absolute;left:0;top:0;width:1000px;transform:translate(-50%,-50%) rotate(-1.2deg);text-align:center;font-family:'Anton',sans-serif;font-style:italic;font-size:128px;line-height:0.98;color:#0E0E0D;pointer-events:none;">WHAT ARE YOU BECOMING?</div>
+      <sc-for list="{{ visible }}" as="it" hint-placeholder-count="0">
+        <div onClick="{{ it.onClick }}" style="{{ it.wrap }}">
+          <sc-if value="{{ it.arrow }}" hint-placeholder-val="{{ false }}">
+            <svg viewBox="0 0 40 34" style="position:absolute;left:-40px;top:-16px;width:40px;height:34px;overflow:visible;pointer-events:none;"><path d="{{ it.arrowPath }}" style="{{ it.stroke }}"></path></svg>
+          </sc-if>
+          <sc-if value="{{ it.circ }}" hint-placeholder-val="{{ false }}">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;left:-12%;top:-30%;width:124%;height:160%;overflow:visible;pointer-events:none;"><path d="{{ it.circPath }}" style="{{ it.stroke }}"></path></svg>
+          </sc-if>
+          <div style="{{ it.txt }}">{{ it.text }}<sc-if value="{{ it.star }}" hint-placeholder-val="{{ false }}"><span style="margin-left:0.2em;">*</span></sc-if></div>
+          <sc-if value="{{ it.ul }}" hint-placeholder-val="{{ false }}">
+            <svg viewBox="0 0 100 12" preserveAspectRatio="none" style="display:block;width:100%;height:12px;margin-top:-2px;overflow:visible;pointer-events:none;"><path d="{{ it.ulPath }}" style="{{ it.stroke }}"></path><path d="{{ it.ul2Path }}" style="{{ it.stroke }}"></path></svg>
+          </sc-if>
+          <sc-if value="{{ it.hasName }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ it.nameStyle }}">{{ it.name }}</div>
+          </sc-if>
+          <sc-if value="{{ it.focus }}" hint-placeholder-val="{{ false }}">
+            <div style="{{ it.whenStyle }}">{{ it.when }}</div>
+          </sc-if>
+          <sc-if value="{{ it.canDel }}" hint-placeholder-val="{{ false }}">
+            <button type="button" aria-label="Remove from the wall" onClick="{{ it.onDel }}" style="{{ it.delStyle }}">×</button>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ showHint }}" hint-placeholder-val="{{ true }}">
+    <div data-wall-hint="" style="position:absolute;top:26px;left:50%;transform:translateX(-50%);z-index:14;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#5E5E58;pointer-events:none;white-space:nowrap;">Drag to explore · Tap a thought</div>
+  </sc-if>
+  <sc-if value="{{ admin }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;top:14px;left:14px;z-index:16;display:flex;align-items:center;gap:14px;min-height:44px;padding:0 4px 0 14px;background:#0E0E0D;color:#F7F6F2;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;">
+      <span>Admin · tap × to remove</span>
+      <button type="button" onClick="{{ adminExit }}" style="min-height:44px;padding:0 12px;border:none;border-left:1px solid rgba(247,246,242,0.25);background:transparent;color:#F7F6F2;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;">Exit</button>
+    </div>
+  </sc-if>
+  <div style="position:absolute;top:14px;right:14px;z-index:15;display:flex;align-items:center;gap:16px;">
+    <sc-if value="{{ showCount }}" hint-placeholder-val="{{ false }}">
+      <div data-wall-count="" style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#5E5E58;">{{ countLabel }}</div>
+    </sc-if>
+    <div style="display:flex;background:#FFFFFF;border:1px solid rgba(14,14,13,0.22);">
+      <button type="button" aria-label="Zoom out" onClick="{{ zoomOut }}" style="width:44px;height:44px;border:none;background:transparent;font-family:'Inter',sans-serif;font-size:18px;color:#0E0E0D;cursor:pointer;" style-hover="background:#F0EFEA;">−</button>
+      <button type="button" aria-label="Zoom in" onClick="{{ zoomIn }}" style="width:44px;height:44px;border:none;border-left:1px solid rgba(14,14,13,0.12);background:transparent;font-family:'Inter',sans-serif;font-size:18px;color:#0E0E0D;cursor:pointer;" style-hover="background:#F0EFEA;">+</button>
+      <button type="button" aria-label="Back to the question" onClick="{{ recenter }}" style="width:44px;height:44px;border:none;border-left:1px solid rgba(14,14,13,0.12);background:transparent;font-family:'Inter',sans-serif;font-size:15px;color:#0E0E0D;cursor:pointer;" style-hover="background:#F0EFEA;">○</button>
+    </div>
+  </div>
+
+  <div data-wall-composer="" style="position:absolute;left:50%;bottom:22px;transform:translateX(-50%);width:calc(100% - 24px);max-width:620px;z-index:20;background:#FFFFFF;border:1px solid #0E0E0D;padding:18px 20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 6px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:6px;height:6px;background:#0A8F87;"></div>
+        <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;font-weight:700;color:#0E0E0D;">The Wall</div>
+        <sc-if value="{{ collapsed }}" hint-placeholder-val="{{ false }}">
+          <div data-wall-sub="" style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#5E5E58;">· What are you becoming?</div>
+        </sc-if>
+      </div>
+      <button type="button" onClick="{{ toggleCollapse }}" aria-expanded="{{ expanded }}" style="flex:0 0 auto;min-height:36px;padding:0 0 0 12px;border:none;background:none;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:600;color:#0E0E0D;cursor:pointer;white-space:nowrap;" style-hover="color:#0A8F87;">{{ collapseLabel }}</button>
+    </div>
+    <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+      <form onSubmit="{{ onSubmit }}" style="position:relative;display:flex;flex-direction:column;gap:10px;margin:0;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;">
+          <label for="wall-answer" style="font-family:'Anton',sans-serif;font-style:italic;font-size:20px;letter-spacing:0.02em;color:#0E0E0D;">WHAT ARE YOU BECOMING?</label>
+          <button type="button" onClick="{{ rerollPen }}" style="flex:0 0 auto;background:none;border:none;padding:8px 0;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#5E5E58;cursor:pointer;white-space:nowrap;" style-hover="color:#0E0E0D;">Another pen ↻</button>
+        </div>
+        <input id="wall-answer" ref="{{ refInput }}" type="text" autoComplete="off" maxLength="{{ 80 }}" placeholder="I am becoming…" value="{{ draft }}" onChange="{{ onDraft }}" style="width:100%;min-width:0;border:none;border-bottom:1px solid rgba(14,14,13,0.28);background:transparent;outline:none;padding:4px 0 8px;line-height:1.25;border-radius:0;font-family:{{ penFont }};font-size:{{ penSize }};font-weight:{{ penWeight }};color:{{ penInk }};" />
+        <input type="text" name="website" tabIndex="-1" autoComplete="off" aria-hidden="true" value="{{ hp }}" onChange="{{ onHp }}" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+        <div data-wall-row="" style="display:flex;align-items:flex-end;gap:14px;margin-top:4px;">
+          <sc-if value="{{ hasDraft }}" hint-placeholder-val="{{ false }}">
+            <input type="text" aria-label="Name (optional)" autoComplete="given-name" maxLength="{{ 24 }}" placeholder="Name — or leave it empty" value="{{ name }}" onChange="{{ onName }}" style="flex:1 1 auto;min-width:0;border:none;border-bottom:1px solid rgba(14,14,13,0.2);background:transparent;outline:none;padding:12px 0;border-radius:0;font-family:'Inter',sans-serif;font-size:15px;color:#0E0E0D;" />
+          </sc-if>
+          <sc-if value="{{ noDraft }}" hint-placeholder-val="{{ true }}">
+            <div style="flex:1 1 auto;font-size:13px;line-height:1.55;color:#5E5E58;text-wrap:pretty;">A shared wall for everyone who's still working on themselves. Become part of it — write your goal down and start working on it. You don't have to tell us who you are, only what you're becoming.</div>
+          </sc-if>
+          <button data-wall-btn="" type="submit" disabled="{{ sending }}" style="flex:0 0 auto;margin-left:auto;min-height:48px;padding:0 22px;border:none;background:#0E0E0D;color:#F7F6F2;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;cursor:pointer;white-space:nowrap;transition:background 0.3s ease;" style-hover="background:#0A8F87;">{{ btnLabel }}</button>
+        </div>
+        <sc-if value="{{ hasErr }}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="font-size:13px;line-height:1.5;color:#8A2A22;">{{ err }}</div>
+        </sc-if>
+      </form>
+    </sc-if>
+    <sc-if value="{{ showDone }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:clamp(24px,4vw,32px);line-height:1.05;color:#0E0E0D;">YOUR WORDS ARE ON THE WALL.</div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:6px;height:6px;background:#0A8F87;"></div>
+          <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;font-weight:600;color:#0E0E0D;">Keep becoming.</div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;margin-top:6px;">
+          <button type="button" onClick="{{ openShare }}" style="min-height:48px;padding:0 22px;border:none;background:#0E0E0D;color:#F7F6F2;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;cursor:pointer;" style-hover="background:#0A8F87;">Make it a story →</button>
+          <button type="button" onClick="{{ findMine }}" style="min-height:44px;padding:0;border:none;background:none;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:#0E0E0D;cursor:pointer;border-bottom:1px solid transparent;" style-hover="color:#0A8F87;">Find mine</button>
+          <button type="button" onClick="{{ writeAgain }}" style="min-height:44px;padding:0;border:none;background:none;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:#5E5E58;cursor:pointer;" style-hover="color:#0E0E0D;">Write another</button>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</section>
+
+<footer data-screen-label="Footer" style="background:#0E0E0D;color:rgba(245,243,238,0.7);padding:64px 24px 28px;">
+  <div style="max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px;padding-bottom:48px;">
+    <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:18px;letter-spacing:0.3em;color:#F5F3EE;text-transform:uppercase;">N—CREASE</div>
+    <div style="display:flex;gap:48px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <a href="/shop" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Shop</a>
+        <a href="/lookbook" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Lookbook</a>
+        <a href="/about" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">About</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <a href="#" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Instagram</a>
+        <a href="mailto:hello@n-crease.com" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Contact</a>
+        <a href="/legal" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Legal</a>
+        <a href="/account" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Account</a>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;padding-top:24px;border-top:1px solid rgba(245,243,238,0.12);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,243,238,0.45);">N—CREASE</div>
+</footer>
+
+<sc-if value="{{ shareOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeShareBg }}" style="position:fixed;inset:0;z-index:300;background:rgba(14,14,13,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;">
+    <div style="width:min(340px,76vw,calc((100svh - 190px) * 0.5625));aspect-ratio:9/16;background:#F7F6F2;position:relative;overflow:hidden;container-type:inline-size;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:15cqw 8cqw 12cqw;text-align:center;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3cqw;">
+        <div style="width:1.4cqw;height:1.4cqw;background:#0A8F87;"></div>
+        <div style="font-family:'Inter',sans-serif;font-weight:600;font-size:2.7cqw;letter-spacing:0.36em;color:#0E0E0D;">WHAT I'M BECOMING</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2cqw;transform:rotate({{ storyRot }});">
+        <div style="font-family:{{ storyFont }};font-size:{{ storySize }};font-weight:{{ storyWeight }};color:{{ storyInk }};line-height:1.1;text-wrap:balance;overflow-wrap:break-word;max-width:78cqw;">{{ storyText }}</div>
+        <sc-if value="{{ storyHasName }}" hint-placeholder-val="{{ false }}">
+          <div style="align-self:flex-end;font-family:{{ storyFont }};font-size:5cqw;color:{{ storyInk }};">{{ storyName }}</div>
+        </sc-if>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2.4cqw;">
+        <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:6cqw;letter-spacing:0.28em;color:#0E0E0D;">N—CREASE</div>
+        <div style="font-family:'Inter',sans-serif;font-weight:600;font-size:2.4cqw;letter-spacing:0.3em;color:#0E0E0D;">WHERE YOU BECOME MORE.</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
+      <button type="button" onClick="{{ downloadStory }}" style="min-height:48px;padding:0 22px;border:none;background:#F7F6F2;color:#0E0E0D;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;cursor:pointer;">Save for your story ↓</button>
+      <sc-if value="{{ canShare }}" hint-placeholder-val="{{ false }}">
+        <button type="button" onClick="{{ shareStory }}" style="min-height:48px;padding:0 22px;border:1px solid #F7F6F2;background:transparent;color:#F7F6F2;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;cursor:pointer;">Share →</button>
+      </sc-if>
+      <button type="button" onClick="{{ closeShare }}" style="min-height:48px;padding:0 18px;border:none;background:transparent;color:#F7F6F2;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;cursor:pointer;">Close</button>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{ adminAsk }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:320;background:rgba(14,14,13,0.86);display:flex;align-items:center;justify-content:center;padding:24px;">
+    <form onSubmit="{{ adminLogin }}" style="width:min(360px,100%);background:#F7F6F2;padding:28px 24px 22px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box;">
+      <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:26px;letter-spacing:0.02em;color:#0E0E0D;">WALL ADMIN</div>
+      <input type="password" autoComplete="current-password" autoCapitalize="none" autoCorrect="off" spellCheck="false" placeholder="Password" value="{{ adminPw }}" onChange="{{ onAdminPw }}" style="width:100%;height:48px;padding:0 14px;border:1px solid rgba(14,14,13,0.3);background:#FFFFFF;font-family:'Inter',sans-serif;font-size:16px;color:#0E0E0D;outline:none;box-sizing:border-box;">
+      <sc-if value="{{ hasAdminErr }}" hint-placeholder-val="{{ false }}">
+        <div style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.4;color:#7C2A22;">{{ adminErr }}</div>
+      </sc-if>
+      <div style="display:flex;align-items:center;gap:18px;">
+        <button type="submit" style="min-height:48px;padding:0 22px;border:none;background:#0E0E0D;color:#F7F6F2;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;">{{ adminBtn }}</button>
+        <button type="button" onClick="{{ adminCancel }}" style="min-height:44px;padding:0;border:none;background:none;color:#0E0E0D;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;">Cancel</button>
+      </div>
+    </form>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;seedWall&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Wall&quot;,&quot;label&quot;:&quot;Starter thoughts until 40 real ones&quot;},&quot;inkMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mixed&quot;,&quot;mono&quot;],&quot;default&quot;:&quot;mixed&quot;,&quot;tsType&quot;:&quot;'mixed' | 'mono'&quot;,&quot;section&quot;:&quot;Wall&quot;,&quot;label&quot;:&quot;Pens&quot;},&quot;showCount&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Wall&quot;,&quot;label&quot;:&quot;Show thought count&quot;}}">
+class Component extends DCLogic {
+  HANDS = [
+    { f: 'Caveat', w: 500, s: 1.1, lh: 1.02 },
+    { f: 'Homemade Apple', s: 0.6, lh: 1.5 },
+    { f: 'Reenie Beanie', s: 1.3, lh: 0.95 },
+    { f: 'Nothing You Could Do', s: 0.72, lh: 1.35 },
+    { f: 'Kalam', w: 300, s: 0.86, lh: 1.2 },
+    { f: 'Shadows Into Light Two', s: 0.95, lh: 1.15 },
+    { f: 'Gochi Hand', s: 0.92, lh: 1.1 },
+    { f: 'Covered By Your Grace', s: 1.08, lh: 1.05 },
+    { f: 'Permanent Marker', s: 0.8, lh: 1.1, marker: true },
+    { f: 'Rock Salt', s: 0.55, lh: 1.55, marker: true },
+    { f: 'La Belle Aurore', s: 0.9, lh: 1.25 },
+    { f: 'Cedarville Cursive', s: 0.78, lh: 1.3 },
+    { f: 'Just Me Again Down Here', s: 1.2, lh: 1.0 },
+    { f: 'Zeyada', s: 1.1, lh: 1.05 },
+    { f: 'Sue Ellen Francisco', s: 1.25, lh: 1.0 },
+    { f: 'Architects Daughter', s: 0.82, lh: 1.25 }
+  ];
+  // ballpoint blue, black felt, graphite, N-CREASE teal, oxblood
+  // + burnt orange, forest green, violet
+  INKS = ['#1F2F6E', '#141412', '#56564F', '#0A8F87', '#7C2A22', '#C2571A', '#2E6B3A', '#6A3D8F'];
+  INK_W = [0.28, 0.28, 0.16, 0.08, 0.06, 0.05, 0.05, 0.04];
+  SEED_INKS = [3, 5, 0, 7, 6, 4, 1, 5, 3, 0, 7, 6];
+  // Starter thoughts pinned left/right of the question (world px); the rest scatter above/below.
+  WALL_DB = { url: 'https://kjywksktfscriptorqyf.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqeXdrc2t0ZnNjcmlwdG9ycXlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NDUyNzIsImV4cCI6MjEwNjUyMTI3Mn0.sXUuQhBkSStzWlh5Bi8ZkCGNYEZVzrEiMWlpZyQOIwk' };
+  SEED_SIDES = { 0: [-760, -190], 1: [870, 40], 3: [-900, 120], 4: [740, -150], 6: [-700, 30], 7: [820, 230] };
+  SEEDS = [
+    ['more disciplined'], ['stronger'], ['less afraid'], ['more present'],
+    ['a runner'], ['more consistent'], ['softer with myself'], ['patient'],
+    ['brave enough to ask'], ['the first in my family to graduate'],
+    ['a morning person (still trying)'], ['someone who shows up']
+  ];
+  // Rude / vulgar content is refused outright — EN, NL, FR (+ a few DE/ES).
+  // SUB: matched anywhere after removing spaces, dots, accents, leetspeak and repeated letters
+  //      (catches "f.u.c.k", "fuuuck", "f u c k", "fück"). Only long, unambiguous stems here.
+  // WORDS: matched as whole words only (so "unique", "catering", "cum laude", "Mongolia" stay allowed).
+  BLOCK_SUB = ['fuck', 'cunt', 'bitch', 'asshole', 'whore', 'pussy', 'porn', 'faggot', 'retard', 'wanker', 'dickhead', 'blowjob', 'handjob', 'dildo', 'killyourself', 'hitler',
+    'kankerlijer', 'kankerhoer', 'klootzak', 'godverdom', 'kolere', 'pleuris', 'neuken', 'geneukt', 'kutwijf', 'rotwijf', 'teringlijer', 'tyfuslijer', 'kankerzooi',
+    'putain', 'salope', 'connard', 'connasse', 'encul', 'batard', 'bougnoul', 'youpin', 'branlette', 'petasse', 'pouffiasse', 'niquetamere', 'filsdepute', 'tagueule',
+    'fotze', 'hurensohn', 'scheisse', 'hijodeputa'];
+  BLOCK_WORDS = ['nigger', 'niggers', 'nigga', 'niggas', 'rapist', 'rapists', 'hoer', 'hoeren', 'hoertje', 'shit', 'shits', 'shitty', 'bullshit', 'dick', 'dicks', 'cock', 'cocks', 'slut', 'sluts', 'rape', 'raped', 'fag', 'fags', 'kike', 'spic', 'chink', 'twat', 'tits', 'boobs', 'anal', 'horny', 'penis', 'vagina', 'nazi', 'nazis', 'kys', 'stfu', 'wtf',
+    'kut', 'kutje', 'lul', 'pik', 'slet', 'sletten', 'sletje', 'klote', 'tering', 'tyfus', 'kanker', 'mongool', 'mongol', 'debiel', 'flikker', 'flikkers', 'trut', 'neger', 'negers', 'lijer', 'pijpen', 'beffen', 'tieten', 'makak', 'makakken', 'hoerenzoon', 'kech',
+    'pute', 'putes', 'merde', 'conne', 'salaud', 'salauds', 'nique', 'niquer', 'niktamere', 'ntm', 'fdp', 'couille', 'couilles', 'chatte', 'pd', 'pede', 'tapette', 'bicot', 'negre', 'branler', 'foutre', 'chier', 'suce', 'enfoire',
+    'puta', 'mierda', 'arschloch'];
+  normText(s) {
+    var t = String(s || '').toLowerCase();
+    try { t = t.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); } catch (e) {}
+    return t.replace(/ß/g, 'ss').replace(/0/g, 'o').replace(/[1!|]/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a').replace(/5/g, 's').replace(/7/g, 't').replace(/8/g, 'b').replace(/@/g, 'a').replace(/\$/g, 's');
+  }
+  squash(s) { return s.replace(/[^a-z]/g, '').replace(/(.)\1+/g, '$1'); }
+  isVulgar(s) {
+    var n = this.normText(s), self = this;
+    var sq = this.squash(n);
+    if (this.BLOCK_SUB.some(function (w) { return sq.indexOf(self.squash(w)) !== -1; })) return true;
+    // Tokens: keep "*" as a masked letter ("sl*t"); glue spelled-out letters ("k u t", "f.d.p").
+    var raw = n.replace(/[^a-z*]+/g, ' ').replace(/([a-z])\1{2,}/g, '$1$1').trim().split(' '), toks = [], run = '';
+    raw.forEach(function (t) { if (t.length === 1) { run += t; } else { if (run) { toks.push(run); run = ''; } toks.push(t); } });
+    if (run) toks.push(run);
+    var list = this.BLOCK_WORDS;
+    return toks.some(function (t) {
+      if (!t) return false;
+      if (t.indexOf('*') === -1) return list.indexOf(t) !== -1;
+      if (!/[a-z]/.test(t)) return false;
+      var re = new RegExp('^' + t.replace(/\*/g, '[a-z]') + '$');
+      return list.some(function (w) { return re.test(w); }) || self.BLOCK_SUB.some(function (w) { return re.test(w); });
+    });
+  }
+  SHOPIFY_DOMAIN = '1ymgaz-rp.myshopify.com';
+  SHOPIFY_TOKEN = 'd832dca775dd2ee7facf5abe9d91a7f2';
+
+  state = {
+    cull: 0, tick: 0, draft: '', name: '', hp: '', pen: this.newPen(null), phase: 'form', err: '',
+    focusId: null, shareOpen: false, interacted: false, live: false, canShare: false,
+    products: [0, 1, 2].map(function () { return { href: '/shop', title: '', bg: 'none' }; })
+  };
+  cam = { tx: 0, ty: 0, z: 0.82 };
+  W = 1200; H = 800;
+  _all = []; _remote = []; _mine = []; _seeds = []; _anim = {}; _pts = new Map();
+  refVp = (el) => { this._vp = el; };
+  refWorld = (el) => { this._world = el; };
+  refInput = (el) => { this._input = el; };
+
+  // ---------- utilities ----------
+  rng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  hash(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); });
+  }
+  pickInk(r) { var x = r(), acc = 0; for (var i = 0; i < this.INK_W.length; i++) { acc += this.INK_W[i]; if (x < acc) return i; } return 1; }
+  newPen(prev) {
+    var h; do { h = Math.floor(Math.random() * this.HANDS.length); } while (prev && h === prev.h);
+    var i = this.pickInk(Math.random); if (this.HANDS[h].marker && i === 2) i = 1;
+    return { h: h, i: i };
+  }
+  inkOf(st) {
+    if ((this.props.inkMode || 'mixed') === 'mono') return st.i === 2 ? this.INKS[2] : this.INKS[1];
+    return this.INKS[st.i] || this.INKS[1];
+  }
+  clean(s) { return String(s || '').replace(/\s+/g, ' ').trim(); }
+  n1(v) { return (Math.round(v * 10) / 10).toString(); }
+
+  // Every answer gets its own physical character — size, tilt, case, decoration.
+  makeStyle(pen, text, r) {
+    var hand = this.HANDS[pen.h], len = text.length;
+    var sz = len <= 6 ? 58 + r() * 34 : len <= 14 ? 40 + r() * 22 : len <= 30 ? 28 + r() * 12 : 22 + r() * 8;
+    if (r() < 0.08) sz = 17 + r() * 4;
+    sz *= hand.s;
+    var rot = (r() - 0.5) * 9;
+    if (r() < 0.12) rot += (r() < 0.5 ? -1 : 1) * (5 + r() * 6);
+    var up = hand.marker ? r() < 0.6 : r() < 0.16;
+    if (len > 40 && r() < 0.7) up = false;
+    var w = len <= 18 ? 1000 : 240 + r() * 200;
+    w = Math.max(w, sz * 6);
+    var q = r(), d = q < 0.11 ? 1 : q < 0.15 ? 2 : q < 0.21 ? 3 : q < 0.25 ? 4 : (q < 0.31 && len <= 14) ? 5 : 0;
+    return {
+      h: pen.h, i: pen.i, sz: Math.round(sz), r: Math.round(rot * 10) / 10, u: up, w: Math.round(w), d: d,
+      ls: Math.round((up ? 0.02 + r() * 0.06 : (r() - 0.5) * 0.02) * 1000) / 1000,
+      a: r() < 0.5 ? 'left' : 'center', p: Math.floor(r() * 1e6)
+    };
+  }
+  boxOf(it) {
+    var st = it.st, len = it.text.length + (st.d === 4 ? 2 : 0);
+    var cw = st.sz * 0.5 * (st.u ? 1.18 : 1);
+    var full = len * cw, w = Math.min(st.w, full), lines = Math.max(1, Math.ceil(full / st.w));
+    var lh = (this.HANDS[st.h] || this.HANDS[0]).lh || 1.15;
+    var h = lines * st.sz * lh + (it.name ? st.sz * 0.45 + 6 : 0) + (st.d === 1 || st.d === 2 ? 12 : 0);
+    return { w: w + 30, h: h + 22 };
+  }
+  inter(x, y, b, ox, oy, ob) {
+    var w = Math.min(x + b.w / 2, ox + ob.w / 2) - Math.max(x - b.w / 2, ox - ob.w / 2);
+    var h = Math.min(y + b.h / 2, oy + ob.h / 2) - Math.max(y - b.h / 2, oy - ob.h / 2);
+    return w > 0 && h > 0 ? w * h : 0;
+  }
+  // Pick the freest spot near a point; a little overlap is allowed, like a real wall.
+  place(it, near, radius, r, pool) {
+    var b = this.boxOf(it), best = null, head = { w: 1180, h: 430 };
+    for (var k = 0; k < 80; k++) {
+      var a = r() * Math.PI * 2, d = Math.sqrt(r()) * radius;
+      var x = near.x + Math.cos(a) * d * 1.45, y = near.y + Math.sin(a) * d * 0.8;
+      var ov = this.inter(x, y, { w: b.w * 1.4, h: b.h * 1.3 }, 0, 0, head) * 400;
+      for (var j = 0; j < pool.length; j++) {
+        var o = pool[j], ob = o._b || (o._b = this.boxOf(o));
+        if (Math.abs(o.x - x) > (b.w + ob.w) / 2 || Math.abs(o.y - y) > (b.h + ob.h) / 2) continue;
+        ov += this.inter(x, y, b, o.x, o.y, ob);
+      }
+      var score = ov / (b.w * b.h) * 1000 + Math.hypot(x - near.x, y - near.y) * 0.12;
+      if (!best || score < best.s) best = { x: x, y: y, s: score };
+    }
+    return { x: Math.round(best.x), y: Math.round(best.y) };
+  }
+  buildSeeds() {
+    var self = this, r = this.rng(20260926), pool = [], now = Date.now();
+    this.SEEDS.forEach(function (s, i) {
+      var pen = { h: Math.floor(r() * self.HANDS.length), i: self.SEED_INKS[i % self.SEED_INKS.length] };
+      var it = { id: 'seed-' + i, text: s[0], name: s[1] || '', seed: true, created_at: new Date(now - (self.SEEDS.length - i) * 3 * 86400000).toISOString() };
+      it.st = self.makeStyle(pen, s[0], r);
+      var side = self.SEED_SIDES[i];
+      var p = side ? self.place(it, { x: side[0] + (r() - 0.5) * 140, y: side[1] + (r() - 0.5) * 90 }, 110, r, pool) : self.place(it, { x: 0, y: 0 }, 380 + Math.sqrt(i + 1) * 190, r, pool);
+      it.x = p.x; it.y = p.y; pool.push(it);
+    });
+    return pool;
+  }
+
+  // ---------- data ----------
+  loadMine() { try { return JSON.parse(localStorage.getItem('ncrease-wall-mine') || '[]').filter(function (x) { return x && x.st && x.text; }); } catch (e) { return []; } }
+  saveMine() { try { localStorage.setItem('ncrease-wall-mine', JSON.stringify(this._mine.map(function (m) { return { id: m.id, text: m.text, name: m.name, x: m.x, y: m.y, st: m.st, created_at: m.created_at }; }))); } catch (e) {} }
+  readLog() { try { return JSON.parse(localStorage.getItem('ncrease-wall-log') || '[]'); } catch (e) { return []; } }
+  logSubmit(text) { try { var l = this.readLog().filter(function (x) { return Date.now() - x.at < 7 * 86400000; }); l.push({ t: text, at: Date.now() }); localStorage.setItem('ncrease-wall-log', JSON.stringify(l)); } catch (e) {} }
+  anonId() {
+    try { var id = localStorage.getItem('ncrease-anon-id'); if (!id) { id = this.uuid(); localStorage.setItem('ncrease-anon-id', id); } return id; } catch (e) { return 'anon'; }
+  }
+  fromRow(row) {
+    var st = row.style;
+    if (!st || st.h == null) st = this.makeStyle({ h: this.hash(row.id) % this.HANDS.length, i: 1 }, row.text, this.rng(this.hash(row.id)));
+    return { id: row.id, text: row.text, name: row.name || '', x: row.x, y: row.y, st: st, created_at: row.created_at };
+  }
+  rebuild() {
+    var ids = {}, arr = [], real = {};
+    this._remote.forEach(function (x) { real[x.id] = 1; }); this._mine.forEach(function (x) { real[x.id] = 1; });
+    var realCount = Object.keys(real).length;
+    var add = function (it) { if (ids[it.id]) return; ids[it.id] = 1; arr.push(it); };
+    var seedOn = this.props.seedWall !== false;
+    if (seedOn && (!this.state.live || realCount < 40)) this._seeds.forEach(add);
+    this._remote.forEach(add); this._mine.forEach(add);
+    this._all = arr;
+  }
+
+  // Supabase when configured (supabase-config.js); otherwise the wall runs on this device only.
+  async connect() {
+    var cfg = null;
+    try { cfg = await import('./supabase-config.js'); } catch (e) { cfg = null; }
+    var url = cfg && cfg.SUPABASE_URL, key = cfg && cfg.SUPABASE_ANON_KEY;
+    if (!url || /YOUR-PROJECT/.test(url)) { url = this.WALL_DB.url; key = this.WALL_DB.key; }
+    if (!url || /YOUR-PROJECT/.test(url)) { console.info('N-CREASE wall: Supabase not configured — answers are kept on this device only.'); this.adminInit(); return; }
+    this._db = { url: url.replace(/\/$/, ''), key: key };
+    try {
+      var all = await this.fetchAll();
+      var self = this, ids = {};
+      all.forEach(function (r) { ids[r.id] = 1; });
+      this._remote = all.map(function (r) { return self.fromRow(r); });
+      // Drop own notes that are no longer on the shared wall (removed by the admin).
+      var before = this._mine.length;
+      this._mine = this._mine.filter(function (m) { return ids[m.id] || Date.now() - new Date(m.created_at || 0).getTime() < 120000; });
+      if (this._mine.length !== before) this.saveMine();
+      this.setState({ live: true }, function () { self.rebuild(); self.forceCull(); });
+      this.startLive(cfg);
+    } catch (e) { console.warn('N-CREASE wall: could not load the wall', e); }
+    this.adminInit();
+  }
+  // Plain REST calls — no external library needed, so the wall works on every phone/browser.
+  async rest(path, method, body, extra) {
+    var h = { apikey: this._db.key, Authorization: 'Bearer ' + this._db.key, 'Content-Type': 'application/json' };
+    if (extra) for (var k in extra) h[k] = extra[k];
+    var res = await fetch(this._db.url + '/rest/v1/' + path, { method: method || 'GET', headers: h, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' });
+    var txt = await res.text(), data = null;
+    try { data = txt ? JSON.parse(txt) : null; } catch (e) {}
+    if (!res.ok) throw new Error((data && (data.message || data.hint)) || ('HTTP ' + res.status));
+    return data;
+  }
+  // Instant updates when the realtime library loads; a quiet refresh every 20s as a safety net.
+  startLive(cfg) {
+    var self = this;
+    if (this._poll) clearInterval(this._poll);
+    this._poll = setInterval(function () { if (document.visibilityState === 'visible') self.resync(); }, 20000);
+    if (!cfg || !cfg.getSupabase) return;
+    Promise.resolve().then(function () { return cfg.getSupabase(); }).then(function (sb) {
+      if (!sb) return;
+      sb.channel('becoming-wall')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'becoming' }, function (p) {
+          var r = p.new; if (!r || r.status !== 'approved') return;
+          self.addIncoming(self.fromRow(r));
+        })
+        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'becoming' }, function (p) {
+          if (p.old && p.old.id) self.dropItem(p.old.id);
+        })
+        .subscribe();
+    }).catch(function () {});
+  }
+  async fetchAll() {
+    var all = [];
+    for (var from = 0; from < 50000; from += 1000) {
+      var rows = await this.rest('becoming?select=id,text,name,x,y,style,created_at&status=eq.approved&order=created_at.asc&offset=' + from + '&limit=1000');
+      all = all.concat(rows || []);
+      if (!rows || rows.length < 1000) break;
+    }
+    return all;
+  }
+  // Catch up after the phone was asleep / tab in background (realtime may have dropped).
+  async resync() {
+    if (!this._db || this._syncing) return;
+    this._syncing = true;
+    try {
+      var rows = await this.fetchAll(), self = this, ids = {};
+      rows.forEach(function (r) { ids[r.id] = 1; });
+      this._remote.filter(function (x) { return !ids[x.id]; }).map(function (x) { return x.id; }).forEach(function (id) { self.dropItem(id); });
+      rows.forEach(function (r) { self.addIncoming(self.fromRow(r)); });
+    } catch (e) {}
+    this._syncing = false;
+  }
+  dropItem(id) {
+    var keep = function (x) { return x.id !== id; };
+    var hadMine = this._mine.some(function (x) { return x.id === id; });
+    this._remote = this._remote.filter(keep); this._mine = this._mine.filter(keep);
+    if (hadMine) this.saveMine();
+    if (this._lastMine && this._lastMine.id === id) this._lastMine = null;
+    if (this.state.focusId === id) this.setState({ focusId: null });
+    this.rebuild(); this.forceCull();
+  }
+
+  // ---------- admin (open the wall with #admin in the URL) ----------
+  adminWanted() { try { return /admin/i.test((location.hash || '') + (location.search || '')); } catch (e) { return false; } }
+  adminInit() {
+    var want = this.adminWanted(), saved = '';
+    try { saved = localStorage.getItem('ncrease-wall-admin') || ''; } catch (e) {}
+    if (saved && this._db) this.adminVerify(saved, true);
+    else if (want) this.setState({ adminAsk: true, adminErr: this._db ? '' : "The wall isn't connected to the database yet (supabase-config.js)." });
+  }
+  async adminVerify(pw, silent) {
+    if (!this._db) { this.setState({ adminErr: "The wall isn't connected to the database yet (supabase-config.js)." }); return; }
+    this.setState({ adminBusy: true, adminErr: '' });
+    var ok = false;
+    try { ok = (await this.rest('rpc/becoming_admin_check', 'POST', { p_secret: pw })) === true; } catch (e) {}
+    if (ok) {
+      this._adminPw = pw;
+      try { localStorage.setItem('ncrease-wall-admin', pw); } catch (e) {}
+      this.setState({ admin: true, adminAsk: false, adminBusy: false, adminPw: '', adminErr: '' });
+      this.forceCull();
+    } else {
+      try { localStorage.removeItem('ncrease-wall-admin'); } catch (e) {}
+      this.setState({ adminBusy: false, adminAsk: !silent || this.adminWanted(), adminErr: silent ? '' : 'Wrong password.' });
+    }
+  }
+  async adminRemove(it, e) {
+    if (e) { e.stopPropagation(); e.preventDefault(); }
+    if (!this.state.admin || !this._db) return;
+    if (!window.confirm('Remove this from the wall for everyone?\n\n“' + it.text + '”')) return;
+    var ok = false;
+    try { ok = (await this.rest('rpc/becoming_admin_remove', 'POST', { p_id: it.id, p_secret: this._adminPw })) === true; } catch (ex) {}
+    if (ok) this.dropItem(it.id);
+    else window.alert("Couldn't remove it. Check your connection, or log in again.");
+  }
+  adminExit() {
+    try { localStorage.removeItem('ncrease-wall-admin'); } catch (e) {}
+    this._adminPw = '';
+    try { if (/admin/i.test(location.hash)) history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    this.setState({ admin: false, adminAsk: false });
+    this.forceCull();
+  }
+  addIncoming(it) {
+    if (this._remote.some(function (x) { return x.id === it.id; }) || this._mine.some(function (x) { return x.id === it.id; })) return;
+    this._remote.push(it); this.writeOn(it);
+  }
+
+  // ---------- camera ----------
+  applyCam() {
+    var c = this.cam;
+    if (this._world) this._world.style.transform = 'translate3d(' + c.tx + 'px,' + c.ty + 'px,0) scale(' + c.z + ')';
+    this.maybeCull();
+  }
+  maybeCull() {
+    var c = this.cam, l = this._lastCull;
+    if (!l || Math.abs(c.tx - l.tx) > 160 || Math.abs(c.ty - l.ty) > 160 || Math.abs(c.z / l.z - 1) > 0.1) {
+      this._lastCull = { tx: c.tx, ty: c.ty, z: c.z };
+      this.setState(function (s) { return { cull: s.cull + 1 }; });
+    }
+  }
+  forceCull() { this._lastCull = null; this.maybeCull(); }
+  screenToWorld(sx, sy) { return { x: (sx - this.cam.tx) / this.cam.z, y: (sy - this.cam.ty) / this.cam.z }; }
+  clampZ(z) { return Math.max(0.3, Math.min(2, z)); }
+  zoomAt(sx, sy, f) {
+    var c = this.cam, nz = this.clampZ(c.z * f), k = nz / c.z;
+    c.tx = sx - (sx - c.tx) * k; c.ty = sy - (sy - c.ty) * k; c.z = nz;
+  }
+  stopMotion() { if (this._fly) cancelAnimationFrame(this._fly); if (this._iner) cancelAnimationFrame(this._iner); this._fly = this._iner = null; }
+  // Keep the focal point above the composer (~200px tall at the bottom).
+  composerH() {
+    var el = this._vp && this._vp.parentNode ? this._vp.parentNode.querySelector('[data-wall-composer]') : null;
+    return (el && el.offsetHeight ? el.offsetHeight : 226) + 22;
+  }
+  anchorY() {
+    var top = 64, free = this.H - this.composerH() - top;
+    return Math.min(this.H * (this.W < 640 ? 0.32 : 0.4), top + free / 2);
+  }
+  initZ() {
+    var z = this.W < 640 ? 0.5 : 0.8;
+    var room = (this.H - this.composerH() - 64 - 20) / 300;
+    return Math.max(0.35, Math.min(z, room, (this.W - 40) / 1060));
+  }
+  flyTo(wx, wy, z, ms, done, sy) {
+    this.stopMotion();
+    var self = this, c = this.cam, from = { tx: c.tx, ty: c.ty, z: c.z }, tz = this.clampZ(z || c.z);
+    var to = { tx: this.W / 2 - wx * tz, ty: (sy == null ? this.anchorY() : sy) - wy * tz, z: tz };
+    var t0 = performance.now();
+    var step = function (now) {
+      var t = Math.min(1, (now - t0) / ms), e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      c.tx = from.tx + (to.tx - from.tx) * e; c.ty = from.ty + (to.ty - from.ty) * e; c.z = from.z + (to.z - from.z) * e;
+      self.applyCam();
+      if (t < 1) self._fly = requestAnimationFrame(step); else { self._fly = null; if (done) done(); }
+    };
+    this._fly = requestAnimationFrame(step);
+  }
+  zoomBy(f) {
+    var w = this.screenToWorld(this.W / 2, this.H / 2);
+    this.flyTo(w.x, w.y, this.cam.z * f, 380, null, this.H / 2);
+    this.markInteracted();
+  }
+  inertia(vx, vy) {
+    var self = this, c = this.cam, last = performance.now();
+    var step = function (now) {
+      var dt = Math.min(32, now - last); last = now;
+      c.tx += vx * dt; c.ty += vy * dt;
+      var k = Math.pow(0.992, dt); vx *= k; vy *= k;
+      self.applyCam();
+      if (Math.hypot(vx, vy) > 0.02) self._iner = requestAnimationFrame(step); else self._iner = null;
+    };
+    this._iner = requestAnimationFrame(step);
+  }
+  markInteracted() { if (!this.state.interacted) this.setState({ interacted: true }); }
+  measure() {
+    if (!this._vp) return;
+    var ow = this.W, oh = this.H;
+    this.W = this._vp.clientWidth || 1200; this.H = this._vp.clientHeight || 800;
+    if (this._ready) { this.cam.tx += (this.W - ow) / 2; this.cam.ty += (this.H - oh) * 0.4; }
+  }
+
+  // ---------- pointer / wheel ----------
+  onDown(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    this.stopMotion();
+    this._pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (this._pts.size === 1) { this._moved = false; this._down = { x: e.clientX, y: e.clientY }; this._samples = [{ x: e.clientX, y: e.clientY, t: performance.now() }]; }
+    this._pinchPrev = null;
+    this._vp.style.cursor = 'grabbing';
+  }
+  onMove(e) {
+    if (!this._pts.has(e.pointerId)) return;
+    var prev = this._pts.get(e.pointerId), cur = { x: e.clientX, y: e.clientY };
+    this._pts.set(e.pointerId, cur);
+    var c = this.cam;
+    if (this._pts.size >= 2) {
+      var v = Array.from(this._pts.values()), rect = this._vp.getBoundingClientRect();
+      var d = Math.hypot(v[0].x - v[1].x, v[0].y - v[1].y);
+      var mid = { x: (v[0].x + v[1].x) / 2 - rect.left, y: (v[0].y + v[1].y) / 2 - rect.top };
+      if (this._pinchPrev) {
+        this.zoomAt(mid.x, mid.y, d / this._pinchPrev.d);
+        c.tx += mid.x - this._pinchPrev.mid.x; c.ty += mid.y - this._pinchPrev.mid.y;
+      }
+      this._pinchPrev = { d: d, mid: mid };
+      this._moved = true; this._samples = [];
+      this.applyCam(); this.markInteracted();
+      return;
+    }
+    c.tx += cur.x - prev.x; c.ty += cur.y - prev.y;
+    if (this._down && Math.hypot(cur.x - this._down.x, cur.y - this._down.y) > 6) { this._moved = true; this.markInteracted(); }
+    var now = performance.now();
+    this._samples.push({ x: cur.x, y: cur.y, t: now });
+    if (this._samples.length > 6) this._samples.shift();
+    this.applyCam();
+  }
+  onUp(e) {
+    if (!this._pts.has(e.pointerId)) return;
+    this._pts.delete(e.pointerId);
+    if (this._pts.size < 2) this._pinchPrev = null;
+    if (this._pts.size > 0) return;
+    if (this._vp) this._vp.style.cursor = 'grab';
+    var s = this._samples || [], now = performance.now();
+    var recent = s.filter(function (p) { return now - p.t < 110; });
+    if (this._moved && recent.length >= 2) {
+      var a = recent[0], b = recent[recent.length - 1], dt = Math.max(1, b.t - a.t);
+      this.inertia((b.x - a.x) / dt, (b.y - a.y) / dt);
+    }
+    var self = this;
+    if (this._moved) setTimeout(function () { self._moved = false; }, 0);
+  }
+  onWheel(e) {
+    if ((window.pageYOffset || document.documentElement.scrollTop || 0) > 4) return;
+    e.preventDefault();
+    this.stopMotion();
+    var rect = this._vp.getBoundingClientRect();
+    if (e.ctrlKey || e.metaKey) this.zoomAt(e.clientX - rect.left, e.clientY - rect.top, Math.exp(-e.deltaY * 0.008));
+    else { var k = e.deltaMode === 1 ? 16 : 1; this.cam.tx -= e.deltaX * k; this.cam.ty -= e.deltaY * k; }
+    this.applyCam(); this.markInteracted();
+  }
+
+  // ---------- writing ----------
+  writeOn(it) {
+    var self = this, dur = Math.min(3.2, 0.9 + it.text.length * 0.055);
+    this._anim[it.id] = { phase: 'pre', dur: dur };
+    this.rebuild(); this.forceCull();
+    this.setState(function (s) { return { tick: s.tick + 1 }; });
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        if (self._anim[it.id]) self._anim[it.id].phase = 'go';
+        self.setState(function (s) { return { tick: s.tick + 1 }; });
+        setTimeout(function () { delete self._anim[it.id]; self.setState(function (s) { return { tick: s.tick + 1 }; }); }, dur * 1000 + 250);
+      });
+    });
+  }
+  moderate(text, name) {
+    var all = text + ' ' + name;
+    if (text.length < 2) return 'Write a little more — even two words is enough.';
+    if (text.length > 80) return 'Keep it under 80 characters.';
+    if (/(https?:\/\/|www\.|\.(com|be|nl|fr|io|net|org|ly)\b|@\w)/i.test(all)) return 'No links or handles — just words.';
+    if (/(.)\1{5,}/.test(text) || /\d{7,}/.test(text.replace(/\s/g, ''))) return "The wall can't read that one.";
+    if (this.isVulgar(text) || this.isVulgar(name)) return "That can't go on the wall. Keep it respectful — write what you're becoming.";
+    var log = this.readLog(), now = Date.now(), low = text.toLowerCase();
+    if (log.some(function (l) { return now - l.at < 45000; })) return 'Give it a minute — then write again.';
+    if (log.filter(function (l) { return now - l.at < 86400000; }).length >= 5) return 'The wall will hold more of you tomorrow.';
+    return '';
+  }
+  async submit(e) {
+    e.preventDefault();
+    if (this.state.phase === 'sending') return;
+    var text = this.clean(this.state.draft), name = this.clean(this.state.name).slice(0, 24);
+    var err = this.moderate(text, name);
+    if (err) { this.setState({ err: err }); return; }
+    if (this.state.hp) { this.setState({ phase: 'done', draft: '' }); return; }
+    this.setState({ phase: 'sending', err: '' });
+    var r = this.rng(this.hash(text + Date.now()));
+    var st = this.makeStyle(this.state.pen, text, r);
+    var it = { id: this.uuid(), text: text, name: name, st: st, created_at: new Date().toISOString() };
+    var near = this.screenToWorld(this.W / 2, this.anchorY());
+    var p = this.place(it, near, Math.min(this.W, this.H) * 0.3 / this.cam.z, r, this._all);
+    it.x = p.x; it.y = p.y;
+    if (this._db) {
+      try {
+        await this.rest('becoming', 'POST', { id: it.id, text: text, name: name || null, x: it.x, y: it.y, style: st, anon_id: this._anonId }, { Prefer: 'return=minimal' });
+      } catch (ex) {
+        var m = String((ex && ex.message) || '');
+        this.setState({ phase: 'form', err: /slow/.test(m) ? 'Give it a minute — then write again.' : /duplicate/.test(m) ? "That one's already on the wall." : /daily/.test(m) ? 'The wall will hold more of you tomorrow.' : /not allowed/.test(m) ? "That can't go on the wall. Keep it respectful — write what you're becoming." : "The wall didn't catch that. Try again in a moment." });
+        return;
+      }
+    }
+    this._mine.push(it); this.saveMine(); this.logSubmit(text);
+    this._lastMine = it;
+    this.setState({ phase: 'done', draft: '', name: '', focusId: null, interacted: true });
+    var self = this;
+    this.flyTo(it.x, it.y, Math.max(this.cam.z, this.W < 640 ? 0.7 : 0.9), 750, function () { self.writeOn(it); });
+  }
+  focusItem(it, e) {
+    if (e) e.stopPropagation();
+    if (this._moved) return;
+    if (this.state.focusId === it.id) { this.setState({ focusId: null }); return; }
+    this.setState({ focusId: it.id, interacted: true });
+    this.flyTo(it.x, it.y, Math.max(this.cam.z, this.W < 640 ? 0.8 : 1), 650);
+  }
+
+  // ---------- story card ----------
+  storyBase(it) {
+    var len = it.text.length, hand = this.HANDS[it.st.h] || this.HANDS[0];
+    return (len <= 8 ? 19 : len <= 20 ? 13 : len <= 40 ? 9.6 : 7.8) * hand.s;
+  }
+  wrapLines(g, text, maxW) {
+    var words = text.split(' '), lines = [], line = '';
+    words.forEach(function (w) {
+      var t = line ? line + ' ' + w : w;
+      if (g.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t;
+    });
+    if (line) lines.push(line);
+    return lines;
+  }
+  async storyCanvas() {
+    var it = this._lastMine; if (!it) return null;
+    var st = it.st, hand = this.HANDS[st.h] || this.HANDS[0], ink = this.inkOf(st);
+    var text = st.u ? it.text.toUpperCase() : it.text;
+    try { await Promise.all([document.fonts.load('80px "' + hand.f + '"'), document.fonts.load('italic 64px Anton'), document.fonts.load('600 28px Inter')]); } catch (e) {}
+    var c = document.createElement('canvas'); c.width = 1080; c.height = 1920;
+    var g = c.getContext('2d'), self = this;
+    g.fillStyle = '#F7F6F2'; g.fillRect(0, 0, 1080, 1920);
+    var r = this.rng(this.hash(it.id));
+    var others = this._all.filter(function (o) { return o.id !== it.id && o.text.length <= 26; });
+    var spots = [[170, 150], [860, 190], [150, 620], [930, 700], [180, 1330], [900, 1290], [260, 1560], [820, 1580]];
+    spots.forEach(function (sp) {
+      if (!others.length) return;
+      var o = others[Math.floor(r() * others.length)], oh = self.HANDS[o.st.h] || self.HANDS[0];
+      g.save(); g.globalAlpha = 0.13; g.fillStyle = self.inkOf(o.st); g.translate(sp[0], sp[1]); g.rotate(o.st.r * Math.PI / 180);
+      g.font = (oh.w || 400) + ' ' + Math.round(Math.max(28, Math.min(58, o.st.sz * 0.9))) + 'px "' + oh.f + '"';
+      g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(o.st.u ? o.text.toUpperCase() : o.text, 0, 0); g.restore();
+    });
+    g.fillStyle = '#0A8F87'; g.fillRect(533, 262, 14, 14);
+    g.fillStyle = '#0E0E0D'; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+    g.font = '600 29px Inter'; try { g.letterSpacing = '10px'; } catch (e) {}
+    g.fillText("WHAT I'M BECOMING", 545, 335);
+    try { g.letterSpacing = '0px'; } catch (e) {}
+    var size = this.storyBase(it) * 10.8, lines;
+    for (var k = 0; k < 30; k++) {
+      g.font = (hand.w || 400) + ' ' + Math.round(size) + 'px "' + hand.f + '"';
+      lines = this.wrapLines(g, text, 820);
+      var widest = Math.max.apply(null, lines.map(function (l) { return g.measureText(l).width; }));
+      if (lines.length <= 5 && widest <= 860) break;
+      size *= 0.92;
+    }
+    var lh = size * Math.max(1.05, (hand.lh || 1.15) * 0.95), blockH = lines.length * lh;
+    g.save(); g.translate(540, 960); g.rotate(st.r * 0.5 * Math.PI / 180);
+    g.fillStyle = ink; g.textBaseline = 'middle';
+    lines.forEach(function (l, i) { g.fillText(l, 0, -blockH / 2 + lh * (i + 0.5)); });
+    if (it.name) {
+      g.font = Math.round(Math.max(40, size * 0.34)) + 'px "' + hand.f + '"'; g.textAlign = 'right';
+      g.fillText('— ' + it.name, 420, blockH / 2 + 60);
+    }
+    g.restore();
+    g.fillStyle = '#0E0E0D'; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+    g.font = 'italic 64px Anton'; try { g.letterSpacing = '18px'; } catch (e) {}
+    g.fillText('N—CREASE', 549, 1690);
+    g.font = '600 25px Inter'; try { g.letterSpacing = '8px'; } catch (e) {}
+    g.fillText('WHERE YOU BECOME MORE.', 544, 1760);
+    return c;
+  }
+  async storyFile() {
+    var c = await this.storyCanvas(); if (!c) return null;
+    return new Promise(function (res) { c.toBlob(function (b) { res(b ? new File([b], 'what-im-becoming.png', { type: 'image/png' }) : null); }, 'image/png'); });
+  }
+  async downloadStory() {
+    var f = await this.storyFile(); if (!f) return;
+    var a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+  }
+  async shareStory() {
+    var f = await this.storyFile(); if (!f) return;
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [f] })) await navigator.share({ files: [f], title: "What I'm becoming" });
+      else this.downloadStory();
+    } catch (e) {}
+  }
+
+  loadProducts() {
+    var self = this;
+    var init = function () {
+      var client = window.ShopifyBuy.buildClient({ domain: self.SHOPIFY_DOMAIN, storefrontAccessToken: self.SHOPIFY_TOKEN });
+      client.product.fetchAll(40).then(function (products) {
+        var seen = {}, out = [];
+        (products || []).forEach(function (p) {
+          if (seen[p.title] || out.length >= 3) return; seen[p.title] = 1;
+          var img = p.images && p.images[0] ? p.images[0].src : '';
+          out.push({ href: '/product?p=' + encodeURIComponent(p.handle), title: p.title, bg: img ? 'url("' + img + '")' : 'none' });
+        });
+        if (out.length) self.setState({ products: out });
+      }).catch(function (err) { console.warn('N-CREASE wall: products fetch failed', err); });
+    };
+    if (window.ShopifyBuy) { init(); return; }
+    var n = 0, t = setInterval(function () { if (window.ShopifyBuy) { clearInterval(t); init(); } else if (++n > 200) clearInterval(t); }, 60);
+  }
+
+  componentDidMount() {
+    var self = this;
+    this._anonId = this.anonId();
+    this.measure();
+    this.cam = { tx: this.W / 2, ty: this.anchorY(), z: this.initZ() };
+    // Mount-time sizes can't be trusted; settle the camera once real layout exists.
+    // Re-inits until the user touches the wall, so late layout shifts also correct.
+    this._firstMeasure = function () {
+      var vp = self._vp; if (!vp) return;
+      var w = vp.clientWidth, h = vp.clientHeight;
+      if (!w || !h) return;
+      if (self.state.interacted || self._fly) { if (w !== self.W || h !== self.H) { self.measure(); self.applyCam(); self.forceCull(); } return; }
+      self.W = w; self.H = h;
+      self.cam = { tx: w / 2, ty: self.anchorY(), z: self.initZ() };
+      self.applyCam(); self.forceCull();
+    };
+    requestAnimationFrame(function () { requestAnimationFrame(self._firstMeasure); });
+    [120, 400, 1000, 2000].forEach(function (t) { setTimeout(self._firstMeasure, t); });
+    this._seeds = this.buildSeeds();
+    this._mine = this.loadMine();
+    this.rebuild();
+    this._ready = true;
+    this.applyCam(); this.forceCull();
+    var cs = false;
+    try { cs = !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 'x.png', { type: 'image/png' })] })); } catch (e) {}
+    this.setState({ canShare: cs });
+    this._h = {
+      down: function (e) { self.onDown(e); }, move: function (e) { self.onMove(e); }, up: function (e) { self.onUp(e); },
+      wheel: function (e) { self.onWheel(e); },
+      resize: function () { self._firstMeasure(); },
+      key: function (e) { if (e.key === 'Escape') self.setState({ shareOpen: false, focusId: null }); },
+      hash: function () { if (!self.state.admin && self.adminWanted()) self.adminInit(); },
+      vis: function () { if (document.visibilityState === 'visible') self.resync(); }
+    };
+    if (this._vp && window.ResizeObserver) {
+      this._ro = new ResizeObserver(function () { self._firstMeasure(); });
+      this._ro.observe(this._vp);
+    }
+    if (this._vp) {
+      this._vp.addEventListener('pointerdown', this._h.down);
+      this._vp.addEventListener('wheel', this._h.wheel, { passive: false });
+    }
+    window.addEventListener('pointermove', this._h.move);
+    window.addEventListener('pointerup', this._h.up);
+    window.addEventListener('pointercancel', this._h.up);
+    window.addEventListener('resize', this._h.resize);
+    window.addEventListener('keydown', this._h.key);
+    window.addEventListener('hashchange', this._h.hash);
+    document.addEventListener('visibilitychange', this._h.vis);
+    this.connect();
+  }
+  componentDidUpdate(prev) {
+    if (prev.seedWall !== this.props.seedWall) { this.rebuild(); this.forceCull(); }
+  }
+  componentWillUnmount() {
+    this.stopMotion();
+    if (this._poll) clearInterval(this._poll);
+    if (this._ro) this._ro.disconnect();
+    if (this._vp) { this._vp.removeEventListener('pointerdown', this._h.down); this._vp.removeEventListener('wheel', this._h.wheel); }
+    window.removeEventListener('pointermove', this._h.move);
+    window.removeEventListener('pointerup', this._h.up);
+    window.removeEventListener('pointercancel', this._h.up);
+    window.removeEventListener('resize', this._h.resize);
+    window.removeEventListener('keydown', this._h.key);
+    window.removeEventListener('hashchange', this._h.hash);
+    document.removeEventListener('visibilitychange', this._h.vis);
+  }
+
+  view(it) {
+    var self = this, st = it.st, hand = this.HANDS[st.h] || this.HANDS[0], ink = this.inkOf(st);
+    var f = this.state.focusId, a = this._anim[it.id];
+    var clip = 'none', trans = 'opacity 0.6s ease';
+    if (a) {
+      if (a.phase === 'pre') clip = 'inset(-40% 100% -40% -40%)';
+      else { clip = 'inset(-40% -40% -40% -40%)'; trans += ', clip-path ' + a.dur + 's cubic-bezier(.55,.1,.45,.95), -webkit-clip-path ' + a.dur + 's cubic-bezier(.55,.1,.45,.95)'; }
+    }
+    var r = this.rng(st.p || this.hash(it.id)), n = this.n1;
+    var j = function (m) { return (r() - 0.5) * m; };
+    var ulPath = 'M' + n(r() * 4) + ' ' + n(5 + j(3)) + ' C 30 ' + n(5 + j(4)) + ', 65 ' + n(6 + j(4)) + ', ' + n(96 + r() * 5) + ' ' + n(4 + j(3));
+    var ul2Path = st.d === 2 ? 'M' + n(8 + r() * 4) + ' ' + n(10 + j(2)) + ' C 35 ' + n(10 + j(3)) + ', 60 ' + n(11 + j(3)) + ', ' + n(88 + r() * 6) + ' ' + n(9 + j(2)) : '';
+    var circPath = 'M ' + n(12 + j(6)) + ' ' + n(62 + j(6)) + ' C 2 ' + n(20 + j(8)) + ', 70 ' + n(-2 + j(8)) + ', 96 ' + n(34 + j(8)) + ' C 106 ' + n(74 + j(8)) + ', 40 ' + n(104 + j(8)) + ', 10 ' + n(74 + j(8)) + ' C 4 ' + n(60 + j(6)) + ', 14 ' + n(38 + j(6)) + ', 34 ' + n(24 + j(6));
+    var arrowPath = 'M2 ' + n(3 + j(3)) + ' C 8 ' + n(20 + j(4)) + ', 20 ' + n(28 + j(3)) + ', 36 28 M 28 ' + n(22 + j(2)) + ' L 36 28 L ' + n(27 + j(2)) + ' 33';
+    var isF = f === it.id;
+    var d = new Date(it.created_at || Date.now());
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return {
+      id: it.id, text: it.text, name: it.name ? '— ' + it.name : '', hasName: !!it.name,
+      ul: st.d === 1 || st.d === 2, arrow: st.d === 3, star: st.d === 4, circ: st.d === 5,
+      ulPath: ulPath, ul2Path: ul2Path, circPath: circPath, arrowPath: arrowPath,
+      focus: isF, when: (it.seed ? 'Written in ' : 'Left in ') + months[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : ''),
+      onClick: function (e) { self.focusItem(it, e); },
+      canDel: !!this.state.admin && !it.seed,
+      onDel: function (e) { self.adminRemove(it, e); },
+      delStyle: (function () { var s = Math.round(34 / self.cam.z); return {
+        position: 'absolute', top: -Math.round(s * 0.45) + 'px', right: -Math.round(s * 0.45) + 'px', width: s + 'px', height: s + 'px', zIndex: 2,
+        borderRadius: '50%', border: 'none', padding: 0, background: '#B3261E', color: '#FFFFFF', cursor: 'pointer',
+        fontFamily: 'Inter, sans-serif', fontSize: Math.round(s * 0.62) + 'px', lineHeight: s + 'px', textAlign: 'center',
+        transform: 'rotate(' + (-st.r) + 'deg)', boxShadow: '0 1px 4px rgba(0,0,0,0.25)'
+      }; })(),
+      wrap: {
+        position: 'absolute', left: it.x + 'px', top: it.y + 'px', width: 'max-content', maxWidth: st.w + 'px',
+        transform: 'translate(-50%,-50%) rotate(' + st.r + 'deg)', padding: '6px 10px', cursor: 'pointer',
+        opacity: f && !isF ? 0.2 : 1, transition: trans, clipPath: clip, WebkitClipPath: clip
+      },
+      txt: {
+        fontFamily: hand.f + ', cursive', fontSize: st.sz + 'px', fontWeight: hand.w || 400, color: ink,
+        lineHeight: hand.lh || 1.15, textTransform: st.u ? 'uppercase' : 'none', letterSpacing: st.ls + 'em',
+        textAlign: st.a || 'left', overflowWrap: 'break-word', textWrap: 'pretty'
+      },
+      nameStyle: {
+        fontFamily: hand.f + ', cursive', fontSize: Math.max(13, Math.round(st.sz * 0.34)) + 'px', fontWeight: hand.w || 400,
+        color: ink, opacity: 0.85, textAlign: 'right', marginTop: '2px', lineHeight: 1.2
+      },
+      whenStyle: {
+        position: 'absolute', left: '50%', top: '100%', transform: 'translateX(-50%) rotate(' + (-st.r) + 'deg)', marginTop: '6px',
+        whiteSpace: 'nowrap', fontFamily: 'Inter, sans-serif', fontSize: Math.round(11 / this.cam.z) + 'px',
+        letterSpacing: '0.2em', textTransform: 'uppercase', color: '#5E5E58'
+      },
+      stroke: { fill: 'none', stroke: ink, strokeWidth: hand.marker ? 3 : 1.7, vectorEffect: 'non-scaling-stroke', strokeLinecap: 'round', strokeLinejoin: 'round' }
+    };
+  }
+
+  renderVals() {
+    var self = this, s = this.state;
+    var visible = [];
+    if (this._ready) {
+      var c = this.cam, m = 500;
+      var x0 = (-m - c.tx) / c.z, y0 = (-m - c.ty) / c.z, x1 = (this.W + m - c.tx) / c.z, y1 = (this.H + m - c.ty) / c.z;
+      for (var i = 0; i < this._all.length; i++) {
+        var it = this._all[i], b = it._b || (it._b = this.boxOf(it));
+        if (it.x + b.w / 2 < x0 || it.x - b.w / 2 > x1 || it.y + b.h / 2 < y0 || it.y - b.h / 2 > y1) continue;
+        visible.push(this.view(it));
+      }
+    }
+    var pen = s.pen || { h: 0, i: 1 }, hand = this.HANDS[pen.h] || this.HANDS[0];
+    var mine = this._lastMine, mh = mine ? (this.HANDS[mine.st.h] || this.HANDS[0]) : hand;
+    var count = this._all.length;
+    return {
+      refVp: this.refVp, refWorld: this.refWorld, refInput: this.refInput,
+      visible: visible,
+      showHint: !s.interacted && !s.admin,
+      admin: !!s.admin, adminAsk: !!s.adminAsk, adminPw: s.adminPw || '',
+      hasAdminErr: !!s.adminErr, adminErr: s.adminErr || '',
+      adminBtn: s.adminBusy ? 'Checking…' : 'Unlock',
+      onAdminPw: function (e) { self.setState({ adminPw: e.target.value, adminErr: '' }); },
+      adminLogin: function (e) { e.preventDefault(); var pw = (self.state.adminPw || '').trim(); if (pw && !self.state.adminBusy) self.adminVerify(pw, false); },
+      adminCancel: function () { self.adminExit(); },
+      adminExit: function () { self.adminExit(); },
+      showCount: this.props.showCount !== false && count > 0,
+      countLabel: count + (count === 1 ? ' thought on the wall' : ' thoughts on the wall'),
+      onBgClick: function () { if (self._moved) return; if (self.state.focusId) self.setState({ focusId: null }); },
+      zoomIn: function () { self.zoomBy(1.3); },
+      zoomOut: function () { self.zoomBy(1 / 1.3); },
+      recenter: function () { self.setState({ focusId: null }); self.flyTo(0, 0, self.initZ(), 800); },
+      showForm: s.phase !== 'done' && !s.collapsed, showDone: s.phase === 'done' && !s.collapsed,
+      collapsed: !!s.collapsed, expanded: !s.collapsed,
+      collapseLabel: s.collapsed ? 'Write on the wall ↑' : 'Just the wall ↓',
+      toggleCollapse: function () { self.setState({ collapsed: !self.state.collapsed }); },
+      draft: s.draft, name: s.name, hp: s.hp,
+      hasDraft: this.clean(s.draft).length > 0, noDraft: this.clean(s.draft).length === 0,
+      onDraft: function (e) { self.setState({ draft: e.target.value, err: '' }); if (!self.state.interacted) self.setState({ interacted: true }); },
+      onName: function (e) { self.setState({ name: e.target.value }); },
+      onHp: function (e) { self.setState({ hp: e.target.value }); },
+      rerollPen: function () { self.setState({ pen: self.newPen(self.state.pen) }); if (self._input) self._input.focus(); },
+      penFont: hand.f + ', cursive', penSize: Math.round(30 * Math.min(1.15, hand.s)) + 'px', penWeight: hand.w || 400, penInk: this.inkOf(pen),
+      sending: s.phase === 'sending',
+      btnLabel: s.phase === 'sending' ? 'Writing…' : 'Leave it on the wall →',
+      hasErr: !!s.err, err: s.err,
+      onSubmit: function (e) { self.submit(e); },
+      openShare: function () { self.setState({ shareOpen: true }); },
+      closeShare: function () { self.setState({ shareOpen: false }); },
+      closeShareBg: function (e) { if (e.target === e.currentTarget) self.setState({ shareOpen: false }); },
+      findMine: function () { if (self._lastMine) self.focusItem(self._lastMine); },
+      writeAgain: function () { self.setState({ phase: 'form', err: '', pen: self.newPen(self.state.pen) }); },
+      scrollDown: function () {
+        var el = document.getElementById('wall-about'); if (!el) return;
+        var y = el.getBoundingClientRect().top + (window.pageYOffset || 0);
+        try { window.scrollTo({ top: y, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, y); }
+      },
+      products: s.products,
+      shareOpen: s.shareOpen, canShare: s.canShare,
+      storyText: mine ? (mine.st.u ? mine.text.toUpperCase() : mine.text) : '',
+      storyFont: mh.f + ', cursive', storyWeight: mh.w || 400,
+      storySize: mine ? this.storyBase(mine).toFixed(1) + 'cqw' : '10cqw',
+      storyInk: mine ? this.inkOf(mine.st) : '#141412',
+      storyRot: mine ? (mine.st.r * 0.5).toFixed(1) + 'deg' : '0deg',
+      storyHasName: !!(mine && mine.name), storyName: mine && mine.name ? '— ' + mine.name : '',
+      downloadStory: function () { self.downloadStory(); },
+      shareStory: function () { self.shareStory(); }
+    };
+  }
+}
+</script>
+</body>
+</html>
