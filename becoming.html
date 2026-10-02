@@ -188,7 +188,7 @@
   <div style="position:fixed;inset:0;z-index:320;background:rgba(14,14,13,0.86);display:flex;align-items:center;justify-content:center;padding:24px;">
     <form onSubmit="{{ adminLogin }}" style="width:min(360px,100%);background:#F7F6F2;padding:28px 24px 22px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box;">
       <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:26px;letter-spacing:0.02em;color:#0E0E0D;">WALL ADMIN</div>
-      <input type="password" autoComplete="current-password" autoCapitalize="none" autoCorrect="off" spellCheck="false" placeholder="Password" value="{{ adminPw }}" onChange="{{ onAdminPw }}" style="width:100%;height:48px;padding:0 14px;border:1px solid rgba(14,14,13,0.3);background:#FFFFFF;font-family:'Inter',sans-serif;font-size:16px;color:#0E0E0D;outline:none;box-sizing:border-box;">
+      <input type="password" autoComplete="current-password" placeholder="Password" value="{{ adminPw }}" onChange="{{ onAdminPw }}" style="width:100%;height:48px;padding:0 14px;border:1px solid rgba(14,14,13,0.3);background:#FFFFFF;font-family:'Inter',sans-serif;font-size:16px;color:#0E0E0D;outline:none;box-sizing:border-box;">
       <sc-if value="{{ hasAdminErr }}" hint-placeholder-val="{{ false }}">
         <div style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.4;color:#7C2A22;">{{ adminErr }}</div>
       </sc-if>
@@ -226,7 +226,6 @@ class Component extends DCLogic {
   INK_W = [0.28, 0.28, 0.16, 0.08, 0.06, 0.05, 0.05, 0.04];
   SEED_INKS = [3, 5, 0, 7, 6, 4, 1, 5, 3, 0, 7, 6];
   // Starter thoughts pinned left/right of the question (world px); the rest scatter above/below.
-  WALL_DB = { url: 'https://kjywksktfscriptorqyf.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqeXdrc2t0ZnNjcmlwdG9ycXlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NDUyNzIsImV4cCI6MjEwNjUyMTI3Mn0.sXUuQhBkSStzWlh5Bi8ZkCGNYEZVzrEiMWlpZyQOIwk' };
   SEED_SIDES = { 0: [-760, -190], 1: [870, 40], 3: [-900, 120], 4: [740, -150], 6: [-700, 30], 7: [820, 230] };
   SEEDS = [
     ['more disciplined'], ['stronger'], ['less afraid'], ['more present'],
@@ -402,11 +401,10 @@ class Component extends DCLogic {
   async connect() {
     var cfg = null;
     try { cfg = await import('./supabase-config.js'); } catch (e) { cfg = null; }
-    var url = cfg && cfg.SUPABASE_URL, key = cfg && cfg.SUPABASE_ANON_KEY;
-    if (!url || /YOUR-PROJECT/.test(url)) { url = this.WALL_DB.url; key = this.WALL_DB.key; }
-    if (!url || /YOUR-PROJECT/.test(url)) { console.info('N-CREASE wall: Supabase not configured — answers are kept on this device only.'); this.adminInit(); return; }
-    this._db = { url: url.replace(/\/$/, ''), key: key };
+    if (!cfg || !cfg.isConfigured || !cfg.isConfigured()) { console.info('N-CREASE wall: Supabase not configured — answers are kept on this device only. See supabase-becoming.sql.'); this.adminInit(); return; }
     try {
+      var sb = await cfg.getSupabase(); if (!sb) return;
+      this._sb = sb;
       var all = await this.fetchAll();
       var self = this, ids = {};
       all.forEach(function (r) { ids[r.id] = 1; });
@@ -416,28 +414,6 @@ class Component extends DCLogic {
       this._mine = this._mine.filter(function (m) { return ids[m.id] || Date.now() - new Date(m.created_at || 0).getTime() < 120000; });
       if (this._mine.length !== before) this.saveMine();
       this.setState({ live: true }, function () { self.rebuild(); self.forceCull(); });
-      this.startLive(cfg);
-    } catch (e) { console.warn('N-CREASE wall: could not load the wall', e); }
-    this.adminInit();
-  }
-  // Plain REST calls — no external library needed, so the wall works on every phone/browser.
-  async rest(path, method, body, extra) {
-    var h = { apikey: this._db.key, Authorization: 'Bearer ' + this._db.key, 'Content-Type': 'application/json' };
-    if (extra) for (var k in extra) h[k] = extra[k];
-    var res = await fetch(this._db.url + '/rest/v1/' + path, { method: method || 'GET', headers: h, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' });
-    var txt = await res.text(), data = null;
-    try { data = txt ? JSON.parse(txt) : null; } catch (e) {}
-    if (!res.ok) throw new Error((data && (data.message || data.hint)) || ('HTTP ' + res.status));
-    return data;
-  }
-  // Instant updates when the realtime library loads; a quiet refresh every 20s as a safety net.
-  startLive(cfg) {
-    var self = this;
-    if (this._poll) clearInterval(this._poll);
-    this._poll = setInterval(function () { if (document.visibilityState === 'visible') self.resync(); }, 20000);
-    if (!cfg || !cfg.getSupabase) return;
-    Promise.resolve().then(function () { return cfg.getSupabase(); }).then(function (sb) {
-      if (!sb) return;
       sb.channel('becoming-wall')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'becoming' }, function (p) {
           var r = p.new; if (!r || r.status !== 'approved') return;
@@ -447,20 +423,22 @@ class Component extends DCLogic {
           if (p.old && p.old.id) self.dropItem(p.old.id);
         })
         .subscribe();
-    }).catch(function () {});
+    } catch (e) { console.warn('N-CREASE wall: could not load the wall', e); }
+    this.adminInit();
   }
   async fetchAll() {
     var all = [];
     for (var from = 0; from < 50000; from += 1000) {
-      var rows = await this.rest('becoming?select=id,text,name,x,y,style,created_at&status=eq.approved&order=created_at.asc&offset=' + from + '&limit=1000');
-      all = all.concat(rows || []);
-      if (!rows || rows.length < 1000) break;
+      var res = await this._sb.from('becoming').select('id,text,name,x,y,style,created_at').eq('status', 'approved').order('created_at', { ascending: true }).range(from, from + 999);
+      if (res.error) throw res.error;
+      all = all.concat(res.data || []);
+      if (!res.data || res.data.length < 1000) break;
     }
     return all;
   }
   // Catch up after the phone was asleep / tab in background (realtime may have dropped).
   async resync() {
-    if (!this._db || this._syncing) return;
+    if (!this._sb || this._syncing) return;
     this._syncing = true;
     try {
       var rows = await this.fetchAll(), self = this, ids = {};
@@ -485,14 +463,14 @@ class Component extends DCLogic {
   adminInit() {
     var want = this.adminWanted(), saved = '';
     try { saved = localStorage.getItem('ncrease-wall-admin') || ''; } catch (e) {}
-    if (saved && this._db) this.adminVerify(saved, true);
-    else if (want) this.setState({ adminAsk: true, adminErr: this._db ? '' : "The wall isn't connected to the database yet (supabase-config.js)." });
+    if (saved && this._sb) this.adminVerify(saved, true);
+    else if (want) this.setState({ adminAsk: true, adminErr: this._sb ? '' : "The wall isn't connected to the database yet (supabase-config.js)." });
   }
   async adminVerify(pw, silent) {
-    if (!this._db) { this.setState({ adminErr: "The wall isn't connected to the database yet (supabase-config.js)." }); return; }
+    if (!this._sb) { this.setState({ adminErr: "The wall isn't connected to the database yet (supabase-config.js)." }); return; }
     this.setState({ adminBusy: true, adminErr: '' });
     var ok = false;
-    try { ok = (await this.rest('rpc/becoming_admin_check', 'POST', { p_secret: pw })) === true; } catch (e) {}
+    try { var res = await this._sb.rpc('becoming_admin_check', { p_secret: pw }); ok = !res.error && res.data === true; } catch (e) {}
     if (ok) {
       this._adminPw = pw;
       try { localStorage.setItem('ncrease-wall-admin', pw); } catch (e) {}
@@ -505,10 +483,10 @@ class Component extends DCLogic {
   }
   async adminRemove(it, e) {
     if (e) { e.stopPropagation(); e.preventDefault(); }
-    if (!this.state.admin || !this._db) return;
+    if (!this.state.admin || !this._sb) return;
     if (!window.confirm('Remove this from the wall for everyone?\n\n“' + it.text + '”')) return;
     var ok = false;
-    try { ok = (await this.rest('rpc/becoming_admin_remove', 'POST', { p_id: it.id, p_secret: this._adminPw })) === true; } catch (ex) {}
+    try { var res = await this._sb.rpc('becoming_admin_remove', { p_id: it.id, p_secret: this._adminPw }); ok = !res.error && res.data === true; } catch (ex) {}
     if (ok) this.dropItem(it.id);
     else window.alert("Couldn't remove it. Check your connection, or log in again.");
   }
@@ -696,9 +674,10 @@ class Component extends DCLogic {
     var near = this.screenToWorld(this.W / 2, this.anchorY());
     var p = this.place(it, near, Math.min(this.W, this.H) * 0.3 / this.cam.z, r, this._all);
     it.x = p.x; it.y = p.y;
-    if (this._db) {
+    if (this._sb) {
       try {
-        await this.rest('becoming', 'POST', { id: it.id, text: text, name: name || null, x: it.x, y: it.y, style: st, anon_id: this._anonId }, { Prefer: 'return=minimal' });
+        var res = await this._sb.from('becoming').insert({ id: it.id, text: text, name: name || null, x: it.x, y: it.y, style: st, anon_id: this._anonId });
+        if (res.error) throw res.error;
       } catch (ex) {
         var m = String((ex && ex.message) || '');
         this.setState({ phase: 'form', err: /slow/.test(m) ? 'Give it a minute — then write again.' : /duplicate/.test(m) ? "That one's already on the wall." : /daily/.test(m) ? 'The wall will hold more of you tomorrow.' : /not allowed/.test(m) ? "That can't go on the wall. Keep it respectful — write what you're becoming." : "The wall didn't catch that. Try again in a moment." });
@@ -872,7 +851,6 @@ class Component extends DCLogic {
   }
   componentWillUnmount() {
     this.stopMotion();
-    if (this._poll) clearInterval(this._poll);
     if (this._ro) this._ro.disconnect();
     if (this._vp) { this._vp.removeEventListener('pointerdown', this._h.down); this._vp.removeEventListener('wheel', this._h.wheel); }
     window.removeEventListener('pointermove', this._h.move);
@@ -961,7 +939,7 @@ class Component extends DCLogic {
       hasAdminErr: !!s.adminErr, adminErr: s.adminErr || '',
       adminBtn: s.adminBusy ? 'Checking…' : 'Unlock',
       onAdminPw: function (e) { self.setState({ adminPw: e.target.value, adminErr: '' }); },
-      adminLogin: function (e) { e.preventDefault(); var pw = (self.state.adminPw || '').trim(); if (pw && !self.state.adminBusy) self.adminVerify(pw, false); },
+      adminLogin: function (e) { e.preventDefault(); var pw = self.state.adminPw || ''; if (pw && !self.state.adminBusy) self.adminVerify(pw, false); },
       adminCancel: function () { self.adminExit(); },
       adminExit: function () { self.adminExit(); },
       showCount: this.props.showCount !== false && count > 0,
