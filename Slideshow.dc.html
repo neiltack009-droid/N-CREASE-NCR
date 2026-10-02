@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <script src="./image-slot.js"></script>
+</helmet>
+<div ref="{{ containerRef }}" style="{{ containerStyle }}" onPointerDown="{{ onPointerDown }}" onPointerMove="{{ onPointerMove }}" onPointerUp="{{ onPointerUp }}" onPointerLeave="{{ onPointerUp }}" onWheel="{{ onWheelHandler }}">
+  <sc-for list="{{ slides }}" as="slide" hint-placeholder-count="2">
+    <div style="{{ slide.wrapStyle }}">
+      <image-slot id="{{ slide.id }}" placeholder="{{ slide.placeholder }}" src="{{ slide.src }}"></image-slot>
+      <sc-if value="{{ slide.hasCaption }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ captionStyle }}">{{ slide.caption }}</div>
+      </sc-if>
+    </div>
+  </sc-for>
+  <sc-if value="{{ showDots }}" hint-placeholder-val="{{ true }}">
+    <div style="{{ dotsRowStyle }}">
+      <sc-for list="{{ dots }}" as="dot" hint-placeholder-count="2">
+        <button onClick="{{ dot.onClick }}" style="{{ dot.style }}"></button>
+      </sc-for>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;images&quot;: {&quot;editor&quot;: null, &quot;default&quot;: [], &quot;tsType&quot;: &quot;Array&lt;{id:string,placeholder:string,caption?:string}&gt;&quot;}, &quot;interval&quot;: {&quot;editor&quot;: null, &quot;default&quot;: 4500, &quot;tsType&quot;: &quot;number&quot;}, &quot;dotColor&quot;: {&quot;editor&quot;: null, &quot;default&quot;: &quot;#F5F3EE&quot;, &quot;tsType&quot;: &quot;string&quot;}, &quot;startIndex&quot;: {&quot;editor&quot;: null, &quot;default&quot;: 0, &quot;tsType&quot;: &quot;number&quot;}, &quot;wheelEnabled&quot;: {&quot;editor&quot;: null, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;}, &quot;transitionDuration&quot;: {&quot;editor&quot;: null, &quot;default&quot;: 0.55, &quot;tsType&quot;: &quot;number&quot;}}">
+class Component extends DCLogic {
+  state = { index: 0, dragDeltaPx: 0, isDragging: false, containerWidth: 800 };
+
+  componentDidMount() {
+    if (this.props.startIndex) this.setState({ index: this.props.startIndex });
+    this._startTimer();
+    var self = this;
+    this._onResize = function () { self._measure(); };
+    window.addEventListener('resize', this._onResize);
+    this._measure();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._t);
+    this._detachTouch();
+    window.removeEventListener('resize', this._onResize);
+  }
+
+  _measure() {
+    if (!this._el) return;
+    var w = this._el.offsetWidth;
+    if (w && w !== this.state.containerWidth) this.setState({ containerWidth: w });
+  }
+
+  registerContainer(el) {
+    if (!el) return;
+    this._el = el;
+    this._attachTouch(el);
+    this._measure();
+  }
+
+  // Native touch handling: a horizontal swipe drags the slides, a vertical one
+  // is left to the browser so the page keeps scrolling.
+  _attachTouch(el) {
+    if (this._touchEl === el) return;
+    this._detachTouch();
+    this._touchEl = el;
+    var self = this;
+    this._ts = function (e) { var t = e.touches[0]; if (!t) return; self._tx = t.clientX; self._ty = t.clientY; self._tmode = null; self._lastDx = 0; };
+    this._tm = function (e) {
+      if (self._tx == null) return;
+      var t = e.touches[0]; if (!t) return;
+      var dx = t.clientX - self._tx, dy = t.clientY - self._ty;
+      if (!self._tmode) {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        self._tmode = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+        if (self._tmode === 'x') { self._dragging = true; self.setState({ isDragging: true }); }
+      }
+      if (self._tmode === 'x') { if (e.cancelable) e.preventDefault(); self._lastDx = dx; self.setState({ dragDeltaPx: dx }); }
+    };
+    this._te = function () {
+      if (self._tmode === 'x') { self._moved = true; self.onPointerUp(self._lastDx); }
+      self._tx = null; self._tmode = null;
+    };
+    el.addEventListener('touchstart', this._ts, { passive: true });
+    el.addEventListener('touchmove', this._tm, { passive: false });
+    el.addEventListener('touchend', this._te);
+    el.addEventListener('touchcancel', this._te);
+  }
+
+  _detachTouch() {
+    var el = this._touchEl;
+    if (!el) return;
+    el.removeEventListener('touchstart', this._ts);
+    el.removeEventListener('touchmove', this._tm);
+    el.removeEventListener('touchend', this._te);
+    el.removeEventListener('touchcancel', this._te);
+    this._touchEl = null;
+  }
+
+  _startTimer() {
+    var self = this;
+    var n = (this.props.images || []).length;
+    clearInterval(this._t);
+    if (n > 1) {
+      this._t = setInterval(function () {
+        if (self._dragging) return;
+        self.setState(function (s) { return { index: (s.index + 1) % n }; });
+      }, this.props.interval || 4500);
+    }
+  }
+
+  goTo(i) {
+    this.setState({ index: i, dragDeltaPx: 0, isDragging: false });
+    this._startTimer();
+  }
+
+  onPointerDown(e) {
+    if (e.pointerType === 'touch') return;
+    this._startX = e.clientX;
+    this._moved = false;
+    this._pointerId = e.pointerId;
+    this._downEl = e.currentTarget;
+  }
+
+  onPointerMove(e) {
+    if (e.pointerType === 'touch' || this._startX == null) return;
+    var dx = e.clientX - this._startX;
+    if (!this._moved && Math.abs(dx) > 6) {
+      this._moved = true;
+      this._dragging = true;
+      try { this._downEl.setPointerCapture(this._pointerId); } catch (err) {}
+      this.setState({ isDragging: true });
+    }
+    if (this._moved) {
+      e.preventDefault();
+      this.setState({ dragDeltaPx: dx });
+    }
+  }
+
+  onWheel(e) {
+    if (!this.props.wheelEnabled) return;
+    var absX = Math.abs(e.deltaX), absY = Math.abs(e.deltaY);
+    if (absX <= absY) return;
+    e.preventDefault();
+    this._wheelAccum = (this._wheelAccum || 0) + e.deltaX;
+    if (this._wheelCooldown) return;
+    var n = (this.props.images || []).length;
+    if (Math.abs(this._wheelAccum) > 60 && n > 1) {
+      var shift = this._wheelAccum > 0 ? 1 : -1;
+      var newIndex = ((this.state.index + shift) % n + n) % n;
+      this._wheelAccum = 0;
+      this._wheelCooldown = true;
+      var self = this;
+      setTimeout(function () { self._wheelCooldown = false; }, 550);
+      this.goTo(newIndex);
+    }
+  }
+
+  onPointerUp(forcedDx) {
+    if (!this._moved) { this._startX = null; return; }
+    var n = (this.props.images || []).length;
+    var unit = this.state.containerWidth * 0.62;
+    var dx = typeof forcedDx === 'number' ? forcedDx : this.state.dragDeltaPx;
+    var shift = 0;
+    if (Math.abs(dx) > unit * 0.18) shift = dx < 0 ? 1 : -1;
+    var newIndex = ((this.state.index + shift) % n + n) % n;
+    this._dragging = false;
+    this._startX = null;
+    this._moved = false;
+    this.setState({ index: newIndex, dragDeltaPx: 0, isDragging: false });
+    this._startTimer();
+  }
+
+  renderVals() {
+    var self = this;
+    var images = this.props.images || [];
+    var n = images.length;
+    var idx = this.state.index;
+    var unit = this.state.containerWidth * 0.62;
+    var dotColor = this.props.dotColor || '#F5F3EE';
+    var dragging = this.state.isDragging;
+    var dur = this.props.transitionDuration || 0.55;
+
+    var slides = images.map(function (img, i) {
+      var raw = i - idx;
+      if (n > 0) {
+        if (raw > n / 2) raw -= n;
+        if (raw < -n / 2) raw += n;
+      }
+      var pos = raw * unit + (dragging ? self.state.dragDeltaPx : 0);
+      var dist = Math.abs(raw);
+      var scale = dist === 0 ? 1 : dist === 1 ? 0.84 : 0.7;
+      var opacity = dist === 0 ? 1 : dist === 1 ? 0.5 : 0;
+      return {
+        id: img.id,
+        src: img.src || '',
+        placeholder: img.placeholder,
+        caption: img.caption || '',
+        hasCaption: !!img.caption && dist === 0,
+        wrapStyle: {
+          position: 'absolute',
+          top: 0,
+          left: '13%',
+          width: '74%',
+          height: '100%',
+          transform: 'translateX(' + pos + 'px) scale(' + scale + ')',
+          opacity: opacity,
+          borderRadius: '4px',
+          overflow: 'hidden',
+          transition: dragging ? 'none' : ('transform ' + dur + 's cubic-bezier(.19,1,.22,1), opacity ' + dur + 's ease'),
+          zIndex: dist === 0 ? 3 : 2,
+          pointerEvents: dist === 0 ? 'auto' : 'none',
+          boxShadow: dist === 0 ? '0 20px 60px rgba(0,0,0,0.18)' : 'none'
+        }
+      };
+    });
+
+    var dots = images.map(function (img, i) {
+      return {
+        onClick: function () { self.goTo(i); },
+        style: {
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          border: 'none',
+          padding: 0,
+          cursor: 'pointer',
+          background: i === idx ? dotColor : 'rgba(245,243,238,0.4)'
+        }
+      };
+    });
+
+    return {
+      containerRef: function (el) { self.registerContainer(el); },
+      containerStyle: {
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        cursor: dragging ? 'grabbing' : 'grab',
+        touchAction: 'pan-y',
+        userSelect: 'none'
+      },
+      onPointerDown: function (e) { self.onPointerDown(e); },
+      onPointerMove: function (e) { self.onPointerMove(e); },
+      onPointerUp: function () { self.onPointerUp(); },
+      onWheelHandler: function (e) { self.onWheel(e); },
+      slides: slides,
+      dots: dots,
+      showDots: n > 1,
+      dotsRowStyle: { position: 'absolute', bottom: '16px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px', zIndex: 5 },
+      captionStyle: { position: 'absolute', left: '20px', bottom: '20px', fontSize: '12px', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#F5F3EE', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

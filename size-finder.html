@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Size Finder — N-CREASE</title>
+  <meta name="description" content="Find your Best Fit at N-CREASE: a short size recommendation based on height, weight, body type and preferred fit.">
+  <style>
+    html,body{margin:0;background:#F5F3EE;color:#0E0E0D;font-family:'Inter',sans-serif;max-width:100%;}
+    *{box-sizing:border-box;}
+    input[type="range"]{-webkit-appearance:none;appearance:none;height:2px;background:rgba(14,14,13,0.18);border-radius:0;outline:none;}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#0A8F87;cursor:pointer;border:none;}
+    input[type="range"]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#0A8F87;cursor:pointer;border:none;}
+    @keyframes sfFade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  </style>
+</helmet>
+
+<div style="background:#F5F3EE;min-height:100vh;display:flex;justify-content:center;padding:0 0 60px;">
+  <div style="max-width:460px;width:100%;display:flex;flex-direction:column;">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:28px 24px 8px;">
+      <button onClick="{{ goBack }}" aria-label="Back" style="{{ backBtnStyle }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="#0E0E0D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:14px;letter-spacing:0.25em;text-transform:uppercase;">N—CREASE</div>
+      <div style="width:34px;"></div>
+    </div>
+
+    <sc-if value="{{ productKnown }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:4px 24px 0;">
+        <a href="{{ backToProductHref }}" style="display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:rgba(14,14,13,0.65);padding:8px 0;">← {{ T_backToProduct }}</a>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:0 24px 4px;">
+        <div style="height:2px;background:rgba(14,14,13,0.12);width:100%;">
+          <div style="height:2px;background:#0A8F87;transition:width 0.4s ease;width:{{ progressPct }}%;"></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="padding:36px 24px 0;flex:1;display:flex;flex-direction:column;">
+
+      <sc-if value="{{ isStep0 }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:20px;animation:sfFade 0.4s ease;">
+          <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#0A8F87;font-weight:600;">{{ introEyebrow }}</div>
+          <h1 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:36px;margin:0;line-height:1.1;">Find your<br/>Best Fit</h1>
+          <p style="font-size:15px;line-height:1.7;color:rgba(14,14,13,0.7);margin:0;">{{ T_introBody }}</p>
+
+          <sc-if value="{{ showPrivacyNote }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:12px;align-items:flex-start;background:#EDEAE2;padding:16px;margin-top:8px;">
+              <div style="flex:1;font-size:12.5px;line-height:1.6;color:rgba(14,14,13,0.75);">{{ T_privacyNote }}</div>
+              <button onClick="{{ dismissPrivacy }}" aria-label="Close" style="background:none;border:none;cursor:pointer;color:rgba(14,14,13,0.5);font-size:16px;line-height:1;padding:0;">×</button>
+            </div>
+          </sc-if>
+
+          <button onClick="{{ goNext }}" style="margin-top:20px;padding:16px 24px;background:#0E0E0D;color:#F5F3EE;border:none;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;cursor:pointer;">{{ T_startBtn }}</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:24px;animation:sfFade 0.4s ease;">
+          <div>
+            <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0 0 8px;">{{ T_step1Heading }}</h2>
+            <p style="font-size:13.5px;color:rgba(14,14,13,0.6);margin:0;">{{ T_step1Sub }}</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <button onClick="{{ setGenderMan }}" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 8px;background:{{ genderManBg }};border:{{ genderManBorder }};cursor:pointer;">
+              <svg width="52" height="90" viewBox="0 0 80 140"><path d="M14,32 C9,52 19,74 21,90 C19,107 18,117 20,132 L60,132 C62,117 61,107 59,90 C61,74 71,52 66,32 Z" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></path><circle cx="40" cy="18" r="10" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></circle></svg>
+              <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;">{{ T_manLabel }}</div>
+            </button>
+            <button onClick="{{ setGenderVrouw }}" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 8px;background:{{ genderVrouwBg }};border:{{ genderVrouwBorder }};cursor:pointer;">
+              <svg width="52" height="90" viewBox="0 0 80 140"><path d="M14,32 C9,52 19,74 21,90 C19,107 18,117 20,132 L60,132 C62,117 61,107 59,90 C61,74 71,52 66,32 Z" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></path><path d="M26,46 C26,58 34,62 40,60 C46,62 54,58 54,46" stroke="#0E0E0D" stroke-width="1.5" fill="none" opacity="0.55"></path><circle cx="40" cy="18" r="10" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></circle></svg>
+              <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;">{{ T_womanLabel }}</div>
+            </button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:26px;animation:sfFade 0.4s ease;">
+          <div>
+            <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0 0 8px;">{{ T_step2Heading }}</h2>
+            <p style="font-size:13.5px;color:rgba(14,14,13,0.6);margin:0;">{{ T_step2Sub }}</p>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(14,14,13,0.5);font-weight:600;">{{ T_heightLabel }}</div>
+            <div style="display:flex;gap:10px;">
+              <input type="number" value="{{ heightVal }}" onChange="{{ onHeightChange }}" placeholder="{{ heightPlaceholder }}" style="flex:1;padding:14px 16px;border:1px solid rgba(14,14,13,0.2);background:transparent;font-size:16px;color:#0E0E0D;font-family:'Inter',sans-serif;"></input>
+              <div style="display:flex;">
+                <button onClick="{{ setHeightUnitCm }}" style="{{ heightCmBtnStyle }}">cm</button>
+                <button onClick="{{ setHeightUnitIn }}" style="{{ heightInBtnStyle }}">in</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(14,14,13,0.5);font-weight:600;">{{ T_weightLabel }}</div>
+            <div style="display:flex;gap:10px;">
+              <input type="number" value="{{ weightVal }}" onChange="{{ onWeightChange }}" placeholder="{{ weightPlaceholder }}" style="flex:1;padding:14px 16px;border:1px solid rgba(14,14,13,0.2);background:transparent;font-size:16px;color:#0E0E0D;font-family:'Inter',sans-serif;"></input>
+              <div style="display:flex;">
+                <button onClick="{{ setWeightUnitKg }}" style="{{ weightKgBtnStyle }}">kg</button>
+                <button onClick="{{ setWeightUnitLbs }}" style="{{ weightLbsBtnStyle }}">lbs</button>
+              </div>
+            </div>
+          </div>
+
+          <button onClick="{{ goNext }}" disabled="{{ hwInvalid }}" style="{{ continueBtnStyle }}">{{ T_nextLabel }}</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:24px;animation:sfFade 0.4s ease;">
+          <div>
+            <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:24px;margin:0 0 8px;">{{ T_step3Heading }}</h2>
+            <p style="font-size:13.5px;color:rgba(14,14,13,0.6);margin:0;">{{ T_step3Sub }}</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <button onClick="{{ setShoulderNarrow }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;background:{{ shoulderNarrowBg }};border:{{ shoulderNarrowBorder }};cursor:pointer;">
+              <svg width="42" height="72" viewBox="0 0 80 140"><path d="M18,32 C14,50 22,72 24,90 C22,106 20,116 22,132 L58,132 C60,116 58,106 56,90 C58,72 66,50 62,32 Z" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></path><sc-if value="{{ isFemale }}" hint-placeholder-val="{{ false }}"><path d="M27,45 C27,56 34,60 40,58 C46,60 53,56 53,45" stroke="#0E0E0D" stroke-width="1.4" fill="none" opacity="0.5"></path></sc-if><circle cx="40" cy="18" r="10" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></circle></svg>
+              <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">{{ T_narrowLabel }}</div>
+            </button>
+            <button onClick="{{ setShoulderAverage }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;background:{{ shoulderAverageBg }};border:{{ shoulderAverageBorder }};cursor:pointer;">
+              <svg width="42" height="72" viewBox="0 0 80 140"><path d="M14,32 C9,52 19,74 21,90 C19,107 18,117 20,132 L60,132 C62,117 61,107 59,90 C61,74 71,52 66,32 Z" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></path><sc-if value="{{ isFemale }}" hint-placeholder-val="{{ false }}"><path d="M26,46 C26,58 34,62 40,60 C46,62 54,58 54,46" stroke="#0E0E0D" stroke-width="1.4" fill="none" opacity="0.5"></path></sc-if><circle cx="40" cy="18" r="10" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></circle></svg>
+              <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">{{ T_averageLabel }}</div>
+            </button>
+            <button onClick="{{ setShoulderWide }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;background:{{ shoulderWideBg }};border:{{ shoulderWideBorder }};cursor:pointer;">
+              <svg width="42" height="72" viewBox="0 0 80 140"><path d="M8,32 C2,54 16,76 18,90 C16,108 16,118 18,132 L62,132 C64,118 64,108 62,90 C64,76 78,54 72,32 Z" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></path><sc-if value="{{ isFemale }}" hint-placeholder-val="{{ false }}"><path d="M24,47 C24,60 33,64 40,62 C47,64 56,60 56,47" stroke="#0E0E0D" stroke-width="1.4" fill="none" opacity="0.5"></path></sc-if><circle cx="40" cy="18" r="10" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></circle></svg>
+              <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">{{ T_wideLabel }}</div>
+            </button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:24px;animation:sfFade 0.4s ease;">
+          <div>
+            <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:24px;margin:0 0 8px;">{{ T_step4Heading }}</h2>
+            <p style="font-size:13.5px;color:rgba(14,14,13,0.6);margin:0;">{{ T_step4Sub }}</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <button onClick="{{ setTorsoSlim }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;background:{{ torsoSlimBg }};border:{{ torsoSlimBorder }};cursor:pointer;">
+              <svg width="42" height="72" viewBox="0 0 80 140"><path d="M30,32 L30,132 L50,132 C46,120 46,100 48,86 C50,70 52,50 50,32 Z" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></path><sc-if value="{{ isFemale }}" hint-placeholder-val="{{ false }}"><path d="M47,42 C53,44 57,50 55,58 C53,54 49,50 47,46 Z" fill="none" stroke="#0E0E0D" stroke-width="1.4" opacity="0.5"></path></sc-if><circle cx="40" cy="18" r="10" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></circle></svg>
+              <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">{{ T_slimmerLabel }}</div>
+            </button>
+            <button onClick="{{ setTorsoAverage }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;background:{{ torsoAverageBg }};border:{{ torsoAverageBorder }};cursor:pointer;">
+              <svg width="42" height="72" viewBox="0 0 80 140"><path d="M30,32 L30,132 L54,132 C50,120 50,100 52,84 C55,66 56,48 52,32 Z" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></path><sc-if value="{{ isFemale }}" hint-placeholder-val="{{ false }}"><path d="M49,42 C55,44 59,50 57,58 C55,54 51,50 49,46 Z" fill="none" stroke="#0E0E0D" stroke-width="1.4" opacity="0.5"></path></sc-if><circle cx="40" cy="18" r="10" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></circle></svg>
+              <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">{{ T_averageLabel }}</div>
+            </button>
+            <button onClick="{{ setTorsoFuller }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;background:{{ torsoFullerBg }};border:{{ torsoFullerBorder }};cursor:pointer;">
+              <svg width="42" height="72" viewBox="0 0 80 140"><path d="M30,32 L30,132 L58,132 C54,122 55,104 58,90 C61,74 60,50 54,32 Z" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></path><sc-if value="{{ isFemale }}" hint-placeholder-val="{{ false }}"><path d="M52,42 C58,44 62,50 60,58 C58,54 54,50 52,46 Z" fill="none" stroke="#0E0E0D" stroke-width="1.4" opacity="0.5"></path></sc-if><circle cx="40" cy="18" r="10" fill="#EDEAE2" stroke="#0E0E0D" stroke-width="2"></circle></svg>
+              <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;">{{ T_fullerLabel }}</div>
+            </button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStep5 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:24px;animation:sfFade 0.4s ease;">
+          <div>
+            <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0 0 8px;">{{ T_step5Heading }}</h2>
+            <p style="font-size:13.5px;color:rgba(14,14,13,0.6);margin:0;">{{ T_step5Sub }}</p>
+          </div>
+          <input type="number" value="{{ age }}" onChange="{{ onAgeChange }}" placeholder="{{ T_agePlaceholder }}" style="padding:14px 16px;border:1px solid rgba(14,14,13,0.2);background:transparent;font-size:16px;color:#0E0E0D;font-family:'Inter',sans-serif;width:140px;"></input>
+          <div style="display:flex;gap:20px;align-items:center;">
+            <button onClick="{{ goNext }}" style="padding:16px 24px;background:#0E0E0D;color:#F5F3EE;border:none;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;cursor:pointer;">{{ T_nextLabel }}</button>
+            <button onClick="{{ skipAge }}" style="background:none;border:none;color:rgba(14,14,13,0.5);font-size:12px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:underline;cursor:pointer;padding:0;">{{ T_skipLabel }}</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStep6 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:30px;animation:sfFade 0.4s ease;">
+          <div>
+            <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0 0 8px;">{{ T_step6Heading }}</h2>
+            <p style="font-size:13.5px;color:rgba(14,14,13,0.6);margin:0;">{{ T_step6Sub }}</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <input type="range" min="0" max="100" value="{{ fitSlider }}" onChange="{{ onFitSliderChange }}" style="width:100%;"></input>
+            <div style="display:flex;justify-content:space-between;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(14,14,13,0.5);font-weight:600;">
+              <div>{{ T_fittedLabel }}</div>
+              <div>{{ T_looseLabel }}</div>
+            </div>
+          </div>
+          <sc-if value="{{ isBoxyProduct }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#EDEAE2;border-left:3px solid #0A8F87;padding:14px 16px;font-size:12.5px;line-height:1.6;color:rgba(14,14,13,0.8);">{{ T_oversizedNote }}</div>
+          </sc-if>
+          <button onClick="{{ showResult }}" style="margin-top:4px;padding:16px 24px;background:#0E0E0D;color:#F5F3EE;border:none;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;cursor:pointer;">{{ T_showFitLabel }}</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStep7 }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:32px;animation:sfFade 0.4s ease;">
+          <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#0A8F87;font-weight:600;">{{ T_yourBestFit }}</div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;">
+              <div style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:64px;line-height:1;margin:0;">{{ primarySize }}</div>
+              <div style="font-size:13px;font-weight:600;color:{{ confidenceColor }};">{{ primaryPct }}{{ T_matchSuffix }}</div>
+            </div>
+            <div style="height:6px;background:rgba(14,14,13,0.1);width:100%;">
+              <div style="height:6px;background:{{ confidenceColor }};width:{{ primaryPct }}%;"></div>
+            </div>
+          </div>
+
+          <sc-if value="{{ cappedAtTop }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:12.5px;color:rgba(14,14,13,0.6);line-height:1.6;">{{ T_largestSize }}</div>
+          </sc-if>
+
+          <sc-if value="{{ primarySoldOut }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:6px;border-left:3px solid #0E0E0D;padding:2px 0 2px 14px;">
+              <div style="font-size:13px;font-weight:600;">{{ soldOutLine }}</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ hasLengthRec }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(14,14,13,0.5);font-weight:600;">{{ T_recommendedLength }}</div>
+              <div style="font-size:15px;font-weight:600;">{{ lengthRec }}</div>
+              <div style="font-size:12px;color:rgba(14,14,13,0.5);">{{ T_availableLengths }}: {{ lengthsLine }}</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isOversizedProduct }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:4px;border-left:3px solid #0A8F87;padding:2px 0 2px 14px;">
+              <div style="font-size:10px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;color:#0A8F87;">{{ T_oversizedTitle }}</div>
+              <div style="font-size:12.5px;line-height:1.6;color:rgba(14,14,13,0.7);">{{ T_oversizedNote }}</div>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;flex-direction:column;gap:8px;padding-top:8px;border-top:1px solid rgba(14,14,13,0.1);">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;">
+              <div style="font-size:14px;color:rgba(14,14,13,0.6);">{{ T_notSurePrefix }} <strong style="color:#0E0E0D;">{{ secondarySize }}</strong> {{ T_notSureSuffix }}</div>
+              <div style="font-size:12px;color:rgba(14,14,13,0.5);">{{ secondaryPct }}{{ T_matchSuffix }}</div>
+            </div>
+            <div style="height:4px;background:rgba(14,14,13,0.08);width:100%;">
+              <div style="height:4px;background:rgba(14,14,13,0.3);width:{{ secondaryPct }}%;"></div>
+            </div>
+          </div>
+
+          <div style="background:#EDEAE2;padding:18px;font-size:13px;line-height:1.7;color:rgba(14,14,13,0.75);">
+            <div style="font-weight:600;color:#0E0E0D;margin-bottom:8px;">{{ T_basedOn }}</div>
+            {{ explanationText }}
+          </div>
+
+          <sc-if value="{{ hasChartData }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;">
+                <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(14,14,13,0.5);font-weight:600;">{{ T_garmentMeasurements }}</div>
+                <div style="display:flex;border:1px solid rgba(14,14,13,0.18);flex:none;">
+                  <button onClick="{{ setUnitCm }}" style="{{ unitCmStyle }}">cm</button>
+                  <button onClick="{{ setUnitIn }}" style="{{ unitInStyle }}">in</button>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0;border-bottom:1px solid rgba(14,14,13,0.1);">
+                <div>{{ T_sizeWord }} {{ primarySize }}</div>
+                <div style="color:rgba(14,14,13,0.6);">{{ primaryChartRow.a }} · {{ primaryChartRow.b }} · {{ primaryChartRow.c }}</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(14,14,13,0.5);">
+                <div>{{ T_sizeWord }} {{ secondarySize }}</div>
+                <div>{{ secondaryChartRow.a }} · {{ secondaryChartRow.b }} · {{ secondaryChartRow.c }}</div>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <sc-if value="{{ canBuy }}" hint-placeholder-val="{{ true }}">
+              <a href="{{ addToCartHref }}" style="padding:17px 24px;background:#0E0E0D;color:#F5F3EE;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;text-align:center;">{{ cartBtnLabel }}</a>
+            </sc-if>
+            <sc-if value="{{ primarySoldOut }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:17px 24px;background:rgba(14,14,13,0.08);color:rgba(14,14,13,0.45);font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;text-align:center;cursor:not-allowed;">{{ T_soldOutBtn }}</div>
+            </sc-if>
+            <button onClick="{{ editData }}" style="background:none;border:none;color:rgba(14,14,13,0.5);font-size:12px;letter-spacing:0.08em;text-decoration:underline;cursor:pointer;padding:0;text-align:center;">{{ T_editDetails }}</button>
+            <sc-if value="{{ productKnown }}" hint-placeholder-val="{{ false }}">
+              <a href="{{ backToProductHref }}" style="text-align:center;font-size:12px;color:rgba(14,14,13,0.5);text-decoration:underline;">← {{ T_backToProduct }}</a>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 460, &quot;height&quot;: 780}, &quot;accentColor&quot;: {&quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#0A8F87&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;#0A8F87&quot;, &quot;#0E0E0D&quot;, &quot;#5B8C6A&quot;]}, &quot;confidenceColor&quot;: {&quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#5B8C6A&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;#5B8C6A&quot;, &quot;#0A8F87&quot;, &quot;#0E0E0D&quot;]}, &quot;skipAgeStep&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Sizing logic&quot;}}">
+const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+// Reference bodies and the two fallbacks for products that carry no chart.
+const SCORING = {
+  // The body each chart is read against. Gender only changes how a BODY is
+  // estimated; the garment ladder is identical for everyone, so two identical
+  // bodies always get identical advice on the same product.
+  men: { refHeight: 178, refWeight: 74, refChest: 96 },
+  women: { refHeight: 168, refWeight: 62, refChest: 88 },
+  // Used by the Running Club calibration below (the only chartless product
+  // family with real worn-fit references).
+  shoulderModifier: { narrow: -0.3, average: 0, wide: 0.4 },
+  torsoModifier: { slim: -0.3, average: 0, fuller: 0.5 },
+  // "How should it fall": one full size of swing at the slider ends, for the
+  // chartless paths (the chart path expresses it as garment ease instead).
+  fitIntentSizes: 1.0,
+  // How far a cut shifts the advice when a product has no chart at all.
+  fitTypeModifier: { oversized: -1, relaxed: -0.5, regular: 0, slim: 0.4 },
+  // Product-specific sizing configuration for the RUNNING CLUB T-SHIRTS only.
+  // These are cut regular, not oversized, so they get their own calibration
+  // from real worn-fit references:
+  //   178 cm / 74 kg → M · 168 cm / 68 kg → M · 168 cm / 55 kg → S
+  // Not thresholds — two continuous demands:
+  //   build  = weight against the weight expected AT THAT HEIGHT (1 size / 12 kg),
+  //            with a mild height exponent so a tall body is not written off as
+  //            "expected heavier" and therefore smaller;
+  //   length = body height. Between 164 and 184 cm the tee's length covers the
+  //            body, so height adds nothing there and weight/build decides
+  //            (that is why 168/68 and 178/74 both land on M). Outside that
+  //            band length takes over: one size per 8 cm above 184 cm, one per
+  //            10 cm below 164 cm, capped so a very tall lean body climbs to L
+  //            for length without being given a chest it does not have.
+  runningAnchor: {
+    refHeight: 168, refWeightMid: 67.4, kgPerSize: 12, heightWeightExponent: 0.9,
+    lengthBand: [164, 184], cmPerSizeTall: 8, cmPerSizeShort: 10, lengthCap: 2,
+    // Weight already carries most of the build, so shoulders/torso fine-tune.
+    buildDamping: 0.5
+  }
+};
+
+// Per-product measurements from the Shopify metafield custom.measurements:
+// {"S":{"chest":550,"length":675,"shoulder":460,"sleeve":225}, ...}
+// Values in mm or cm (auto-detected), half-chest flat. Missing sizes are fine
+// — the ladder interpolates between the sizes that ARE measured, and nothing
+// is invented for a product without data.
+function parseMeasurements(raw) {
+  if (!raw) return null;
+  var data;
+  try { data = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (e) { return null; }
+  if (!data || typeof data !== 'object') return null;
+  var out = {};
+  Object.keys(data).forEach(function (k) {
+    var row = data[k] || {}, norm = {};
+    ['chest', 'length', 'shoulder', 'sleeve'].forEach(function (key) {
+      var v = parseFloat(row[key] != null ? row[key] : row[key + 'Mm']);
+      if (!isFinite(v) || v <= 0) return;
+      norm[key] = v < 200 ? v * 10 : v;
+    });
+    if (Object.keys(norm).length) out[String(k).trim().toUpperCase().replace(/\s+/g, '')] = norm;
+  });
+  return Object.keys(out).length ? out : null;
+}
+
+const SHOPIFY_DOMAIN = '1ymgaz-rp.myshopify.com';
+const SHOPIFY_TOKEN = 'd832dca775dd2ee7facf5abe9d91a7f2';
+// Sizes we never sell, even when Shopify carries the variant.
+const BLOCKED_SIZES = ['3XL', 'XXXL', '4XL', 'XXXXL'];
+
+// Fit is read from Shopify per product — the blank's product type names it
+// ("Boxy Heavyweight Unisex Organic T-Shirt", "Oversized Unisex Hoodie"),
+// with title and tags as extra signal. A product metafield custom.fit
+// (oversized / relaxed / regular / slim) overrides the detection when a
+// garment needs a different treatment. Nothing is hardcoded per product, so
+// new products are classified as soon as they exist in Shopify.
+// The Running Club tees are the one product family with their own sizing
+// configuration. Detected from Shopify (title / product type / tags), or
+// forced with the product metafield custom.fit = running.
+function detectRunning(text, override) {
+  if (String(override || '').trim().toLowerCase() === 'running') return true;
+  return /running\s*club|\brunning\b|\bloop\b/.test(String(text || '').toLowerCase());
+}
+
+function detectGarment(text) {
+  var t = String(text || '').toLowerCase();
+  if (/\bsocks?\b|sokken|chaussettes/.test(t)) return 'socks';
+  if (/hoodie|sweat|crewneck/.test(t)) return 'hoodie';
+  if (/t-shirt|tee|shirt/.test(t)) return 'tee';
+  return 'other';
+}
+
+function detectFit(text, override) {
+  var o = String(override || '').trim().toLowerCase();
+  if (SCORING.fitTypeModifier[o] !== undefined) return o;
+  var t = String(text || '').toLowerCase();
+  // The Running Club tees are a regular cut, and socks carry no fit idea.
+  if (detectRunning(t) || /\bsocks?\b|sokken|chaussettes/.test(t)) return 'regular';
+  if (/oversiz|boxy|baggy/.test(t)) return 'oversized';
+  if (/relaxed|loose/.test(t)) return 'relaxed';
+  if (/slim|muscle|fitted/.test(t)) return 'slim';
+  // The range is oversized by design, so that is the default when a product
+  // says nothing — the metafield custom.fit overrides it per product.
+  return 'oversized';
+}
+
+// The product-specific sizing engine. No universal table and no universal
+// formula: the only thing shared between products is how a BODY is estimated
+// from height, weight and build. Everything after that is read off the size
+// chart of the product in view, so two products with different charts can
+// (correctly) recommend different sizes to the same person.
+const FIT = {
+  // Chest girth (cm) = reference chest · frame scale · corpulence scale.
+  // Height and weight never act on their own: frame grows with height while
+  // corpulence is BMI against the reference body — so 180/80 and 200/100 are
+  // two different bodies, not one "proportional" case.
+  frameExp: 0.5,
+  bmiExp: 0.55,
+  // Build answers move real centimetres of girth, never cosmetic points.
+  shoulderCm: { narrow: -2, average: 0, wide: 3 },
+  torsoCm: { slim: -2.5, average: 0, fuller: 4.5 },
+  // Which size of a chart the reference body is drafted into: the middle of
+  // the run this product actually sells, shifted by how the piece is cut.
+  anchorShift: { oversized: -1, relaxed: -0.5, regular: 0, slim: 0.4 },
+  // How the two chart demands (girth · length) are weighted per cut.
+  weights: {
+    oversized: { chest: 0.55, length: 0.45 },
+    relaxed: { chest: 0.6, length: 0.4 },
+    regular: { chest: 0.72, length: 0.28 },
+    slim: { chest: 0.8, length: 0.2 }
+  },
+  // Length asking for a smaller size than girth does is damped: on a boxy or
+  // cropped cut that length is intended, and the body still needs its room.
+  lengthDown: { oversized: 0.35, relaxed: 0.5, regular: 0.8, slim: 1 },
+  // Fit slider: ±1 size at the ends, applied as garment ease.
+  intentEaseCm: 7, intentMaxSizes: 1, intentMinSizes: 0.35,
+  // A body outside the chart's range is still read continuously, but with half
+  // the authority: below the smallest size there is no smaller garment, so an
+  // extrapolated girth must not out-shout a length demand inside the run.
+  outsideWeight: 0.5,
+  // How far a body may sit outside a chart before the ladder stops reading.
+  outsideCap: 2.5
+};
+
+// The size chart Shopify carries in the product description (div.size-table:
+// a size column plus measure columns in mm). This is the source of truth for
+// the advice, so it is parsed the same way the product page renders it.
+function parseChartHtml(html) {
+  if (!html || html.indexOf('measure-cell') === -1) return null;
+  var doc;
+  try { doc = new DOMParser().parseFromString(html, 'text/html'); } catch (e) { return null; }
+  var table = doc.querySelector('.size-table table') || doc.querySelector('table');
+  if (!table) return null;
+  var heads = Array.prototype.map.call(table.querySelectorAll('th.measure-name'), function (th) { return (th.textContent || '').trim(); });
+  var rows = [];
+  Array.prototype.forEach.call(table.querySelectorAll('tbody tr'), function (tr) {
+    var sizeCell = tr.querySelector('.size-cell') || tr.querySelector('td');
+    if (!sizeCell) return;
+    var vals = Array.prototype.map.call(tr.querySelectorAll('.measure-cell'), function (td) {
+      var m = /([\d.,]+)\s*(mm|cm)/i.exec(td.textContent || '');
+      if (!m) return null;
+      var v = parseFloat(m[1].replace(',', '.'));
+      return isFinite(v) && v > 0 ? (/cm/i.test(m[2]) ? v * 10 : v) : null;
+    });
+    var size = String(sizeCell.textContent || '').trim().toUpperCase().replace(/\s+/g, '');
+    if (size && vals.length) rows.push({ size: size, vals: vals });
+  });
+  if (rows.length < 2) return null;
+
+  var n = rows.reduce(function (m, r) { return Math.max(m, r.vals.length); }, 0);
+  var roles = new Array(n);
+  var label = function (txt) {
+    var t = String(txt || '').toLowerCase();
+    if (/chest|bust|breast|width|breedte|poitrine/.test(t)) return 'chest';
+    if (/sleeve|mouw|manche/.test(t)) return 'sleeve';
+    if (/length|lengte|longueur|hoogte/.test(t)) return 'length';
+    if (/shoulder|schouder|epaule|épaule/.test(t)) return 'shoulder';
+    if (/waist|taille/.test(t)) return 'waist';
+    return null;
+  };
+  for (var i = 0; i < n; i++) roles[i] = label(heads[i]);
+  // Charts that only name their columns A / B / C are read from the numbers:
+  // across a size run the chest width always grows fastest, the longer of the
+  // two remaining columns is the garment length, the shorter one the sleeve.
+  var stats = [];
+  for (var c = 0; c < n; c++) {
+    var col = rows.map(function (r) { return r.vals[c]; }).filter(function (v) { return isFinite(v) && v > 0; });
+    stats.push(col.length >= 2 ? {
+      i: c, growth: col[col.length - 1] / col[0],
+      avg: col.reduce(function (a, b) { return a + b; }, 0) / col.length
+    } : null);
+  }
+  var open = stats.filter(function (s) { return s && !roles[s.i]; });
+  if (roles.indexOf('chest') === -1 && open.length) {
+    var ch = open.slice().sort(function (a, b) { return b.growth - a.growth; })[0];
+    roles[ch.i] = 'chest';
+    open = open.filter(function (s) { return s.i !== ch.i; });
+  }
+  if (roles.indexOf('length') === -1 && open.length) {
+    var ln = open.slice().sort(function (a, b) { return b.avg - a.avg; })[0];
+    roles[ln.i] = 'length';
+    open = open.filter(function (s) { return s.i !== ln.i; });
+  }
+  if (roles.indexOf('sleeve') === -1 && open.length) roles[open[0].i] = 'sleeve';
+
+  var sizes = {}, display = {};
+  rows.forEach(function (r) {
+    var m = {};
+    r.vals.forEach(function (v, idx) { if (isFinite(v) && v > 0 && roles[idx]) m[roles[idx]] = v; });
+    if (m.chest && m.length) sizes[r.size] = m;
+    display[r.size] = { aMm: r.vals[0], bMm: r.vals[1], cMm: r.vals[2] };
+  });
+  return Object.keys(sizes).length >= 2 ? { sizes: sizes, display: display } : null;
+}
+
+// Which body a chart is drafted for — the anchor is a property of the
+// garment, so identical bodies always get identical advice on it.
+function detectAudience(text) {
+  var t = String(text || '').toLowerCase();
+  if (/\bwom[ae]n\b|women'?s|femme|dames|ladies/.test(t)) return 'women';
+  if (/\bmen'?s\b|\bhomme\b/.test(t)) return 'men';
+  return 'unisex';
+}
+
+const STRINGS = {
+  introBody: { en: "Answer 6 short questions about height, weight and body type. We'll calculate the size that fits best.", fr: "Répondez à 6 courtes questions sur votre taille, poids et morphologie. Nous calculerons la taille qui vous va le mieux." },
+  privacyNote: { en: "We only use your height, weight and body shape to calculate a size. We don't store this data.", fr: "Nous utilisons votre taille, poids et morphologie uniquement pour calculer une taille. Nous ne conservons pas ces données." },
+  startBtn: { en: 'Start Size Finder', fr: 'Démarrer le guide des tailles' },
+  step1Heading: { en: 'Who are we sizing?', fr: 'Pour qui cherchons-nous une taille ?' },
+  step1Sub: { en: 'This determines which silhouettes we show next.', fr: 'Cela détermine les silhouettes que nous afficherons ensuite.' },
+  manLabel: { en: 'Man', fr: 'Homme' },
+  womanLabel: { en: 'Woman', fr: 'Femme' },
+  step2Heading: { en: 'Height & Weight', fr: 'Taille & Poids' },
+  step2Sub: { en: 'The more accurate, the better the recommendation.', fr: 'Plus c\u2019est précis, meilleure est la recommandation.' },
+  heightLabel: { en: 'Height', fr: 'Taille' },
+  weightLabel: { en: 'Weight', fr: 'Poids' },
+  nextLabel: { en: 'Next', fr: 'Suivant' },
+  step3Heading: { en: 'How would you describe your shoulder width?', fr: 'Comment décririez-vous la largeur de vos épaules ?' },
+  step3Sub: { en: 'Choose the silhouette closest to your body type.', fr: 'Choisissez la silhouette la plus proche de votre morphologie.' },
+  narrowLabel: { en: 'Narrow', fr: 'Étroites' },
+  averageLabel: { en: 'Average', fr: 'Moyennes' },
+  wideLabel: { en: 'Wide', fr: 'Larges' },
+  step4Heading: { en: 'And your torso, from the side?', fr: 'Et votre torse, de profil ?' },
+  step4Sub: { en: "There's no right or wrong answer — this just refines the fit.", fr: 'Il n\u2019y a pas de bonne ou mauvaise réponse — cela affine simplement la coupe.' },
+  slimmerLabel: { en: 'Slimmer', fr: 'Plus mince' },
+  fullerLabel: { en: 'Fuller', fr: 'Plus fort' },
+  step5Heading: { en: "What's your age?", fr: 'Quel est votre âge ?' },
+  step5Sub: { en: 'Optional — body shape shifts slightly with age, this refines the recommendation a bit more.', fr: 'Facultatif — la morphologie évolue légèrement avec l\u2019âge, cela affine un peu plus la recommandation.' },
+  agePlaceholder: { en: 'e.g. 28', fr: 'p. ex. 28' },
+  skipLabel: { en: 'Skip', fr: 'Passer' },
+  step6Heading: { en: 'Which fit do you prefer?', fr: 'Quelle coupe préférez-vous ?' },
+  step6Sub: { en: 'Slide between fitted and loose.', fr: 'Glissez entre ajusté et ample.' },
+  fittedLabel: { en: 'Fitted', fr: 'Ajusté' },
+  looseLabel: { en: 'Loose', fr: 'Ample' },
+  boxyNote: { en: 'Note: this fit is already boxy — going looser could size you up too much!', fr: 'Attention : cette coupe est déjà boxy — aller plus ample pourrait vous faire prendre une taille trop grande !' },
+  showFitLabel: { en: 'Show My Best Fit', fr: 'Voir ma taille idéale' },
+  yourBestFit: { en: 'Your Best Fit', fr: 'Votre taille idéale' },
+  matchSuffix: { en: '% match', fr: '% de correspondance' },
+  notSurePrefix: { en: 'Not sure? Size', fr: 'Pas sûr ? La taille' },
+  notSureSuffix: { en: 'also fits', fr: 'vous va aussi' },
+  basedOn: { en: 'This recommendation is based on:', fr: 'Cette recommandation est basée sur :' },
+  garmentMeasurements: { en: 'Garment measurements (A length · B chest width · C sleeve)', fr: 'Mesures du vêtement (A longueur · B largeur poitrine · C manche)' },
+  measuredWith: { en: "this product's own size chart", fr: 'le guide des tailles de ce produit' },
+  drivenChest: { en: 'chest width decides this size', fr: 'la largeur de poitrine détermine cette taille' },
+  drivenLength: { en: 'garment length decides this size', fr: 'la longueur du vêtement détermine cette taille' },
+  drivenBoth: { en: 'chest width and length agree on this size', fr: 'largeur et longueur concordent sur cette taille' },
+  sizeWord: { en: 'Size', fr: 'Taille' },
+  editDetails: { en: 'Edit your details', fr: 'Modifier mes informations' },
+  backToProduct: { en: 'Back to product', fr: 'Retour au produit' },
+  genderWoman: { en: 'Woman', fr: 'Femme' },
+  genderMan: { en: 'Man', fr: 'Homme' },
+  shoulders: { en: 'shoulders', fr: 'épaules' },
+  torso: { en: 'torso', fr: 'torse' },
+  shoulderNarrow: { en: 'narrow', fr: 'étroites' },
+  shoulderAverage: { en: 'average', fr: 'moyennes' },
+  shoulderWide: { en: 'wide', fr: 'larges' },
+  torsoSlim: { en: 'slimmer', fr: 'plus mince' },
+  torsoAverage: { en: 'average', fr: 'moyen' },
+  torsoFuller: { en: 'fuller', fr: 'plus fort' },
+  fitPreference: { en: 'fit preference', fr: 'préférence de coupe' },
+  fitFitted: { en: 'fitted', fr: 'ajusté' },
+  fitLoose: { en: 'loose', fr: 'ample' },
+  fitRegular: { en: 'regular', fr: 'régulier' },
+  yearsOld: { en: 'years old', fr: 'ans' },
+  sizeFinderLabel: { en: 'Size Finder', fr: 'Guide des tailles' },
+  oversizedTitle: { en: 'Oversized fit', fr: 'Coupe oversized' },
+  oversizedNote: { en: 'This piece is designed to sit loose. Your usual size gives the intended oversized fit — size up only for extra room.', fr: "Cette pièce est conçue pour tomber ample. Votre taille habituelle donne la coupe oversized prévue — une taille au-dessus seulement pour plus d'aisance." },
+  soldOutLine: { en: 'is currently sold out.', fr: 'est actuellement épuisée.' },
+  largestSize: { en: 'This is the largest size we carry for this piece.', fr: 'Il s\'agit de la plus grande taille disponible pour cette pièce.' },
+  soldOutBtn: { en: 'Sold out', fr: 'Épuisé' },
+  recommendedLength: { en: 'Recommended length', fr: 'Longueur recommandée' },
+  availableLengths: { en: 'Available lengths', fr: 'Longueurs disponibles' },
+  yourSize: { en: 'Your recommended size', fr: 'Votre taille recommandée' }
+};
+
+class Component extends DCLogic {
+  state = {
+    step: 0, gender: null,
+    heightUnit: 'cm', weightUnit: 'kg', heightVal: '', weightVal: '', sizeUnit: 'cm',
+    shoulder: null, torso: null, age: '',
+    fitSlider: 50,
+    privacyDismissed: false, addedToCart: false, result: null, productId: null,
+    productTitle: '', productFit: 'oversized', productGarment: 'other', productRunning: false, productMeasurements: null, productChart: null, productAudience: 'unisex', existingSizes: null, availSizes: null, lengths: [],
+    lang: 'en'
+  };
+
+  normSize(v) { return String(v == null ? '' : v).trim().toUpperCase().replace(/\s+/g, ''); }
+
+  // Everything the advice needs comes from Shopify: which sizes exist, which
+  // are in stock, which lengths (if any) the product carries, and how it fits.
+  loadProductSizes(handle) {
+    var self = this;
+    var query = '{ productByHandle(handle: "' + handle.replace(/"/g, '') + '") { title productType tags descriptionHtml options { name values } fit: metafield(namespace: "custom", key: "fit") { value } measurements: metafield(namespace: "custom", key: "measurements") { value } variants(first: 100) { nodes { availableForSale selectedOptions { name value } } } } }';
+    fetch('https://' + SHOPIFY_DOMAIN + '/api/2024-07/graphql.json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': SHOPIFY_TOKEN },
+      body: JSON.stringify({ query: query })
+    }).then(function (r) { return r.json(); }).then(function (json) {
+      var prod = ((json || {}).data || {}).productByHandle;
+      if (!prod) return;
+      var exists = {}, inStock = {};
+      (prod.variants && prod.variants.nodes || []).forEach(function (v) {
+        var opt = (v.selectedOptions || []).filter(function (o) { return /size|maat|taille/i.test(o.name || ''); })[0];
+        if (!opt || !opt.value) return;
+        var s = self.normSize(opt.value);
+        if (BLOCKED_SIZES.indexOf(s) !== -1) return;
+        exists[s] = true;
+        if (v.availableForSale) inStock[s] = true;
+      });
+      var order = function (map) {
+        return SIZES.filter(function (s) { return map[s]; })
+          .concat(Object.keys(map).filter(function (s) { return SIZES.indexOf(s) === -1; }));
+      };
+      // Lengths only exist if Shopify actually carries a length option.
+      var lengthOpt = (prod.options || []).filter(function (o) { return /length|lengte|longueur|inseam/i.test(o.name || ''); })[0];
+      var lengths = lengthOpt ? (lengthOpt.values || []).slice() : [];
+      var existing = order(exists);
+      self.setState({
+        productTitle: prod.title || '',
+        productFit: detectFit([prod.title, prod.productType, (prod.tags || []).join(' ')].join(' '), prod.fit && prod.fit.value),
+        productGarment: detectGarment([prod.title, prod.productType, (prod.tags || []).join(' ')].join(' ')),
+        productRunning: detectRunning([prod.title, prod.productType, (prod.tags || []).join(' ')].join(' '), prod.fit && prod.fit.value),
+        productMeasurements: parseMeasurements(prod.measurements && prod.measurements.value),
+        productChart: parseChartHtml(prod.descriptionHtml || ''),
+        productAudience: detectAudience([prod.title, prod.productType, (prod.tags || []).join(' ')].join(' ')),
+        existingSizes: existing.length ? existing : null,
+        availSizes: order(inStock),
+        lengths: lengths
+      }, function () {
+        if (self.state.result) self.setState({ result: self.calc() });
+      });
+    }).catch(function (e) { console.warn('N-CREASE: size finder could not read product sizes', e); });
+  }
+
+  // Advice is given over the sizes that EXIST for this product; stock is
+  // handled separately so a sold-out size is named, not silently skipped.
+  sizeList() {
+    var l = this.state.existingSizes;
+    return (l && l.length) ? l : SIZES;
+  }
+  isInStock(size) {
+    var a = this.state.availSizes;
+    if (!a || !a.length) return true;
+    return a.indexOf(this.normSize(size)) !== -1;
+  }
+  isOversized() { return ['oversized', 'relaxed'].indexOf(this.state.productFit) !== -1; }
+  // Per-size measurements for THIS product: its own metafield first, then the
+  // size chart published in its Shopify description. Never another garment's.
+  chartSizes() {
+    var mf = this.state.productMeasurements;
+    if (mf) return mf;
+    var c = this.state.productChart;
+    return c ? c.sizes : null;
+  }
+
+  getLang() { try { return sessionStorage.getItem('ncrease-lang') || 'en'; } catch (e) { return 'en'; } }
+  s(key) { return (STRINGS[key] || {})[this.state.lang] || (STRINGS[key] || {}).en || key; }
+
+  componentDidMount() {
+    this.setState({ sizeUnit: this.readSizeUnit() });
+    try {
+      var p = new URLSearchParams(window.location.search).get('p');
+      if (p) { this.setState({ productId: p }); this.loadProductSizes(p); }
+    } catch (e) {}
+    this.setState({ lang: this.getLang() });
+    var self = this;
+    this._onLang = function (e) {
+      var l = (e.detail && e.detail.lang) || self.getLang();
+      self.setState({ lang: l }, function () { if (self.state.result) self.setState({ result: self.calc() }); });
+    };
+    window.addEventListener('ncrease-lang-changed', this._onLang);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('ncrease-lang-changed', this._onLang);
+  }
+
+  goNext = () => {
+    var s = this.state.step;
+    if (s === 3 && this.props.skipAgeStep) { this.setState({ step: 5 }); return; }
+    this.setState({ step: Math.min(7, s + 1) });
+  };
+  goBack = () => {
+    var s = this.state.step;
+    // Always a way back: from the intro the arrow leaves the Fit Finder.
+    if (s <= 0) {
+      if (this.state.productId) { window.location.href = '/product?p=' + encodeURIComponent(this.state.productId); return; }
+      try { window.history.back(); } catch (e) {}
+      return;
+    }
+    if (s === 7) { this.setState({ step: 6 }); return; }
+    if (s === 5 && this.props.skipAgeStep) { this.setState({ step: 3 }); return; }
+    this.setState({ step: s - 1 });
+  };
+  dismissPrivacy = () => this.setState({ privacyDismissed: true });
+  setGenderMan = () => { this.setState({ gender: 'man' }); this.goNext(); };
+  setGenderVrouw = () => { this.setState({ gender: 'vrouw' }); this.goNext(); };
+  onHeightChange = (e) => this.setState({ heightVal: e.target.value });
+  onWeightChange = (e) => this.setState({ weightVal: e.target.value });
+  setHeightUnitCm = () => this.setState({ heightUnit: 'cm' });
+  setHeightUnitIn = () => this.setState({ heightUnit: 'in' });
+  setWeightUnitKg = () => this.setState({ weightUnit: 'kg' });
+  setWeightUnitLbs = () => this.setState({ weightUnit: 'lbs' });
+  setShoulderNarrow = () => { this.setState({ shoulder: 'narrow' }); this.goNext(); };
+  setShoulderAverage = () => { this.setState({ shoulder: 'average' }); this.goNext(); };
+  setShoulderWide = () => { this.setState({ shoulder: 'wide' }); this.goNext(); };
+  setTorsoSlim = () => { this.setState({ torso: 'slim' }); this.goNext(); };
+  setTorsoAverage = () => { this.setState({ torso: 'average' }); this.goNext(); };
+  setTorsoFuller = () => { this.setState({ torso: 'fuller' }); this.goNext(); };
+  onAgeChange = (e) => this.setState({ age: e.target.value });
+  skipAge = () => this.setState({ step: Math.min(7, this.state.step + 1) });
+  onFitSliderChange = (e) => this.setState({ fitSlider: parseInt(e.target.value, 10) });
+  editData = () => this.setState({ step: 1, addedToCart: false });
+  addToCart = () => this.setState({ addedToCart: true });
+
+  clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  // Garment measurements share one cm/inch preference with the product page.
+  sizeUnit() { return this.state.sizeUnit === 'in' ? 'in' : 'cm'; }
+
+  readSizeUnit() {
+    try { return localStorage.getItem('ncrease-size-unit') === 'in' ? 'in' : 'cm'; } catch (e) { return 'cm'; }
+  }
+
+  setSizeUnit(u) {
+    try { localStorage.setItem('ncrease-size-unit', u); } catch (e) {}
+    this.setState({ sizeUnit: u });
+  }
+
+  fmtMm(mm) {
+    if (!mm) return '—';
+    var unit = this.sizeUnit();
+    var v = unit === 'in' ? mm / 25.4 : mm / 10;
+    return (Math.round(v * 10) / 10).toString().replace('.', ',') + (unit === 'in' ? '"' : ' cm');
+  }
+
+  chartRowDisplay(row) {
+    if (!row) return { a: '', b: '', c: '' };
+    return { a: this.fmtMm(row.aMm), b: this.fmtMm(row.bMm), c: this.fmtMm(row.cMm) };
+  }
+
+  unitBtnStyle(active) {
+    return 'padding:4px 11px;font-family:inherit;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;border:0;cursor:pointer;'
+      + (active ? 'background:#0E0E0D;color:#F5F3EE;' : 'background:transparent;color:rgba(14,14,13,0.5);');
+  }
+
+  // Body chest girth (cm) from height, weight and build together — the two
+  // scales are multiplicative, so neither height nor weight can decide alone.
+  estimateChest(heightCm, weightKg, t) {
+    var refBmi = t.refWeight / Math.pow(t.refHeight / 100, 2);
+    var bmi = weightKg / Math.pow(heightCm / 100, 2);
+    var chest = t.refChest
+      * Math.pow(heightCm / t.refHeight, FIT.frameExp)
+      * Math.pow(Math.max(0.55, bmi / refBmi), FIT.bmiExp);
+    return chest + (FIT.shoulderCm[this.state.shoulder] || 0) + (FIT.torsoCm[this.state.torso] || 0);
+  }
+
+  // Measurements for the sizes this product really sells, in list order.
+  // Only ever this product's own numbers — a product without a chart gets no
+  // ladder at all rather than a stand-in table from another garment.
+  measureLadder(list) {
+    var src = this.chartSizes();
+    if (!src) return null;
+    var rows = [];
+    for (var i = 0; i < list.length; i++) {
+      var m = src[this.normSize(list[i])];
+      if (m && m.chest && m.length) rows.push({ index: i, chest: m.chest, length: m.length });
+    }
+    return rows.length >= 2 ? { rows: rows, kind: 'product' } : null;
+  }
+
+  // The measurement a chart carries at a fractional size index — the inverse
+  // of ladderIndex, used to read the chart at its anchor size.
+  valueAt(rows, key, index) {
+    var pts = rows.filter(function (r) { return isFinite(r[key]); });
+    if (!pts.length) return null;
+    if (pts.length === 1) return pts[0][key];
+    var slope = function (a, b) { return (b[key] - a[key]) / Math.max(0.5, b.index - a.index); };
+    if (index <= pts[0].index) return pts[0][key] + (index - pts[0].index) * slope(pts[0], pts[1]);
+    for (var i = 1; i < pts.length; i++) {
+      if (index <= pts[i].index) {
+        var f = (index - pts[i - 1].index) / Math.max(0.5, pts[i].index - pts[i - 1].index);
+        return pts[i - 1][key] + f * (pts[i][key] - pts[i - 1][key]);
+      }
+    }
+    var n = pts.length - 1;
+    return pts[n][key] + (index - pts[n].index) * slope(pts[n - 1], pts[n]);
+  }
+
+  // Position on a run of numeric size labels ("37-41", "42-46", "44"): the
+  // range that contains the value, or the nearest one to it.
+  rangeIndex(list, value) {
+    var best = null;
+    for (var i = 0; i < list.length; i++) {
+      var nums = String(list[i]).match(/\d+(?:[.,]\d+)?/g);
+      if (!nums) continue;
+      var lo = parseFloat(nums[0].replace(',', '.'));
+      var hi = parseFloat((nums[1] || nums[0]).replace(',', '.'));
+      if (value >= lo && value <= hi) return i;
+      var dist = value < lo ? lo - value : value - hi;
+      if (!best || dist < best.dist) best = { i: i, dist: dist };
+    }
+    return best ? best.i : Math.floor((list.length - 1) / 2);
+  }
+
+  // The size of THIS run the reference body is drafted into: the middle of the
+  // sizes the product actually sells, shifted by how the piece is cut. It is
+  // what turns a chart into a calibration — the chart's own numbers at that
+  // index define the ease and the length this garment is designed around.
+  anchorIndex(list, fit) {
+    var mi = list.indexOf('M');
+    if (mi === -1) mi = (list.length - 1) / 2;
+    return this.clamp(mi + (FIT.anchorShift[fit] || 0), 0, list.length - 1);
+  }
+
+  // Continuous position on a measurement ladder: where does the target sit
+  // between two real sizes? Interpolated (and extrapolated at the ends), so a
+  // few centimetres of body never flips a whole size on its own.
+  ladderIndex(rows, key, target) {
+    var pts = rows.filter(function (r) { return isFinite(r[key]); });
+    if (pts.length < 2) return null;
+    var slope = function (a, b) { return (b[key] - a[key]) / Math.max(0.5, b.index - a.index); };
+    if (target <= pts[0][key]) {
+      var s0 = slope(pts[0], pts[1]);
+      return pts[0].index + (s0 > 0 ? (target - pts[0][key]) / s0 : 0);
+    }
+    for (var i = 1; i < pts.length; i++) {
+      if (target <= pts[i][key]) {
+        var span = pts[i][key] - pts[i - 1][key];
+        var f = span > 0 ? (target - pts[i - 1][key]) / span : 0;
+        return pts[i - 1].index + f * (pts[i].index - pts[i - 1].index);
+      }
+    }
+    var last = pts[pts.length - 1], prev = pts[pts.length - 2];
+    var s1 = slope(prev, last);
+    return last.index + (s1 > 0 ? (target - last[key]) / s1 : 0);
+  }
+
+  calc() {
+    var st = this.state;
+    var heightCm = parseFloat(st.heightVal) || 0;
+    if (st.heightUnit === 'in') heightCm = heightCm * 2.54;
+    var weightKg = parseFloat(st.weightVal) || 0;
+    if (st.weightUnit === 'lbs') weightKg = weightKg * 0.453592;
+
+    // The shopper's body is estimated with their own gender model; the chart is
+    // calibrated on the body the garment was drafted for.
+    var t = st.gender === 'vrouw' ? SCORING.women : SCORING.men;
+    var draft = st.productAudience === 'women' ? SCORING.women : SCORING.men;
+    var fit = FIT.weights[st.productFit] ? st.productFit : 'regular';
+    var list = this.sizeList();
+    var top = list.length - 1;
+    var mid = list.indexOf('M');
+    if (mid === -1) mid = Math.floor(top / 2);
+
+    // Build enters as centimetres of girth inside estimateChest(), so nothing
+    // is added on top of the chart reading here.
+    var buildTerm = 0;
+    // -1 = more fitted · 0 = as designed · +1 = extra oversized
+    var intent = this.clamp(st.fitSlider / 100 - 0.5, -0.5, 0.5) * 2;
+
+    // Running Club tees carry no size chart, so they keep their own worn-fit
+    // calibration (see SCORING.runningAnchor).
+    var RA = SCORING.runningAnchor;
+    var useAnchor = !!st.productRunning && heightCm > 0 && weightKg > 0;
+    if (useAnchor) buildTerm = ((SCORING.shoulderModifier[st.shoulder] || 0) + (SCORING.torsoModifier[st.torso] || 0)) * RA.buildDamping;
+
+    // The product's own chart decides. Two demands are read off it: chest
+    // girth against its real chest widths, body length against its real
+    // garment lengths — both continuous, so a bigger body always moves.
+    var ladder = this.measureLadder(list);
+    var structural = null, usedMeasurements = false, intentEffect = 0, driver = null;
+    if (ladder && !useAnchor && heightCm > 0 && weightKg > 0) {
+      var rows = ladder.rows, self0 = this, w = FIT.weights[fit];
+      // This garment's design intent, taken from its own numbers at the anchor
+      // size: how much room it carries over the body, and how long it is meant
+      // to be. A cropped boxy hoodie and a long oversized tee therefore get
+      // completely different length expectations from the same body.
+      var anchor = this.anchorIndex(list, fit);
+      var easeCm = (this.valueAt(rows, 'chest', anchor) * 2 / 10) - draft.refChest;
+      var lengthRatio = this.valueAt(rows, 'length', anchor) / draft.refHeight;
+
+      var bodyChest = this.estimateChest(heightCm, weightKg, t);
+      var targetLenMm = heightCm * lengthRatio;
+      var first = rows[0].index, last = rows[rows.length - 1].index;
+      var lo = first - FIT.outsideCap, hi = last + FIT.outsideCap;
+      var soften = function (i) {
+        if (i < first) return first + (i - first) * FIT.outsideWeight;
+        if (i > last) return last + (i - last) * FIT.outsideWeight;
+        return i;
+      };
+      var place = function (chestCm) {
+        var ci = self0.ladderIndex(rows, 'chest', (chestCm + easeCm) * 10 / 2);
+        var li = self0.ladderIndex(rows, 'length', targetLenMm);
+        if (ci == null || li == null) return null;
+        ci = self0.clamp(soften(ci), lo, hi);
+        li = self0.clamp(soften(li), lo, hi);
+        // Length asking for a SMALLER size than girth does is damped: that
+        // length is intended by the cut, and the body still needs its room.
+        var ld = li < ci ? ci + (li - ci) * FIT.lengthDown[fit] : li;
+        return { score: ci * w.chest + ld * w.length, chest: ci, length: li };
+      };
+      var neutral = place(bodyChest);
+      var wanted = place(bodyChest + intent * FIT.intentEaseCm);
+      if (neutral) {
+        structural = neutral.score;
+        usedMeasurements = true;
+        driver = Math.abs(neutral.chest - neutral.length) < 0.5 ? 'both'
+          : (Math.abs(neutral.chest - neutral.score) <= Math.abs(neutral.length - neutral.score) ? 'chest' : 'length');
+        // Fit preference: never less than the asked-for nudge, never more than
+        // one size, always in the direction asked for.
+        var nudge = intent * FIT.intentMinSizes;
+        var combined = wanted ? wanted.score - neutral.score : nudge;
+        intentEffect = intent < 0 ? this.clamp(Math.min(combined, nudge), -FIT.intentMaxSizes, 0)
+          : intent > 0 ? this.clamp(Math.max(combined, nudge), 0, FIT.intentMaxSizes) : 0;
+      }
+    }
+    if (structural == null && useAnchor) {
+      var midW = RA.refWeightMid * Math.pow(heightCm / RA.refHeight, RA.heightWeightExponent);
+      var lenDemand = heightCm > RA.lengthBand[1] ? (heightCm - RA.lengthBand[1]) / RA.cmPerSizeTall
+        : heightCm < RA.lengthBand[0] ? (heightCm - RA.lengthBand[0]) / RA.cmPerSizeShort : 0;
+      lenDemand = this.clamp(lenDemand, -RA.lengthCap, RA.lengthCap);
+      structural = mid + (weightKg - midW) / RA.kgPerSize + lenDemand;
+      intentEffect = intent * SCORING.fitIntentSizes;
+    }
+    // Runs that are not garment sizes at all (socks are sold as shoe-size
+    // ranges) are read from their own labels and keyed off stature — chest
+    // girth says nothing about a foot.
+    var numericRun = list.length > 0 && list.every(function (s) { return /^\d/.test(String(s)); });
+    if (structural == null && numericRun) {
+      structural = heightCm > 0
+        ? this.rangeIndex(list, heightCm * (st.gender === 'vrouw' ? 0.235 : 0.248))
+        : mid;
+      intentEffect = 0;
+    }
+    if (structural == null) {
+      // No chart and no calibration for this product: its own run's middle,
+      // offset by the cut and by how far this body sits from the reference
+      // body (one nominal size per 8 cm of chest girth).
+      var bodyOnly = (heightCm > 0 && weightKg > 0) ? this.estimateChest(heightCm, weightKg, t) : t.refChest;
+      structural = mid + (SCORING.fitTypeModifier[fit] || 0) + (bodyOnly - t.refChest) / 8;
+      intentEffect = intent * SCORING.fitIntentSizes;
+    }
+
+    var rawScore = structural + buildTerm + intentEffect;
+    var finalScore = this.clamp(rawScore, 0, top);
+    var primaryIndex = Math.round(finalScore);
+    var frac = finalScore - primaryIndex;
+    // Confidence drops when the body sits past either end of the run, or when
+    // the product carries no chart — no fake 96% on a clamp or a guess.
+    var overshoot = Math.max(0, -rawScore, rawScore - top);
+    var primaryPct = Math.round(this.clamp(96 - Math.abs(frac) * 72 - Math.min(25, overshoot * 30) - (usedMeasurements ? 0 : 7), 45, 97));
+    var secondaryIndex = this.clamp(frac >= 0 ? primaryIndex + 1 : primaryIndex - 1, 0, top);
+    if (secondaryIndex === primaryIndex) secondaryIndex = this.clamp(primaryIndex - 1, 0, top);
+    // When the recommended size is sold out, the second-best is the closest
+    // size that can actually be bought.
+    if (!this.isInStock(list[primaryIndex])) {
+      for (var d = 1; d <= top; d++) {
+        var up = primaryIndex + d, down = primaryIndex - d;
+        var order = frac >= 0 ? [up, down] : [down, up];
+        var hit = order.filter(function (i) { return i >= 0 && i <= top; })
+          .filter(function (i) { return this.isInStock(list[i]); }, this)[0];
+        if (hit !== undefined) { secondaryIndex = hit; break; }
+      }
+    }
+    var secondaryPct = Math.max(8, Math.round((100 - primaryPct) * 0.6));
+
+    var parts = [];
+    if (st.productTitle) parts.push(st.productTitle);
+    parts.push(st.gender === 'vrouw' ? this.s('genderWoman') : this.s('genderMan'));
+    if (heightCm && weightKg) parts.push(Math.round(heightCm) + ' cm / ' + Math.round(weightKg) + ' kg');
+    if (st.shoulder) parts.push(this.s('shoulders') + ': ' + this.s('shoulder' + st.shoulder.charAt(0).toUpperCase() + st.shoulder.slice(1)));
+    if (st.torso) parts.push(this.s('torso') + ': ' + this.s('torso' + st.torso.charAt(0).toUpperCase() + st.torso.slice(1)));
+    parts.push(this.s('fitPreference') + ': ' + (st.fitSlider < 40 ? this.s('fitFitted') : st.fitSlider > 60 ? this.s('fitLoose') : this.s('fitRegular')));
+    if (st.age) parts.push(st.age + ' ' + this.s('yearsOld'));
+    if (usedMeasurements) {
+      parts.push(this.s('measuredWith'));
+      if (driver) parts.push(this.s(driver === 'chest' ? 'drivenChest' : driver === 'length' ? 'drivenLength' : 'drivenBoth'));
+    }
+
+    var primarySize = list[primaryIndex];
+    // Body asks for more than the size run offers (3XL is never an option).
+    var cappedAtTop = primaryIndex === top && rawScore > top + 0.25;
+    var primarySoldOut = !this.isInStock(primarySize);
+    // No substitute size is suggested: the right size stays the right size,
+    // it is simply marked sold out.
+    var alternative = null;
+
+    // Lengths are only ever taken from the product's own Shopify option.
+    var lengths = st.lengths || [];
+    var lengthRec = null;
+    if (lengths.length) {
+      lengthRec = lengths.filter(function (v) { return /regular|reg\b|medium/i.test(v); })[0] || lengths[Math.floor((lengths.length - 1) / 2)];
+    }
+
+    // Only ever this product's own numbers: its size chart as published on the
+    // product page, or its measurements metafield. Never a stand-in table.
+    var self = this;
+    var mf = st.productMeasurements;
+    var disp = st.productChart && st.productChart.display;
+    // Raw millimetres here; the shopper's cm/inch choice is applied at render.
+    var chartRow = function (size) {
+      var key = self.normSize(size);
+      if (disp && disp[key]) return { size: size, aMm: disp[key].aMm, bMm: disp[key].bMm, cMm: disp[key].cMm };
+      var m = mf && mf[key];
+      if (m && m.length && m.chest) return { size: size, aMm: m.length, bMm: m.chest, cMm: m.sleeve };
+      return null;
+    };
+
+    return {
+      primarySize: primarySize, primaryPct: primaryPct,
+      secondarySize: list[secondaryIndex], secondaryPct: secondaryPct,
+      primarySoldOut: primarySoldOut, alternative: alternative, cappedAtTop: cappedAtTop,
+      lengthRec: lengthRec, lengths: lengths,
+      explanation: parts.join(' · '),
+      primaryChart: chartRow(primarySize), secondaryChart: chartRow(list[secondaryIndex])
+    };
+  }
+
+  showResult = () => this.setState({ result: this.calc(), step: 7, addedToCart: false });
+
+  renderVals() {
+    var st = this.state;
+    var accent = this.props.accentColor || '#0A8F87';
+    var confColor = this.props.confidenceColor || '#5B8C6A';
+    var lightBorder = '1px solid rgba(14,14,13,0.15)';
+    var selBorder = '2px solid ' + accent;
+    var selBg = 'rgba(10, 143, 135,0.06)';
+    var res = st.result || { primarySize: '—', primaryPct: 0, secondarySize: '—', secondaryPct: 0, explanation: '', primaryChart: null, secondaryChart: null, primarySoldOut: false, alternative: null, cappedAtTop: false, lengthRec: null, lengths: [] };
+    var buySize = res.primarySize;
+    var productHref = st.productId ? ('/product?p=' + encodeURIComponent(st.productId)) : '';
+
+    return {
+      productKnown: !!st.productId,
+      hasChartData: !!(res.primaryChart && res.secondaryChart),
+      introEyebrow: st.productTitle ? (this.s('sizeFinderLabel') + ' — ' + st.productTitle) : this.s('sizeFinderLabel'),
+      T_introBody: this.s('introBody'), T_privacyNote: this.s('privacyNote'), T_startBtn: this.s('startBtn'),
+      T_step1Heading: this.s('step1Heading'), T_step1Sub: this.s('step1Sub'), T_manLabel: this.s('manLabel'), T_womanLabel: this.s('womanLabel'),
+      T_step2Heading: this.s('step2Heading'), T_step2Sub: this.s('step2Sub'), T_heightLabel: this.s('heightLabel'), T_weightLabel: this.s('weightLabel'), T_nextLabel: this.s('nextLabel'),
+      T_step3Heading: this.s('step3Heading'), T_step3Sub: this.s('step3Sub'), T_narrowLabel: this.s('narrowLabel'), T_averageLabel: this.s('averageLabel'), T_wideLabel: this.s('wideLabel'),
+      T_step4Heading: this.s('step4Heading'), T_step4Sub: this.s('step4Sub'), T_slimmerLabel: this.s('slimmerLabel'), T_fullerLabel: this.s('fullerLabel'),
+      T_step5Heading: this.s('step5Heading'), T_step5Sub: this.s('step5Sub'), T_agePlaceholder: this.s('agePlaceholder'), T_skipLabel: this.s('skipLabel'),
+      T_step6Heading: this.s('step6Heading'), T_step6Sub: this.s('step6Sub'), T_fittedLabel: this.s('fittedLabel'), T_looseLabel: this.s('looseLabel'), T_boxyNote: this.s('boxyNote'), T_showFitLabel: this.s('showFitLabel'),
+      T_yourBestFit: this.s('yourBestFit'), T_matchSuffix: this.s('matchSuffix'), T_notSurePrefix: this.s('notSurePrefix'), T_notSureSuffix: this.s('notSureSuffix'),
+      T_basedOn: this.s('basedOn'), T_garmentMeasurements: this.s('garmentMeasurements'), T_sizeWord: this.s('sizeWord'), T_editDetails: this.s('editDetails'), T_backToProduct: this.s('backToProduct'),
+      backToProductHref: productHref,
+      addToCartHref: productHref ? (productHref + '&size=' + encodeURIComponent(buySize)) : '/shop',
+      primaryChartRow: this.chartRowDisplay(res.primaryChart), secondaryChartRow: this.chartRowDisplay(res.secondaryChart),
+      unitCmStyle: this.unitBtnStyle(this.sizeUnit() === 'cm'),
+      unitInStyle: this.unitBtnStyle(this.sizeUnit() === 'in'),
+      setUnitCm: () => this.setSizeUnit('cm'),
+      setUnitIn: () => this.setSizeUnit('in'),
+      isStep0: st.step === 0, isStep1: st.step === 1, isStep2: st.step === 2, isStep3: st.step === 3,
+      isStep4: st.step === 4, isStep5: st.step === 5, isStep6: st.step === 6, isStep7: st.step === 7,
+      isBoxyProduct: this.isOversized(),
+      isOversizedProduct: this.isOversized(),
+      T_oversizedTitle: this.s('oversizedTitle'), T_oversizedNote: this.s('oversizedNote'),
+      primarySoldOut: !!res.primarySoldOut,
+      cappedAtTop: !!res.cappedAtTop, T_largestSize: this.s('largestSize'),
+      soldOutLine: res.primarySize + ' ' + this.s('soldOutLine'),
+      canBuy: !res.primarySoldOut,
+      T_soldOutBtn: this.s('soldOutBtn'),
+      hasLengthRec: !!res.lengthRec,
+      lengthRec: res.lengthRec || '',
+      lengthsLine: (res.lengths || []).join(' · '),
+      T_recommendedLength: this.s('recommendedLength'), T_availableLengths: this.s('availableLengths'),
+      showProgress: st.step >= 1 && st.step <= 6,
+      progressPct: Math.round((st.step / 6) * 100),
+      backBtnStyle: 'background:none;border:none;cursor:pointer;padding:8px;',
+      goBack: this.goBack, goNext: this.goNext,
+      showPrivacyNote: !st.privacyDismissed, dismissPrivacy: this.dismissPrivacy,
+
+      isFemale: st.gender === 'vrouw',
+      setGenderMan: this.setGenderMan, setGenderVrouw: this.setGenderVrouw,
+      genderManBorder: st.gender === 'man' ? selBorder : lightBorder,
+      genderManBg: st.gender === 'man' ? selBg : 'transparent',
+      genderVrouwBorder: st.gender === 'vrouw' ? selBorder : lightBorder,
+      genderVrouwBg: st.gender === 'vrouw' ? selBg : 'transparent',
+
+      heightVal: st.heightVal, weightVal: st.weightVal,
+      onHeightChange: this.onHeightChange, onWeightChange: this.onWeightChange,
+      heightPlaceholder: st.heightUnit === 'cm' ? 'e.g. 180' : 'e.g. 71',
+      weightPlaceholder: st.weightUnit === 'kg' ? 'e.g. 75' : 'e.g. 165',
+      setHeightUnitCm: this.setHeightUnitCm, setHeightUnitIn: this.setHeightUnitIn,
+      setWeightUnitKg: this.setWeightUnitKg, setWeightUnitLbs: this.setWeightUnitLbs,
+      heightCmBtnStyle: 'padding:14px 14px;font-size:12px;font-weight:600;cursor:pointer;border:' + (st.heightUnit === 'cm' ? 'none;background:#0E0E0D;color:#F5F3EE;' : '1px solid rgba(14,14,13,0.2);background:transparent;color:#0E0E0D;'),
+      heightInBtnStyle: 'padding:14px 14px;font-size:12px;font-weight:600;cursor:pointer;border-top:1px solid rgba(14,14,13,0.2);border-right:1px solid rgba(14,14,13,0.2);border-bottom:1px solid rgba(14,14,13,0.2);border-left:none;' + (st.heightUnit === 'in' ? 'background:#0E0E0D;color:#F5F3EE;' : 'background:transparent;color:#0E0E0D;'),
+      weightKgBtnStyle: 'padding:14px 14px;font-size:12px;font-weight:600;cursor:pointer;border:' + (st.weightUnit === 'kg' ? 'none;background:#0E0E0D;color:#F5F3EE;' : '1px solid rgba(14,14,13,0.2);background:transparent;color:#0E0E0D;'),
+      weightLbsBtnStyle: 'padding:14px 14px;font-size:12px;font-weight:600;cursor:pointer;border-top:1px solid rgba(14,14,13,0.2);border-right:1px solid rgba(14,14,13,0.2);border-bottom:1px solid rgba(14,14,13,0.2);border-left:none;' + (st.weightUnit === 'lbs' ? 'background:#0E0E0D;color:#F5F3EE;' : 'background:transparent;color:#0E0E0D;'),
+      hwInvalid: !(parseFloat(st.heightVal) > 0 && parseFloat(st.weightVal) > 0),
+      continueBtnStyle: 'padding:16px 24px;background:#0E0E0D;color:#F5F3EE;border:none;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;cursor:pointer;opacity:' + (parseFloat(st.heightVal) > 0 && parseFloat(st.weightVal) > 0 ? '1' : '0.35'),
+
+      setShoulderNarrow: this.setShoulderNarrow, setShoulderAverage: this.setShoulderAverage, setShoulderWide: this.setShoulderWide,
+      shoulderNarrowBorder: st.shoulder === 'narrow' ? selBorder : lightBorder, shoulderNarrowBg: st.shoulder === 'narrow' ? selBg : 'transparent',
+      shoulderAverageBorder: st.shoulder === 'average' ? selBorder : lightBorder, shoulderAverageBg: st.shoulder === 'average' ? selBg : 'transparent',
+      shoulderWideBorder: st.shoulder === 'wide' ? selBorder : lightBorder, shoulderWideBg: st.shoulder === 'wide' ? selBg : 'transparent',
+
+      setTorsoSlim: this.setTorsoSlim, setTorsoAverage: this.setTorsoAverage, setTorsoFuller: this.setTorsoFuller,
+      torsoSlimBorder: st.torso === 'slim' ? selBorder : lightBorder, torsoSlimBg: st.torso === 'slim' ? selBg : 'transparent',
+      torsoAverageBorder: st.torso === 'average' ? selBorder : lightBorder, torsoAverageBg: st.torso === 'average' ? selBg : 'transparent',
+      torsoFullerBorder: st.torso === 'fuller' ? selBorder : lightBorder, torsoFullerBg: st.torso === 'fuller' ? selBg : 'transparent',
+
+      age: st.age, onAgeChange: this.onAgeChange, skipAge: this.skipAge,
+
+      fitSlider: st.fitSlider, onFitSliderChange: this.onFitSliderChange,
+      showResult: this.showResult,
+
+      primarySize: res.primarySize, primaryPct: res.primaryPct,
+      secondarySize: res.secondarySize, secondaryPct: res.secondaryPct,
+      explanationText: res.explanation,
+      confidenceColor: confColor,
+      cartBtnLabel: (st.lang === 'fr' ? 'Choisir la taille ' : 'Pick size ') + buySize + (st.lang === 'fr' ? ' sur le produit' : ' on the product'),
+      editData: this.editData
+    };
+  }
+}
+</script>
+</body>
+</html>

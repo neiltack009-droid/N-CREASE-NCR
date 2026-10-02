@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @keyframes ncrease-ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) { .ncrease-ticker-track { animation: none !important; } }
+  </style>
+</helmet>
+<sc-if value="{{ showTicker }}" hint-placeholder-val="{{ true }}">
+  <div onClick="{{ goJoin }}" style="{{ tickerBarStyle }}">
+    <div class="ncrease-ticker-track" style="{{ tickerTrackStyle }}">
+      <span style="{{ tickerItemStyle }}">{{ tickerText }}<span style="{{ tickerArrowStyle }}">↓</span></span>
+      <span style="{{ tickerItemStyle }}">{{ tickerText }}<span style="{{ tickerArrowStyle }}">↓</span></span>
+      <span style="{{ tickerItemStyle }}">{{ tickerText }}<span style="{{ tickerArrowStyle }}">↓</span></span>
+      <span style="{{ tickerItemStyle }}">{{ tickerText }}<span style="{{ tickerArrowStyle }}">↓</span></span>
+      <span style="{{ tickerItemStyle }}">{{ tickerText }}<span style="{{ tickerArrowStyle }}">↓</span></span>
+      <span style="{{ tickerItemStyle }}">{{ tickerText }}<span style="{{ tickerArrowStyle }}">↓</span></span>
+      <span style="{{ tickerItemStyle }}">{{ tickerText }}<span style="{{ tickerArrowStyle }}">↓</span></span>
+      <span style="{{ tickerItemStyle }}">{{ tickerText }}<span style="{{ tickerArrowStyle }}">↓</span></span>
+    </div>
+  </div>
+</sc-if>
+<div ref="{{ ref_navHost }}" style="{{ navBarStyle }}">
+  <div style="{{ navInnerStyle }}">
+    <a href="/" style="{{ wordmarkStyle }}">N—CREASE</a>
+    <sc-if value="{{ isNarrow }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ toggleMobile }}" aria-label="Menu" style="{{ burgerStyle }}">{{ burgerGlyph }}</button>
+      <sc-if value="{{ mobileOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ mobilePanelStyle }}">
+          <sc-for list="{{ mobileLinks }}" as="m" hint-placeholder-count="8">
+            <a href="{{ m.href }}" target="{{ m.target }}" rel="noopener" style="{{ m.style }}">{{ m.label }}</a>
+          </sc-for>
+          <div style="{{ mobileLangRowStyle }}">
+            <button onClick="{{ setLangEn }}" style="{{ langEnStyle }}">EN</button>
+            <button onClick="{{ setLangFr }}" style="{{ langFrStyle }}">FR</button>
+          </div>
+        </div>
+      </sc-if>
+    </sc-if>
+    <div style="{{ linksRowStyle }}">
+      <a href="/shop?category=all" style="{{ shopStyle }}"><span>Shop</span></a>
+      <a href="/lookbook" style="{{ lookbookStyle }}"><span>Lookbook</span></a>
+      <a href="/becoming" style="{{ becomingStyle }}"><span>The Wall</span></a>
+      <a href="/about" style="{{ aboutStyle }}"><span>About</span></a>
+      <a href="/cart" style="{{ cartStyle }}">
+        <span>Cart</span>
+        <sc-if value="{{ hasCartCount }}" hint-placeholder-val="{{ false }}">
+          <span style="{{ cartBadgeStyle }}">{{ cartCount }}</span>
+        </sc-if>
+      </a>
+      <div style="{{ langSwitchStyle }}">
+        <button onClick="{{ setLangEn }}" style="{{ langEnStyle }}">EN</button>
+        <button onClick="{{ setLangFr }}" style="{{ langFrStyle }}">FR</button>
+      </div>
+    </div>
+  </div>
+</div></x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:90},&quot;active&quot;:{&quot;editor&quot;:null,&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;theme&quot;:{&quot;editor&quot;:null,&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;hideUntilScroll&quot;:{&quot;editor&quot;:null,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;chrome&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;glass&quot;,&quot;solid&quot;,&quot;line&quot;],&quot;default&quot;:&quot;glass&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Feel&quot;},&quot;motion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;slide&quot;,&quot;fade&quot;,&quot;none&quot;],&quot;default&quot;:&quot;slide&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Feel&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;editorial&quot;,&quot;compact&quot;],&quot;default&quot;:&quot;editorial&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Feel&quot;}}">
+class Component extends DCLogic {
+  state = { scrolled: false, cartCount: 0, lang: 'en', tickerHidden: false, shopOpen: false, narrow: false, mobileOpen: false };
+
+  // Shop categories live in one place; the Shop page reads the same slugs
+  // from ?category= so a nav link and a filter tab always agree.
+  CATS = [
+    { slug: 'all', en: 'Shop All', fr: 'Tout' },
+    { slug: 'tshirts', en: 'T-Shirts', fr: 'T-Shirts' },
+    { slug: 'hoodies', en: 'Hoodies', fr: 'Hoodies' },
+    { slug: 'accessories', en: 'Accessories', fr: 'Accessoires' },
+    { slug: 'running', en: 'Running', fr: 'Running' }
+  ];
+  SHOPIFY_DOMAIN = '1ymgaz-rp.myshopify.com';
+
+  toggleMobile(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    this.setState({ mobileOpen: !this.state.mobileOpen });
+  }
+  // The pointer has to cross a small gap to reach the menu, so closing waits
+  // a moment and any re-entry cancels it.
+  openShop() {
+    if (this._shopTimer) { clearTimeout(this._shopTimer); this._shopTimer = null; }
+    if (!this.state.shopOpen) this.setState({ shopOpen: true });
+  }
+  closeShop() {
+    var self = this;
+    if (this._shopTimer) clearTimeout(this._shopTimer);
+    this._shopTimer = setTimeout(function () {
+      self._shopTimer = null;
+      self.setState({ shopOpen: false });
+    }, 350);
+  }
+  toggleShop(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    this.setState({ shopOpen: !this.state.shopOpen });
+  }
+
+  // The ticker stays until the visitor closes it themselves — no timers, no
+  // popup. Whether someone already has the welcome code is Shopify's call.
+  // The ticker stays until the visitor closes it themselves.
+  tickerDismissed() {
+    try { return !!localStorage.getItem('ncrease-ticker-dismissed'); } catch (e) { return false; }
+  }
+  dismissTicker(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    try { localStorage.setItem('ncrease-ticker-dismissed', '1'); } catch (e2) {}
+    this.setState({ tickerHidden: true });
+  }
+  // Smooth scrolling is not honoured in every embedded view, so the jump is
+  // verified and hard-set if the page did not actually move.
+  scrollToY(y, elId) {
+    var target = Math.max(0, Math.round(y));
+    try { window.scrollTo({ top: target, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, target); }
+    setTimeout(function () {
+      var now = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var el = elId ? document.getElementById(elId) : null;
+      if (el) target = Math.max(0, Math.round(el.getBoundingClientRect().top + now - 90));
+      if (Math.abs(now - target) > 40) {
+        document.documentElement.scrollTop = target;
+        document.body.scrollTop = target;
+      }
+    }, 360);
+  }
+  goJoin() {
+    var t = document.getElementById('join');
+    if (t) {
+      this.scrollToY(t.getBoundingClientRect().top + (window.pageYOffset || 0) - 90, 'join');
+      try { history.replaceState(null, '', '#join'); } catch (e) {}
+      window.dispatchEvent(new CustomEvent('ncrease-focus-join'));
+    } else {
+      window.location.href = '/#join';
+    }
+  }
+
+  getLang() { try { return sessionStorage.getItem('ncrease-lang') || 'en'; } catch (e) { return 'en'; } }
+  setLang(lang) {
+    try { sessionStorage.setItem('ncrease-lang', lang); } catch (e) {}
+    this.setState({ lang: lang });
+    window.dispatchEvent(new CustomEvent('ncrease-lang-changed', { detail: { lang: lang } }));
+  }
+
+  componentDidMount() {
+    var self = this;
+    this.setState({ lang: this.getLang(), tickerHidden: this.tickerDismissed() });
+
+    // The full link row needs ~520px; below that the nav switches to a
+    // one-handed menu instead of overflowing sideways.
+    this._mq = window.matchMedia('(max-width: 620px)');
+    this._onMq = function () { self.setState({ narrow: self._mq.matches, mobileOpen: false, shopOpen: false }); };
+    this._onMq();
+    if (this._mq.addEventListener) this._mq.addEventListener('change', this._onMq);
+    else this._mq.addListener(this._onMq);
+    this._onDocDown = function (ev) {
+      if (!self.state.shopOpen && !self.state.mobileOpen) return;
+      var host = self._shopHost || document.querySelector('[data-shop-menu-host]');
+      var bar = self._navHost;
+      if (host && host.contains(ev.target)) return;
+      if (bar && bar.contains(ev.target)) return;
+      self.setState({ shopOpen: false, mobileOpen: false });
+    };
+    this._onKey = function (ev) { if (ev.key === 'Escape') self.setState({ shopOpen: false, mobileOpen: false }); };
+    document.addEventListener('pointerdown', this._onDocDown);
+    document.addEventListener('keydown', this._onKey);
+    this._onScroll = function () {
+      var y = window.scrollY || window.pageYOffset;
+      self.setState({ scrolled: y > 40 });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    this._onScroll();
+    try {
+      var c = parseInt(localStorage.getItem('ncrease-cart-count') || '0', 10);
+      this.setState({ cartCount: isNaN(c) ? 0 : c });
+    } catch (e) {}
+    this._onCartUpdate = function () {
+      try {
+        var c2 = parseInt(localStorage.getItem('ncrease-cart-count') || '0', 10);
+        self.setState({ cartCount: isNaN(c2) ? 0 : c2 });
+      } catch (e) {}
+    };
+    window.addEventListener('ncrease-cart-updated', this._onCartUpdate);
+    // Keeps the badge honest when the bag changes in another tab (or after
+    // returning from Shopify Checkout).
+    this._onStorage = function (e) { if (!e || e.key === 'ncrease-cart-count') self._onCartUpdate(); };
+    window.addEventListener('storage', this._onStorage);
+    this._onVisible = function () { if (document.visibilityState === 'visible') self._onCartUpdate(); };
+    document.addEventListener('visibilitychange', this._onVisible);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('ncrease-cart-updated', this._onCartUpdate);
+    window.removeEventListener('storage', this._onStorage);
+    document.removeEventListener('visibilitychange', this._onVisible);
+    document.removeEventListener('pointerdown', this._onDocDown);
+    document.removeEventListener('keydown', this._onKey);
+    if (this._mq) {
+      if (this._mq.removeEventListener) this._mq.removeEventListener('change', this._onMq);
+      else this._mq.removeListener(this._onMq);
+    }
+  }
+
+  density() { return this.props.density || 'editorial'; }
+  chrome() { return this.props.chrome || 'glass'; }
+  motion() { return this.props.motion || 'slide'; }
+
+  linkStyle(key) {
+    var theme = this.props.theme || 'light';
+    var isActive = this.props.active === key;
+    var d = this.density();
+    return {
+      fontFamily: 'Inter, sans-serif',
+      fontSize: '12px',
+      letterSpacing: d === 'compact' ? '0.04em' : '0.16em',
+      textTransform: d === 'compact' ? 'none' : 'uppercase',
+      fontWeight: 600,
+      textDecoration: 'none',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      opacity: 1,
+      paddingBottom: '4px',
+      borderBottom: isActive ? '1px solid #0A8F87' : '1px solid transparent',
+      color: isActive ? '#0A8F87' : (theme === 'dark' ? '#F5F3EE' : '#0E0E0D'),
+      transition: 'border-color 0.4s ease'
+    };
+  }
+
+  renderVals() {
+    var self = this;
+    var theme = this.props.theme || 'light';
+    var hideUntilScroll = !!this.props.hideUntilScroll;
+    var motion = this.motion();
+    var chrome = this.chrome();
+    var d = this.density();
+    var scrolled = this.state.scrolled;
+    var revealed = motion === 'none' ? true : (hideUntilScroll ? scrolled : true);
+
+    var transformOff = motion === 'slide' ? 'translateY(-16px)' : 'none';
+    var transition = motion === 'fade'
+      ? 'opacity 0.9s ease, background 0.6s ease, border-color 0.6s ease'
+      : motion === 'none'
+        ? 'background 0.6s ease, border-color 0.6s ease'
+        : 'all 0.6s cubic-bezier(.19,1,.22,1)';
+
+    var background, backdrop, borderBottom;
+    if (chrome === 'solid') {
+      background = theme === 'dark' ? '#0E0E0D' : '#F5F3EE';
+      backdrop = 'none';
+      borderBottom = '1px solid transparent';
+    } else if (chrome === 'line') {
+      background = 'transparent';
+      backdrop = 'none';
+      borderBottom = '1px solid ' + (theme === 'dark' ? 'rgba(245,243,238,0.3)' : 'rgba(14,14,13,0.15)');
+    } else {
+      background = theme === 'dark'
+        ? (scrolled ? 'rgba(14,14,13,0.94)' : 'transparent')
+        : (scrolled ? 'rgba(245,243,238,0.95)' : 'rgba(245,243,238,0.88)');
+      backdrop = 'blur(14px)';
+      borderBottom = theme === 'light' ? '1px solid rgba(14,14,13,0.08)' : '1px solid transparent';
+    }
+
+    var navBarStyle = {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 1000,
+      height: '84px',
+      opacity: revealed ? 1 : 0,
+      transform: revealed ? 'translateY(0)' : transformOff,
+      pointerEvents: revealed ? 'auto' : 'none',
+      background: background,
+      backdropFilter: backdrop,
+      WebkitBackdropFilter: backdrop,
+      borderBottom: borderBottom,
+      transition: transition
+    };
+
+    // The welcome-discount bar belongs to the homepage only.
+    var showTicker = !this.state.tickerHidden && this.props.active === 'home';
+    var TICKER_H = 30;
+
+    var navInnerStyle = {
+      marginTop: showTicker ? TICKER_H + 'px' : 0,
+      height: showTicker ? 'calc(100% - ' + TICKER_H + 'px)' : '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '0 clamp(16px, 4vw, 56px)'
+    };
+
+    var wordmarkStyle = {
+      fontFamily: 'Anton, sans-serif',
+      fontStyle: 'italic',
+      fontSize: d === 'compact' ? '15px' : '16px',
+      letterSpacing: d === 'compact' ? '0.08em' : '0.3em',
+      textTransform: 'uppercase',
+      textDecoration: 'none',
+      color: theme === 'dark' ? '#F5F3EE' : '#0E0E0D'
+    };
+
+    var narrow = this.state.narrow;
+    var linksRowStyle = {
+      display: narrow ? 'none' : 'flex',
+      alignItems: 'center',
+      gap: d === 'compact' ? 'clamp(12px, 2vw, 22px)' : 'clamp(14px, 2.6vw, 40px)',
+      minWidth: 0
+    };
+
+    var cartBadgeStyle = {
+      background: '#0A8F87',
+      color: '#0E0E0D',
+      fontSize: '10px',
+      fontWeight: 700,
+      borderRadius: '50%',
+      width: '16px',
+      height: '16px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    };
+
+    return {
+      showTicker: showTicker,
+      tickerText: this.state.lang === 'fr'
+        ? '10 % sur votre première commande — rejoignez le mouvement'
+        : '10% off your first order — join the journey',
+      tickerArrowStyle: { color: '#F5F3EE', fontWeight: 700, marginLeft: '-13px', flex: '0 0 auto' },
+      goJoin: function () { self.goJoin(); },
+      dismissTicker: function (e) { self.dismissTicker(e); },
+      // On the homepage the first view is the hero alone: the bar rides in with
+      // the sticky header on the first scroll. The 30px is reserved either way,
+      // so nothing shifts when it appears.
+      tickerBarStyle: {
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1001,
+        height: TICKER_H + 'px', overflow: 'hidden', display: 'flex', alignItems: 'center',
+        background: '#0A8F87', cursor: 'pointer',
+        opacity: revealed ? 1 : 0,
+        transform: revealed ? 'translateY(0)' : transformOff,
+        pointerEvents: revealed ? 'auto' : 'none',
+        transition: transition
+      },
+      tickerTrackStyle: {
+        display: 'flex', alignItems: 'center', width: 'max-content',
+        animation: 'ncrease-ticker 44s linear infinite'
+      },
+      tickerItemStyle: {
+        display: 'inline-flex', alignItems: 'center', gap: '20px', padding: '0 20px',
+        fontFamily: 'Inter, sans-serif', fontSize: '10px', letterSpacing: '0.22em',
+        textTransform: 'uppercase', fontWeight: 700, color: '#F5F3EE', whiteSpace: 'nowrap'
+      },
+      tickerDotStyle: { width: '5px', height: '5px', background: '#000000', display: 'inline-block', flex: '0 0 auto' },
+      tickerCloseStyle: {
+        position: 'absolute', right: 0, top: 0, height: TICKER_H + 'px', padding: '0 14px 0 22px',
+        border: 'none', background: 'linear-gradient(to right, rgba(10, 143, 135,0), #0A8F87 40%)',
+        color: 'rgba(245,243,238,0.75)', fontSize: '15px', lineHeight: 1, cursor: 'pointer'
+      },
+      shopOpen: this.state.shopOpen,
+      ref_shopHost: function (el) { self._shopHost = el; },
+      ref_navHost: function (el) { self._navHost = el; },
+      isNarrow: narrow,
+      mobileOpen: this.state.mobileOpen,
+      toggleMobile: function (e) { self.toggleMobile(e); },
+      burgerGlyph: this.state.mobileOpen ? '✕' : '☰',
+      burgerStyle: {
+        background: 'none', border: 'none', cursor: 'pointer', minWidth: '44px', minHeight: '44px',
+        display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: 0,
+        fontSize: '17px', lineHeight: 1, color: theme === 'dark' ? '#F5F3EE' : '#0E0E0D'
+      },
+      mobilePanelStyle: {
+        position: 'absolute', top: '100%', left: 0, right: 0,
+        display: 'flex', flexDirection: 'column',
+        background: theme === 'dark' ? '#0E0E0D' : '#F5F3EE',
+        borderTop: '1px solid ' + (theme === 'dark' ? 'rgba(245,243,238,0.14)' : 'rgba(14,14,13,0.1)'),
+        padding: '10px 0 16px', boxShadow: '0 22px 48px rgba(0,0,0,0.32)', zIndex: 1002
+      },
+      mobileLangRowStyle: {
+        display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 24px 0', marginTop: '8px',
+        borderTop: '1px solid ' + (theme === 'dark' ? 'rgba(245,243,238,0.12)' : 'rgba(14,14,13,0.1)')
+      },
+      mobileLinks: (function () {
+        var base = {
+          display: 'flex', alignItems: 'center', minHeight: '48px', padding: '0 24px',
+          fontFamily: 'Inter, sans-serif', fontSize: '12.5px', letterSpacing: '0.16em',
+          textTransform: 'uppercase', fontWeight: 600, textDecoration: 'none',
+          color: theme === 'dark' ? '#F5F3EE' : '#0E0E0D'
+        };
+        var sub = Object.assign({}, base, {
+          paddingLeft: '40px', fontSize: '11.5px', minHeight: '46px',
+          color: theme === 'dark' ? 'rgba(245,243,238,0.7)' : 'rgba(14,14,13,0.65)'
+        });
+        var items = [{ label: self.state.lang === 'fr' ? 'Boutique' : 'Shop', href: '/shop', style: base, target: '_self' }];
+        items.push({ label: 'Lookbook', href: '/lookbook', style: base, target: '_self' });
+        items.push({ label: 'The Wall', href: '/becoming', style: base, target: '_self' });
+        items.push({ label: self.state.lang === 'fr' ? 'À propos' : 'About', href: '/about', style: base, target: '_self' });
+        items.push({ label: (self.state.lang === 'fr' ? 'Panier' : 'Cart') + (self.state.cartCount > 0 ? ' (' + self.state.cartCount + ')' : ''), href: '/cart', style: base, target: '_self' });
+        return items;
+      })(),
+      openShop: function () { self.openShop(); },
+      closeShop: function () { self.closeShop(); },
+      toggleShop: function (e) { self.toggleShop(e); },
+      shopWrapStyle: { position: 'relative', display: 'flex', alignItems: 'center' },
+      // The account lives on this site now and speaks to Shopify's customer API
+      // directly, so it no longer has to leave the page.
+      accountUrl: '/account',
+      accountStyle: this.linkStyle('account'),
+      T_account: this.state.lang === 'fr' ? 'Compte' : 'Account',
+      shopMenuStyle: {
+        position: 'absolute', top: 'calc(100% + 6px)', left: '-18px', minWidth: '190px',
+        display: 'flex', flexDirection: 'column',
+        background: theme === 'dark' ? '#0E0E0D' : '#F5F3EE',
+        border: '1px solid ' + (theme === 'dark' ? 'rgba(245,243,238,0.16)' : 'rgba(14,14,13,0.12)'),
+        padding: '8px 0', zIndex: 1002,
+        boxShadow: '0 18px 44px rgba(0,0,0,0.28)'
+      },
+      shopCats: this.CATS.map(function (c) {
+        return {
+          slug: c.slug,
+          label: self.state.lang === 'fr' ? c.fr : c.en,
+          href: '/shop?category=' + c.slug,
+          style: {
+            display: 'flex', alignItems: 'center', minHeight: '44px', padding: '0 22px',
+            fontFamily: 'Inter, sans-serif', fontSize: '11.5px', letterSpacing: '0.16em',
+            textTransform: 'uppercase', fontWeight: 600, textDecoration: 'none',
+            color: theme === 'dark' ? 'rgba(245,243,238,0.82)' : 'rgba(14,14,13,0.8)',
+            whiteSpace: 'nowrap'
+          }
+        };
+      }),
+      navBarStyle: navBarStyle,
+      navInnerStyle: navInnerStyle,
+      wordmarkStyle: wordmarkStyle,
+      linksRowStyle: linksRowStyle,
+      shopStyle: this.linkStyle('shop'),
+      lookbookStyle: this.linkStyle('lookbook'),
+      becomingStyle: this.linkStyle('becoming'),
+      aboutStyle: this.linkStyle('about'),
+      cartStyle: this.linkStyle('cart'),
+      cartBadgeStyle: cartBadgeStyle,
+      hasCartCount: this.state.cartCount > 0,
+      cartCount: this.state.cartCount,
+      langSwitchStyle: { display: 'flex', alignItems: 'center', gap: '2px', marginLeft: d === 'compact' ? '2px' : '4px', borderLeft: '1px solid ' + (theme === 'dark' ? 'rgba(245,243,238,0.25)' : 'rgba(14,14,13,0.15)'), paddingLeft: d === 'compact' ? 'clamp(10px, 1.6vw, 16px)' : 'clamp(12px, 2vw, 24px)' },
+      setLangEn: function () { self.setLang('en'); },
+      setLangFr: function () { self.setLang('fr'); },
+      langEnStyle: { background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif', fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', padding: '4px 4px', color: this.state.lang === 'en' ? '#0A8F87' : (theme === 'dark' ? 'rgba(245,243,238,0.55)' : 'rgba(14,14,13,0.45)') },
+      langFrStyle: { background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Inter, sans-serif', fontSize: '11px', fontWeight: 700, letterSpacing: '0.06em', padding: '4px 4px', color: this.state.lang === 'fr' ? '#0A8F87' : (theme === 'dark' ? 'rgba(245,243,238,0.55)' : 'rgba(14,14,13,0.45)') }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <title>About — N-CREASE | Where You Become More</title>
+  <meta name="description" content="N-CREASE is a Belgian streetwear label built on the belief that growth is quiet. Discover the philosophy behind the brand.">
+  <meta name="keywords" content="N-CREASE about, brand philosophy, Belgian streetwear label">
+  <link rel="canonical" href="https://n-crease.com/about">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="About N-CREASE">
+  <meta property="og:description" content="Where you become more.">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"AboutPage","name":"About N-CREASE"}</script>
+  <style>
+    @media (pointer:coarse){image-slot{pointer-events:none;}}
+    html,body{margin:0;background:#F5F3EE;color:#0E0E0D;font-family:'Inter',sans-serif;overflow-x:hidden;max-width:100%;}
+    *{box-sizing:border-box;}
+    a{color:#0E0E0D;text-decoration:none;}
+    a:hover{color:#0E0E0D;}
+  </style>
+</helmet>
+<dc-import name="Nav" active="about" theme="dark" chrome="solid" hint-size="100%,84px"></dc-import>
+
+<section data-screen-label="Philosophy" style="padding:200px 24px 110px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:34px;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="width:6px;height:6px;background:#0A8F87;"></div>
+    <div style="font-size:11px;letter-spacing:0.3em;color:#0E0E0D;text-transform:uppercase;font-weight:600;">{{ T_philosophy }}</div>
+  </div>
+  <h1 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:clamp(36px,6vw,76px);margin:0;line-height:1.05;max-width:900px;">Where you become more.</h1>
+</section>
+
+<section data-screen-label="Story" style="padding:104px 24px;display:flex;justify-content:center;">
+  <div style="width:100%;max-width:1060px;display:flex;flex-direction:column;">
+    <div style="display:flex;flex-wrap:wrap;gap:32px 56px;padding:34px 0;border-top:1px solid rgba(14,14,13,0.14);">
+      <div style="flex:0 0 190px;display:flex;flex-direction:column;gap:12px;">
+        <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:15px;letter-spacing:0.1em;color:#0A8F87;">01</div>
+        <div style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;font-weight:600;color:rgba(14,14,13,0.55);">{{ T_s1Label }}</div>
+      </div>
+      <p style="flex:1 1 420px;margin:0;font-size:17px;line-height:1.85;color:rgba(14,14,13,0.72);max-width:620px;text-wrap:pretty;">{{ T_s1Body }}</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:32px 56px;padding:34px 0;border-top:1px solid rgba(14,14,13,0.14);">
+      <div style="flex:0 0 190px;display:flex;flex-direction:column;gap:12px;">
+        <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:15px;letter-spacing:0.1em;color:#0A8F87;">02</div>
+        <div style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;font-weight:600;color:rgba(14,14,13,0.55);">{{ T_s2Label }}</div>
+      </div>
+      <p style="flex:1 1 420px;margin:0;font-size:17px;line-height:1.85;color:rgba(14,14,13,0.72);max-width:620px;text-wrap:pretty;">{{ T_s2Body }}</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:32px 56px;padding:34px 0;border-top:1px solid rgba(14,14,13,0.14);border-bottom:1px solid rgba(14,14,13,0.14);">
+      <div style="flex:0 0 190px;display:flex;flex-direction:column;gap:12px;">
+        <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:15px;letter-spacing:0.1em;color:#0A8F87;">03</div>
+        <div style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;font-weight:600;color:rgba(14,14,13,0.55);">{{ T_s3Label }}</div>
+      </div>
+      <p style="flex:1 1 420px;margin:0;font-size:17px;line-height:1.85;color:rgba(14,14,13,0.72);max-width:620px;text-wrap:pretty;">{{ T_s3Body }}</p>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Motto" style="background:#0E0E0D;color:#F5F3EE;padding:112px 24px;min-height:calc(100vh - 84px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:32px;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="width:6px;height:6px;background:#0A8F87;"></div>
+    <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;font-weight:600;color:rgba(245,243,238,0.55);">{{ T_mottoLabel }}</div>
+  </div>
+  <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:clamp(44px,8.6vw,136px);margin:0;line-height:1.02;max-width:1500px;text-wrap:balance;">{{ T_motto }}</h2>
+</section>
+
+<section data-screen-label="Running Club" style="padding:110px 24px 72px;display:flex;justify-content:center;">
+  <div style="width:100%;max-width:1160px;display:flex;flex-direction:column;gap:44px;">
+    <div style="display:flex;flex-wrap:wrap;gap:36px 64px;">
+      <div style="flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:20px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:6px;height:6px;background:#0A8F87;"></div>
+          <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;font-weight:600;color:rgba(14,14,13,0.55);">{{ T_runLabel }}</div>
+        </div>
+        <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:clamp(34px,5vw,64px);margin:0;line-height:1.05;">{{ T_runTitle }}</h2>
+      </div>
+      <div style="flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:20px;padding-top:6px;">
+        <p style="margin:0;font-size:17px;line-height:1.85;color:rgba(14,14,13,0.72);text-wrap:pretty;">{{ T_runBody }}</p>
+        <p style="margin:0;font-size:17px;line-height:1.85;color:rgba(14,14,13,0.72);text-wrap:pretty;">{{ T_runBody2 }}</p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;border-top:1px solid rgba(14,14,13,0.14);border-bottom:1px solid rgba(14,14,13,0.14);">
+      <div style="flex:1 1 220px;display:flex;flex-direction:column;gap:8px;padding:20px 24px 20px 0;">
+        <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:600;color:rgba(14,14,13,0.45);">{{ T_runWhenLabel }}</div>
+        <div style="font-size:17px;font-weight:600;">{{ T_runWhen }}</div>
+      </div>
+      <div style="flex:1 1 220px;display:flex;flex-direction:column;gap:8px;padding:20px 24px;border-left:1px solid rgba(14,14,13,0.14);">
+        <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:600;color:rgba(14,14,13,0.45);">{{ T_runTimeLabel }}</div>
+        <div style="font-size:17px;font-weight:600;">17:30</div>
+      </div>
+      <div style="flex:1 1 220px;display:flex;flex-direction:column;gap:8px;padding:20px 24px;border-left:1px solid rgba(14,14,13,0.14);">
+        <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:600;color:rgba(14,14,13,0.45);">{{ T_runWhereLabel }}</div>
+        <div style="font-size:17px;font-weight:600;">Ladeuzeplein, Leuven</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section data-screen-label="Running Club Image" style="width:100%;aspect-ratio:16 / 9;position:relative;overflow:hidden;background:#EAE7DF;">
+  <image-slot id="about-run-hr" fit="cover" src="img/run-club.webp" placeholder="Tuesday evening run, Ladeuzeplein"></image-slot>
+</section>
+
+<section data-screen-label="Closing" style="padding:100px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;">
+  <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:clamp(34px,5.5vw,68px);margin:0;">Keep becoming.</h2>
+</section>
+
+<footer data-screen-label="Footer" style="background:#0E0E0D;color:rgba(245,243,238,0.7);padding:64px 24px 28px;border-top:1px solid rgba(245,243,238,0.12);">
+  <div style="max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px;padding-bottom:48px;">
+    <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:18px;letter-spacing:0.3em;color:#F5F3EE;text-transform:uppercase;">N—CREASE</div>
+    <div style="display:flex;gap:48px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <a href="/" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Home</a>
+        <a href="/shop" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Shop</a>
+        <a href="/lookbook" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Lookbook</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <a href="#" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Instagram</a>
+        <a href="mailto:hello@n-crease.com" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Contact</a>
+        <a href="/legal" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Legal</a>
+        <a href="/account" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Account</a>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 28px;padding-top:24px;border-top:1px solid rgba(245,243,238,0.12);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,243,238,0.4);">
+    <div>N—CREASE</div>
+  </div>
+</footer>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1600, &quot;height&quot;: 2600}}">
+class Component extends DCLogic {
+  state = { lang: 'en' };
+  STRINGS = {
+    philosophy: { en: 'Philosophy', fr: 'Philosophie' },
+    philosophyBody: { en: 'N-CREASE is not a clothing brand in the traditional sense. It is a quiet belief that growth happens in the everyday — in the mile run before sunrise, the deadline met, the promise kept to yourself. We design for consistency, not perfection. For movement, not noise. Every piece is made to disappear into your routine, so the only thing that stands out is your progress.',
+      fr: 'N-CREASE n’est pas une marque de vêtements au sens traditionnel. C’est une conviction discrète que la croissance se construit au quotidien — dans le kilomètre couru avant le lever du soleil, l’échéance respectée, la promesse tenue envers soi-même. Nous conçevons pour la constance, pas la perfection. Pour le mouvement, pas le bruit. Chaque pièce est faite pour disparaître dans votre routine, afin que seul votre progrès se remarque.' }
+,
+    s1Label: { en: 'Where it started', fr: 'Le point de départ' },
+    s1Body: {
+      en: 'It began with a dream — to build something that leaves a mark. I knew early on that I wanted to make something meaningful: something that gives people a reason to keep going, and a bit of joy while they do. That is why N-CREASE exists. Not to sell clothes, but to make progress worth wearing.',
+      fr: 'Tout a commencé par un rêve — construire quelque chose qui laisse une trace. J’ai su très tôt que je voulais créer quelque chose qui ait du sens : quelque chose qui donne une raison de continuer, et un peu de joie en chemin. C’est pour cela que N-CREASE existe. Pas pour vendre des vêtements, mais pour rendre le progrès digne d’être porté.'
+    },
+    s2Label: { en: 'Made responsibly', fr: 'Fabriqué de façon responsable' },
+    s2Body: {
+      en: 'Clothing should be more than style. Ours is built to survive the wash, the season and the year — high quality, made sustainably. Looking good and doing good are not opposites. They are the same discipline, applied twice.',
+      fr: 'Un vêtement doit être plus qu’un style. Le nôtre est fait pour survivre au lavage, à la saison et à l’année — de haute qualité, produit durablement. Bien paraître et bien agir ne s’opposent pas. C’est la même discipline, appliquée deux fois.'
+    },
+    s3Label: { en: 'Beyond the clothes', fr: 'Au-delà du vêtement' },
+    s3Body: {
+      en: 'As we grow, the mission grows with us. We back causes that matter and give part of what we build back to the world. Step by step — the only way anything real ever gets done.',
+      fr: 'À mesure que nous grandissons, la mission grandit avec nous. Nous soutenons des causes qui comptent et redonnons une part de ce que nous construisons. Étape par étape — la seule façon de faire quelque chose de réel.'
+    },
+    mottoLabel: { en: 'The short version', fr: 'En résumé' },
+    motto: {
+      en: 'Increase your style, reduce your footprint.',
+      fr: 'Augmentez votre style, réduisez votre empreinte.'
+    },
+    runLabel: { en: 'Running club — Leuven', fr: 'Club de course — Louvain' },
+    runTitle: { en: 'Tuesdays. Run, laugh, socialize.', fr: 'Le mardi. Courir, rire, se retrouver.' },
+    runBody: {
+      en: 'Every Tuesday at 17:30 we set off from Ladeuzeplein, for anyone who wants to end the day a step further. Experienced or lacing up for the first time — the pace adapts to whoever shows up.',
+      fr: 'Chaque mardi à 17h30, départ de la Ladeuzeplein, pour qui veut finir la journée un pas plus loin. Coureur confirmé ou tout premier départ — le rythme s’adapte à ceux qui viennent.'
+    },
+    runBody2: {
+      en: 'Good music, better conversation, and a city winding down after the day. Come along, and be a little further than you were yesterday.',
+      fr: 'De la bonne musique, de meilleures conversations, et une ville qui ralentit après la journée. Venez, et soyez un peu plus loin qu’hier.'
+    },
+    runWhenLabel: { en: 'When', fr: 'Quand' },
+    runWhen: { en: 'Every Tuesday', fr: 'Chaque mardi' },
+    runTimeLabel: { en: 'Start', fr: 'Départ' },
+    runWhereLabel: { en: 'Meeting point', fr: 'Point de rendez-vous' },
+    credit: { en: 'Web — Neil Tack', fr: 'Web — Neil Tack' }
+  };
+  getLang() { try { return sessionStorage.getItem('ncrease-lang') || 'en'; } catch (e) { return 'en'; } }
+  s(key) { return (this.STRINGS[key] || {})[this.state.lang] || (this.STRINGS[key] || {}).en || key; }
+  componentDidMount() {
+    var self = this;
+    this.setState({ lang: this.getLang() });
+    this._onLang = function (e) { self.setState({ lang: (e.detail && e.detail.lang) || self.getLang() }); };
+    window.addEventListener('ncrease-lang-changed', this._onLang);
+  }
+  componentWillUnmount() { window.removeEventListener('ncrease-lang-changed', this._onLang); }
+  renderVals() {
+    var self = this, out = {};
+    Object.keys(this.STRINGS).forEach(function (k) { out['T_' + k] = self.s(k); });
+    return out;
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="ext-resource-dependency" content="./image-slots.state.json" data-resource-id="imageSlotsState">
+<script src="./support.js"></script>
+</head>
+<body>
+<template id="__bundler_thumbnail" data-bg-color="#0E0E0D">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%"><rect width="100" height="100" fill="#0E0E0D"></rect><text x="50" y="52" text-anchor="middle" dominant-baseline="central" font-family="Impact, Haettenschweiler, sans-serif" font-style="italic" font-size="30" fill="#F5F3EE">N—C</text></svg>
+</template>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <script src="https://sdks.shopifycdn.com/js-buy-sdk/v3/latest/index.umd.min.js" async=""></script>
+  <title>Shop — N-CREASE | Atomic Tee</title>
+  <meta name="description" content="Shop N-CREASE: the Atomic Tee, in every colorway. Minimalist streetwear designed in Belgium.">
+  <meta name="keywords" content="N-CREASE shop, atomic tee, minimalist streetwear">
+  <link rel="canonical" href="https://n-crease.com/shop">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Shop N-CREASE">
+  <meta property="og:description" content="The Atomic Tee, in every colorway.">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"N-CREASE Shop"}</script>
+  <style>
+    html,body{margin:0;background:#FFFFFF;color:#0E0E0D;font-family:'Inter',sans-serif;overflow-x:hidden;max-width:100%;}
+    *{box-sizing:border-box;}
+    a{color:#0E0E0D;text-decoration:none;}
+    a:hover{color:#0E0E0D;}
+    @keyframes shopPulse{0%{opacity:0.5;}50%{opacity:1;}100%{opacity:0.5;}}
+    image-slot::part(frame){background:#F2F2F2;}
+    @media (max-width:1024px){[data-shop-grid]{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}}
+    @media (max-width:760px){[data-shop-grid]{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:24px 12px !important;}[data-shop-section]{padding-left:16px !important;padding-right:16px !important;}}
+    [data-shop-cats],[data-shop-genders]{display:contents;}
+    @media (max-width:760px){
+      [data-shop-filter]{flex-direction:column !important;align-items:center !important;flex-wrap:nowrap !important;gap:4px !important;padding:0 16px 32px !important;}
+      [data-shop-cats]{display:flex !important;flex-wrap:wrap;justify-content:center;gap:0 22px;width:100%;}
+      [data-shop-cats]::after{content:"";flex-basis:100%;height:0;order:2;}
+      [data-shop-cats] > [data-shop-cat]{order:1;}
+      [data-shop-cats] > [data-shop-cat]:nth-child(n+4){order:3;}
+      [data-shop-divider]{width:40px !important;min-height:0 !important;height:1px !important;align-self:center !important;margin:8px 0;}
+      [data-shop-genders]{display:flex !important;justify-content:center;gap:32px;}
+      [data-shop-cat],[data-shop-gender]{font-size:11px !important;letter-spacing:0.16em !important;min-height:40px !important;}
+    }
+  </style>
+</helmet>
+<dc-import name="Nav" active="shop" theme="dark" chrome="solid" hint-size="100%,84px"></dc-import>
+
+<section data-screen-label="Shop Header" style="padding:128px 24px 56px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px;">
+  <h1 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:clamp(40px,6.5vw,84px);margin:0;line-height:1.02;">The Collection</h1>
+  <p style="font-size:16px;color:rgba(14,14,13,0.6);max-width:460px;margin:0;line-height:1.6;">{{ T_headerSub }}</p>
+</section>
+
+<nav data-screen-label="Shop Filter" data-shop-filter="" style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 28px;padding:0 24px 44px;max-width:900px;margin:0 auto;">
+  <div data-shop-cats="">
+    <sc-for list="{{ categories }}" as="c" hint-placeholder-count="5">
+      <a href="{{ c.href }}" onClick="{{ c.onClick }}" data-shop-cat="" data-active="{{ c.activeAttr }}" style="{{ c.style }}">{{ c.label }}</a>
+    </sc-for>
+  </div>
+  <span data-shop-divider="" style="width:1px;align-self:stretch;min-height:20px;background:rgba(14,14,13,0.18);"></span>
+  <div data-shop-genders="">
+    <sc-for list="{{ genders }}" as="g" hint-placeholder-count="2">
+      <a href="{{ g.href }}" onClick="{{ g.onClick }}" data-shop-gender="" data-active="{{ g.activeAttr }}" style="{{ g.style }}">{{ g.label }}</a>
+    </sc-for>
+  </div>
+</nav>
+
+<section data-screen-label="Shop Grid" data-shop-section="" style="background:#FFFFFF;padding:0 32px 88px;">
+  <div ref="{{ ref_grid }}" style="{{ gridStyle }};max-width:1440px;margin:0 auto;">
+
+    <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px 32px;">
+        <sc-for list="{{ skeletons }}" as="sk" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="aspect-ratio:4/5;background:#F2F2F2;border-radius:6px;animation:shopPulse 1.6s ease-in-out infinite;"></div>
+            <div style="height:14px;width:70%;background:#F2F2F2;animation:shopPulse 1.6s ease-in-out infinite;"></div>
+            <div style="height:12px;width:40%;background:#F2F2F2;animation:shopPulse 1.6s ease-in-out infinite;"></div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;padding:80px 24px;">
+        <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:clamp(24px,3.4vw,38px);color:#0E0E0D;">{{ T_nothingHere }}</div>
+        <div style="font-size:14px;color:rgba(14,14,13,0.55);max-width:340px;line-height:1.6;">{{ T_nothingHereSub }}</div>
+        <a href="/shop?category=all" onClick="{{ onShopAll }}" style="margin-top:6px;padding:14px 28px;border:1px solid #0E0E0D;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;color:#0E0E0D;">{{ T_shopAll }}</a>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ hasProducts }}" hint-placeholder-val="{{ false }}">
+      <div data-shop-grid="" style="display:grid;grid-template-columns:repeat(4,1fr);gap:28px 24px;">
+        <sc-for list="{{ products }}" as="p" hint-placeholder-count="4">
+          <a href="{{ p.href }}" style="display:flex;flex-direction:column;gap:12px;">
+            <div style="position:relative;aspect-ratio:4/5;background:#F2F2F2;border-radius:16px;overflow:hidden;" style-hover="--imgswap:1;">
+              <img src="{{ p.imgSrc }}" alt="{{ p.placeholder }}" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;display:block;" />
+              <sc-if value="{{ p.hasSecondImg }}" hint-placeholder-val="{{ false }}">
+                <img src="{{ p.imgSrc2 }}" alt="" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;display:block;opacity:var(--imgswap,0);transition:opacity 0.45s ease;" />
+              </sc-if>
+              <sc-if value="{{ p.soldOut }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;left:14px;bottom:14px;background:#0E0E0D;color:#F5F3EE;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;padding:6px 10px;">{{ T_soldOut }}</div>
+              </sc-if>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <h4 style="font-size:14px;font-weight:600;margin:0;color:#0E0E0D;text-transform:uppercase;letter-spacing:0.02em;">{{ p.name }}</h4>
+              <div style="font-size:14px;color:rgba(14,14,13,0.75);">{{ p.price }}</div>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </sc-if>
+
+  </div>
+</section>
+
+<footer data-screen-label="Footer" style="background:#0E0E0D;color:rgba(245,243,238,0.7);padding:64px 24px 28px;border-top:1px solid rgba(245,243,238,0.12);margin-top:80px;">
+  <div style="max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px;padding-bottom:48px;">
+    <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:18px;letter-spacing:0.3em;color:#F5F3EE;text-transform:uppercase;">N—CREASE</div>
+    <div style="display:flex;gap:48px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <a href="/" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Home</a>
+        <a href="/lookbook" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Lookbook</a>
+        <a href="/about" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">About</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <a href="#" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Instagram</a>
+        <a href="mailto:hello@n-crease.com" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Contact</a>
+        <a href="/legal" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Legal</a>
+        <a href="/account" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Account</a>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;padding-top:24px;border-top:1px solid rgba(245,243,238,0.12);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,243,238,0.4);">N—CREASE</div>
+</footer>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { visible: false, lang: 'en', loading: true, products: [], category: 'all', gender: 'all' };
+
+  // Categories are derived from the product's own Shopify data — product type,
+  // tags and title — so a new product lands in the right category the moment
+  // it exists in Shopify, with no code change here. A product can belong to
+  // more than one (a Running tee is both Running and T-Shirts).
+  CATS = [
+    { slug: 'all', en: 'All', fr: 'Tout' },
+    { slug: 'tshirts', en: 'T-Shirts', fr: 'T-Shirts' },
+    { slug: 'hoodies', en: 'Hoodies', fr: 'Hoodies' },
+    { slug: 'accessories', en: 'Accessories', fr: 'Accessoires' },
+    { slug: 'running', en: 'Running', fr: 'Running' }
+  ];
+
+  catText(p) {
+    var tags = (p.tags || []).map(function (t) { return (t && t.value) ? t.value : t; }).join(' ');
+    return [p.title, p.productType, p.vendor, tags].join(' ').toLowerCase();
+  }
+  categoriesOf(p) {
+    var t = this.catText(p), out = [];
+    if (/running/.test(t)) out.push('running');
+    if (/hoodie|sweat|crewneck|zip/.test(t)) out.push('hoodies');
+    if (/t-?shirt|tee\b|jersey/.test(t)) out.push('tshirts');
+    if (/sock|sokken|chaussette|cap\b|beanie|hat\b|bag\b|tote|bottle|sticker|accessor/.test(t)) out.push('accessories');
+    return out;
+  }
+  // Anything that says women (or women's / femme / dames) is women's. Unisex
+  // categories — accessories and running — show in both. Everything else
+  // without a gender marker sits with the men's pieces.
+  gendersOf(p) {
+    var t = this.catText(p), cats = this.categoriesOf(p);
+    if (/women|woman|femme|dames|female/.test(t)) return ['women'];
+    if (cats.indexOf('accessories') !== -1 || cats.indexOf('running') !== -1) return ['men', 'women'];
+    return ['men'];
+  }
+  readCategory() {
+    try {
+      var v = (new URLSearchParams(window.location.search).get('category') || 'all').toLowerCase();
+      return this.CATS.some(function (c) { return c.slug === v; }) ? v : 'all';
+    } catch (e) { return 'all'; }
+  }
+  // Filtering happens on the products already in memory — no refetch, no reload.
+  setCategory(slug, e) {
+    if (e) e.preventDefault();
+    if (slug === this.state.category) return;
+    this.setState({ category: slug });
+    try {
+      var url = new URL(window.location.href);
+      if (slug === 'all') url.searchParams.delete('category'); else url.searchParams.set('category', slug);
+      history.replaceState(null, '', url.toString());
+    } catch (e2) {}
+  }
+  visibleProducts() {
+    var cat = this.state.category, g = this.state.gender;
+    return this.state.products.filter(function (p) {
+      if (cat !== 'all' && (p.cats || []).indexOf(cat) === -1) return false;
+      if (g !== 'all' && (p.genders || []).indexOf(g) === -1) return false;
+      return true;
+    });
+  }
+  setGender(slug, e) {
+    if (e) e.preventDefault();
+    if (slug === this.state.gender) slug = 'all';
+    this.setState({ gender: slug });
+    try {
+      var url = new URL(window.location.href);
+      if (slug === 'all') url.searchParams.delete('gender'); else url.searchParams.set('gender', slug);
+      history.replaceState(null, '', url.toString());
+    } catch (e2) {}
+  }
+  readGender() {
+    try {
+      var v = (new URLSearchParams(window.location.search).get('gender') || 'all').toLowerCase();
+      return (v === 'men' || v === 'women') ? v : 'all';
+    } catch (e) { return 'all'; }
+  }
+  SHOPIFY_DOMAIN = '1ymgaz-rp.myshopify.com';
+  SHOPIFY_TOKEN = 'd832dca775dd2ee7facf5abe9d91a7f2';
+  SKELETONS = [1, 2, 3];
+
+  STRINGS = {
+    seasonOne: { en: 'Season One', fr: 'Saison Un' },
+    headerSub: { en: 'We made these. You make them yours.', fr: 'Nous les avons cr\u00e9\u00e9es. \u00c0 vous de les faire v\u00f4tres.' },
+    soldOut: { en: 'Sold Out', fr: '\u00c9puis\u00e9' },
+    noProducts: { en: 'No products available right now.', fr: 'Aucun produit disponible pour le moment.' },
+    nothingHere: { en: 'Nothing here yet.', fr: 'Rien ici pour l\u2019instant.' },
+    nothingHereSub: { en: 'This category is still in the making. Everything else is waiting for you.', fr: 'Cette cat\u00e9gorie est en cours. Tout le reste vous attend.' },
+    shopAll: { en: 'Shop all', fr: 'Voir tout' }
+  };
+  getLang() { try { return sessionStorage.getItem('ncrease-lang') || 'en'; } catch (e) { return 'en'; } }
+  s(key) { return (this.STRINGS[key] || {})[this.state.lang] || (this.STRINGS[key] || {}).en || key; }
+
+  registerGrid(el) {
+    if (!el || this._el) return;
+    this._el = el;
+    var self = this;
+    this._observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { self.setState({ visible: true }); self._observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -8% 0px' });
+    this._observer.observe(el);
+  }
+
+  mapProduct(p) {
+    var variants = p.variants || [];
+    var minAmt = null;
+    variants.forEach(function (v) {
+      var amt = parseFloat(v.priceV2 ? v.priceV2.amount : (v.price ? v.price.amount : 0));
+      if (minAmt === null || amt < minAmt) minAmt = amt;
+    });
+    if (minAmt === null) minAmt = 0;
+    var images = p.images || [];
+    var img1 = images[0] ? images[0].src : '';
+    var img2 = images[1] ? images[1].src : '';
+    return {
+      handle: p.handle,
+      cats: this.categoriesOf(p),
+      genders: this.gendersOf(p),
+      href: '/product?p=' + encodeURIComponent(p.handle),
+      name: p.title,
+      price: '\u20ac' + minAmt.toFixed(2).replace('.', ',') + ' EUR',
+      soldOut: !p.availableForSale,
+      imgId: 'shop-' + p.handle,
+      imgId2: 'shop-' + p.handle + '__hover',
+      imgSrc: img1,
+      hasSecondImg: !!img2,
+      imgSrc2: img2,
+      placeholder: p.title + ' \u2014 studio, white backdrop'
+    };
+  }
+
+  fetchSortOrders() {
+    var url = 'https://' + this.SHOPIFY_DOMAIN + '/api/2024-07/graphql.json';
+    var query = '{ products(first: 250) { nodes { handle metafield(namespace: "custom", key: "sort_order") { value } } } }';
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': this.SHOPIFY_TOKEN },
+      body: JSON.stringify({ query: query })
+    }).then(function (r) { return r.json(); }).then(function (json) {
+      var map = {};
+      var nodes = (((json || {}).data || {}).products || {}).nodes || [];
+      nodes.forEach(function (n) {
+        if (!n || !n.handle) return;
+        var raw = n.metafield && n.metafield.value;
+        var num = parseInt(raw, 10);
+        if (!isNaN(num)) map[n.handle] = num;
+      });
+      return map;
+    }).catch(function (err) {
+      console.warn('N-CREASE: sort_order metafield fetch failed, keeping default order', err);
+      return {};
+    });
+  }
+
+  sortProducts(list, orderMap) {
+    return list
+      .map(function (p, i) { return { p: p, i: i }; })
+      .sort(function (a, b) {
+        var oa = orderMap[a.p.handle];
+        var ob = orderMap[b.p.handle];
+        var ha = typeof oa === 'number';
+        var hb = typeof ob === 'number';
+        if (ha && hb && oa !== ob) return oa - ob;
+        if (ha && !hb) return -1;
+        if (!ha && hb) return 1;
+        return a.i - b.i;
+      })
+      .map(function (x) { return x.p; });
+  }
+
+  loadProducts() {
+    var self = this;
+    function init() {
+      if (!self._client) self._client = window.ShopifyBuy.buildClient({ domain: self.SHOPIFY_DOMAIN, storefrontAccessToken: self.SHOPIFY_TOKEN });
+      self._client.product.fetchAll(250).then(async function (products) {
+        var mapped = (products || []).map(function (p) { return self.mapProduct(p); });
+        try {
+          var orderMap = await self.fetchSortOrders();
+          mapped = self.sortProducts(mapped, orderMap);
+        } catch (e) { console.warn('N-CREASE: sort by sort_order skipped', e); }
+        self.setState({ products: mapped, loading: false });
+      }).catch(function (err) {
+        console.error('N-CREASE: Shopify products fetch failed', err);
+        self.setState({ products: [], loading: false });
+      });
+    }
+    if (window.ShopifyBuy) { init(); return; }
+    var t = setInterval(function () { if (window.ShopifyBuy) { clearInterval(t); init(); } }, 50);
+  }
+
+  componentDidMount() {
+    var self = this;
+    this.setState({ lang: this.getLang(), category: this.readCategory(), gender: this.readGender() });
+    this._onLang = function (e) { self.setState({ lang: (e.detail && e.detail.lang) || self.getLang() }); };
+    window.addEventListener('ncrease-lang-changed', this._onLang);
+    this._onPop = function () { self.setState({ category: self.readCategory(), gender: self.readGender() }); };
+    window.addEventListener('popstate', this._onPop);
+    this.loadProducts();
+    this.syncSlotSources();
+  }
+
+  componentDidUpdate() { this.syncSlotSources(); }
+
+  // Photo URLs are applied here rather than through a src template hole: the
+  // publish bundler reads src attributes as literal URLs and cannot resolve a
+  // template hole. data-src carries the value, this copies it onto the slot.
+  syncSlotSources() {
+    var nodes = document.querySelectorAll('image-slot[data-src]');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i], url = el.getAttribute('data-src') || '';
+      if (!url || url === 'undefined') continue;
+      if (el.getAttribute('src') !== url) el.setAttribute('src', url);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this._observer) this._observer.disconnect();
+    window.removeEventListener('ncrease-lang-changed', this._onLang);
+    window.removeEventListener('popstate', this._onPop);
+  }
+
+  renderVals() {
+    var self = this;
+    // Sorting already happened on load (custom.sort_order); filtering only
+    // removes cards, so the order inside every category is preserved.
+    var shown = this.visibleProducts();
+    return {
+      ref_grid: function (el) { self.registerGrid(el); },
+      categories: this.CATS.map(function (c) {
+        var active = c.slug === self.state.category;
+        return {
+          label: self.state.lang === 'fr' ? c.fr : c.en,
+          href: c.slug === 'all' ? '/shop' : '/shop?category=' + c.slug,
+          onClick: function (e) { self.setCategory(c.slug, e); },
+          activeAttr: active ? '1' : '0',
+          style: {
+            fontSize: '12px', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600,
+            color: active ? '#0A8F87' : 'rgba(14,14,13,0.45)',
+            borderBottom: '1px solid ' + (active ? '#0A8F87' : 'transparent'),
+            paddingBottom: '6px', minHeight: '44px', display: 'inline-flex', alignItems: 'center',
+            transition: 'color 0.3s ease, border-color 0.3s ease'
+          }
+        };
+      }),
+      genders: [{ slug: 'men', en: 'Men', fr: 'Homme' }, { slug: 'women', en: 'Women', fr: 'Femme' }].map(function (g) {
+        var active = g.slug === self.state.gender;
+        return {
+          label: self.state.lang === 'fr' ? g.fr : g.en,
+          href: '/shop?gender=' + g.slug,
+          onClick: function (e) { self.setGender(g.slug, e); },
+          activeAttr: active ? '1' : '0',
+          style: {
+            fontSize: '12px', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600,
+            display: 'inline-flex', alignItems: 'center', minHeight: '44px', padding: '0 0 6px',
+            borderBottom: active ? '1px solid #0E0E0D' : '1px solid transparent',
+            color: active ? '#0E0E0D' : 'rgba(14,14,13,0.45)', transition: 'color .25s ease, border-color .25s ease'
+          }
+        };
+      }),
+      onShopAll: function (e) { self.setCategory('all', e); },
+      gridStyle: { opacity: this.state.visible ? 1 : 0, transform: this.state.visible ? 'translateY(0)' : 'translateY(24px)', transition: 'opacity 1s cubic-bezier(.19,1,.22,1), transform 1s cubic-bezier(.19,1,.22,1)' },
+      isLoading: this.state.loading,
+      isEmpty: !this.state.loading && shown.length === 0,
+      hasProducts: !this.state.loading && shown.length > 0,
+      products: shown,
+      skeletons: this.SKELETONS,
+      T_seasonOne: this.s('seasonOne'), T_headerSub: this.s('headerSub'), T_soldOut: this.s('soldOut'), T_noProducts: this.s('noProducts'),
+      T_nothingHere: this.s('nothingHere'), T_nothingHereSub: this.s('nothingHereSub'), T_shopAll: this.s('shopAll')
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com"></link>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""></link>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></link>
+  <title>Your Bag — N-CREASE</title>
+  <meta name="description" content="Review your N-CREASE bag and check out securely."></meta>
+  <meta name="robots" content="noindex, follow"></meta>
+  <style>
+    html,body{margin:0;background:#F5F3EE;color:#0E0E0D;font-family:'Inter',sans-serif;overflow-x:hidden;max-width:100%;}
+    *{box-sizing:border-box;}
+    a{color:#0E0E0D;text-decoration:none;}
+    a:hover{color:#0E0E0D;}
+    @media (max-width:640px){
+      [data-cart-row]{gap:14px !important;}
+      [data-cart-img]{width:76px !important;height:94px !important;}
+      [data-qty-btn]{width:44px !important;height:44px !important;font-size:18px !important;}
+      [data-remove]{min-height:44px !important;padding:0 4px !important;}
+      [data-cart-actions]{gap:8px !important;}
+      [data-checkout-btn]{padding:18px 24px !important;}
+    }
+  </style>
+</helmet>
+<dc-import name="Nav" active="cart" theme="dark" chrome="solid" hint-size="100%,84px"></dc-import>
+
+<section data-screen-label="Cart" style="min-height:calc(100vh - 84px);padding:120px 24px 56px;">
+  <div style="max-width:760px;margin:0 auto;">
+    <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ true }}">
+      <div style="text-align:center;padding:100px 0;color:rgba(14,14,13,0.5);font-size:14px;">{{ T_loading }}</div>
+    </sc-if>
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:24px;padding:60px 0;">
+        <h1 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:clamp(38px,6vw,72px);margin:0;">Your bag is empty.</h1>
+        <a href="/shop" style="padding:16px 40px;border:1px solid #0E0E0D;color:#0E0E0D;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;font-weight:600;transition:all 0.4s ease;" style-hover="background:#0E0E0D;color:#F5F3EE;">{{ T_beginHere }}</a>
+      </div>
+    </sc-if>
+    <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ false }}">
+      <h1 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:clamp(30px,4.4vw,48px);margin:0 0 32px;">Your Bag</h1>
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <sc-for list="{{ items }}" as="li" hint-placeholder-count="1">
+          <div data-cart-row="1" style="display:flex;gap:16px;align-items:center;border-bottom:1px solid rgba(14,14,13,0.1);padding-bottom:20px;">
+            <img data-cart-img="1" data-src="{{ li.image }}" alt="{{ li.title }}" style="width:84px;height:104px;object-fit:cover;background:#EAE7DF;border-radius:2px;flex:none;">
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
+              <div style="font-size:15px;font-weight:600;">{{ li.title }}</div>
+              <div style="font-size:12px;color:rgba(14,14,13,0.55);">{{ li.variantTitle }}</div>
+              <div style="font-size:12px;color:rgba(14,14,13,0.45);">{{ li.unitPrice }}</div>
+              <div data-cart-actions="1" style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;">
+                <button data-qty-btn="1" onClick="{{ li.onDec }}" aria-label="Decrease quantity" style="width:38px;height:38px;border:1px solid rgba(14,14,13,0.2);background:#FFFFFF;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;transition:border-color 0.25s ease;" style-hover="border-color:#0E0E0D;">−</button>
+                <div style="font-size:13px;min-width:20px;text-align:center;">{{ li.qty }}</div>
+                <button data-qty-btn="1" onClick="{{ li.onInc }}" aria-label="Increase quantity" style="width:38px;height:38px;border:1px solid rgba(14,14,13,0.2);background:#FFFFFF;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;transition:border-color 0.25s ease;" style-hover="border-color:#0E0E0D;">+</button>
+                <button data-remove="1" onClick="{{ li.onRemove }}" style="margin-left:6px;background:none;border:none;font-size:12px;text-decoration:underline;color:rgba(14,14,13,0.5);cursor:pointer;min-height:38px;" style-hover="color:#0E0E0D;">{{ T_remove }}</button>
+              </div>
+            </div>
+            <div style="font-size:14px;font-weight:600;white-space:nowrap;">{{ li.lineTotal }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:28px;padding-top:20px;border-top:1px solid rgba(14,14,13,0.15);">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:14px;color:rgba(14,14,13,0.6);">{{ T_subtotal }}</div>
+          <div style="font-size:15px;font-weight:600;">{{ subtotal }}</div>
+        </div>
+        <sc-if value="{{ hasDiscount }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:14px;color:#0A8F87;">{{ discountLabel }}</div>
+            <div style="font-size:15px;font-weight:600;color:#0A8F87;">{{ discountAmount }}</div>
+          </div>
+        </sc-if>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(14,14,13,0.1);">
+          <div style="font-size:14px;font-weight:600;">{{ T_total }}</div>
+          <div style="font-size:20px;font-weight:700;">{{ total }}</div>
+        </div>
+        <div style="font-size:11px;color:rgba(14,14,13,0.45);line-height:1.6;">{{ T_taxNote }}</div>
+      </div>
+
+      <a data-checkout-btn="1" href="{{ checkoutUrl }}" target="{{ checkoutTarget }}" rel="noopener" style="display:block;text-align:center;margin-top:20px;padding:18px 40px;background:#0A8F87;color:#FFFFFF;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;transition:opacity 0.3s ease;" style-hover="opacity:0.85;">{{ T_checkout }}</a>
+
+      <div style="display:flex;justify-content:center;align-items:center;gap:24px;margin-top:18px;flex-wrap:wrap;">
+        <a href="/shop" style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(14,14,13,0.5);text-decoration:underline;min-height:38px;display:flex;align-items:center;" style-hover="color:#0E0E0D;">{{ T_continue }}</a>
+        <button onClick="{{ onEmpty }}" style="background:none;border:none;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(14,14,13,0.5);cursor:pointer;text-decoration:underline;min-height:38px;font-family:inherit;" style-hover="color:#0E0E0D;">{{ T_emptyBag }}</button>
+      </div>
+
+      <div style="text-align:center;margin-top:22px;font-size:11px;letter-spacing:0.06em;color:rgba(14,14,13,0.4);line-height:1.7;">{{ T_secure }}</div>
+    </sc-if>
+  </div>
+</section>
+
+<footer data-screen-label="Footer" style="background:#0E0E0D;color:rgba(245,243,238,0.7);padding:64px 24px 28px;border-top:1px solid rgba(245,243,238,0.12);">
+  <div style="max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px;padding-bottom:48px;">
+    <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:18px;letter-spacing:0.3em;color:#F5F3EE;text-transform:uppercase;">N—CREASE</div>
+    <div style="display:flex;gap:48px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <a href="/" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Home</a>
+        <a href="/shop" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Shop</a>
+        <a href="/about" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">About</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <a href="#" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Instagram</a>
+        <a href="mailto:hello@n-crease.com" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Contact</a>
+        <a href="/legal" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Legal</a>
+        <a href="/account" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Account</a>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;padding-top:24px;border-top:1px solid rgba(245,243,238,0.12);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,243,238,0.4);">N—CREASE</div>
+</footer>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1600, &quot;height&quot;: 900}}">
+class Component extends DCLogic {
+  state = { loading: true, checkout: null, lang: 'en', busy: false };
+  SHOPIFY_DOMAIN = '1ymgaz-rp.myshopify.com';
+  SHOPIFY_TOKEN = 'd832dca775dd2ee7facf5abe9d91a7f2';
+
+  STRINGS = {
+    loading: { en: 'Loading your bag…', fr: 'Chargement de votre panier…' },
+    beginHere: { en: 'Begin Here', fr: 'Commencer ici' },
+    remove: { en: 'Remove', fr: 'Retirer' },
+    subtotal: { en: 'Subtotal', fr: 'Sous-total' },
+    total: { en: 'Total', fr: 'Total' },
+    checkout: { en: 'Checkout', fr: 'Payer' },
+    emptyBag: { en: 'Empty Bag', fr: 'Vider le panier' },
+    continue: { en: 'Continue shopping', fr: 'Continuer vos achats' },
+    taxNote: { en: 'Shipping and taxes are calculated at checkout.', fr: 'Livraison et taxes calculées au paiement.' },
+    secure: { en: 'Payment is handled securely by Shopify Checkout.', fr: 'Le paiement est traité en toute sécurité par Shopify Checkout.' },
+    discount: { en: 'Discount', fr: 'Réduction' },
+    each: { en: 'each', fr: "l'unité" }
+  };
+  getLang() { try { return sessionStorage.getItem('ncrease-lang') || 'en'; } catch (e) { return 'en'; } }
+  s(key) { return (this.STRINGS[key] || {})[this.state.lang] || (this.STRINGS[key] || {}).en || key; }
+
+  // The deprecated JS Buy SDK (unsupported since 1 Jan 2026) is no longer used
+  // for the bag: every cart operation talks to the Storefront Cart API directly.
+  API_VERSION = '2026-04';
+  CART_FIELDS = 'id checkoutUrl totalQuantity cost { subtotalAmount { amount currencyCode } totalAmount { amount currencyCode } } discountCodes { code applicable } lines(first: 250) { nodes { id quantity cost { subtotalAmount { amount currencyCode } totalAmount { amount currencyCode } } merchandise { ... on ProductVariant { id title price { amount currencyCode } image { url } product { title handle featuredImage { url } } } } } }';
+
+  gql(query, variables) {
+    return fetch('https://' + this.SHOPIFY_DOMAIN + '/api/' + this.API_VERSION + '/graphql.json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': this.SHOPIFY_TOKEN },
+      body: JSON.stringify({ query: query, variables: variables || {} })
+    }).then(function (r) {
+      if (!r.ok) throw new Error('Storefront API ' + r.status);
+      return r.json();
+    }).then(function (j) {
+      if (j.errors && j.errors.length) throw new Error(j.errors[0].message || 'Storefront API error');
+      return j.data;
+    });
+  }
+
+  // checkoutUrl is issued on the shop's primary domain; when that domain serves
+  // this frontend instead of Shopify, /cart/c/… would 404. The myshopify domain
+  // always resolves to Shopify Checkout (same fix the SDK shipped in v3.0.6).
+  fixCheckoutUrl(url) {
+    if (!url) return '';
+    try { var u = new URL(url); if (!/\.myshopify\.com$/i.test(u.hostname)) { u.host = this.SHOPIFY_DOMAIN; u.protocol = 'https:'; } return u.toString(); } catch (e) { return url; }
+  }
+
+  // Maps a Cart API cart onto the object shape renderVals already reads.
+  mapCart(cart) {
+    if (!cart) return null;
+    var self = this;
+    var lines = (cart.lines && cart.lines.nodes) || [];
+    var gross = 0; var code = 'EUR';
+    var lineItems = lines.map(function (l) {
+      var m = l.merchandise || {};
+      var prod = m.product || {};
+      var sub = (l.cost && l.cost.subtotalAmount) || null;
+      if (sub) { gross += parseFloat(sub.amount) || 0; code = sub.currencyCode || code; }
+      var img = (m.image && m.image.url) || (prod.featuredImage && prod.featuredImage.url) || '';
+      return {
+        id: l.id,
+        quantity: l.quantity,
+        title: prod.title || '',
+        variant: { id: m.id, title: m.title, priceV2: m.price, image: img ? { src: img } : null },
+        cost: { totalAmount: sub }
+      };
+    });
+    var cost = cart.cost || {};
+    return {
+      id: cart.id,
+      webUrl: self.fixCheckoutUrl(cart.checkoutUrl),
+      lineItems: lineItems,
+      subtotalPriceV2: cost.totalAmount || cost.subtotalAmount,
+      totalPriceV2: cost.totalAmount,
+      lineItemsSubtotalPrice: { amount: gross, currencyCode: code },
+      discountApplications: (cart.discountCodes || []).filter(function (d) { return d.applicable; }).map(function (d) { return { code: d.code }; })
+    };
+  }
+
+  cartMutation(mutation, field, variables) {
+    var self = this;
+    return this.gql(mutation, variables).then(function (d) {
+      var res = d && d[field];
+      if (!res || !res.cart) throw new Error((res && res.userErrors && res.userErrors[0] && res.userErrors[0].message) || 'Cart update failed');
+      return self.mapCart(res.cart);
+    });
+  }
+
+  componentDidMount() {
+    var self = this;
+    this.setState({ lang: this.getLang() });
+    this._onLang = function (e) { self.setState({ lang: (e.detail && e.detail.lang) || self.getLang() }); };
+    window.addEventListener('ncrease-lang-changed', this._onLang);
+    this._onUpdate = function () { self.loadCheckout(); };
+    window.addEventListener('ncrease-cart-updated', this._onUpdate);
+    // Coming back from Shopify Checkout in another tab must not leave a stale bag.
+    this._onStorage = function (e) { if (!e || e.key === 'ncrease-checkout-id') self.loadCheckout(); };
+    window.addEventListener('storage', this._onStorage);
+    this._onVisible = function () { if (document.visibilityState === 'visible') self.loadCheckout(); };
+    document.addEventListener('visibilitychange', this._onVisible);
+    this.loadCheckout();
+  }
+
+  componentDidUpdate() { this.syncImageSources(); }
+
+  // Shopify photo URLs are applied here rather than through a src template
+  // hole: the hole is emitted literally while the row placeholder streams, so
+  // the browser would request "{{ li.image }}", and the publish bundler reads
+  // src attributes as literal URLs. data-src carries the value, this copies it.
+  syncImageSources() {
+    var nodes = document.querySelectorAll('img[data-cart-img][data-src]');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var want = el.getAttribute('data-src') || '';
+      if (!want || want.indexOf('{{') !== -1) continue;
+      if (el.getAttribute('src') !== want) el.setAttribute('src', want);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('ncrease-cart-updated', this._onUpdate);
+    window.removeEventListener('ncrease-lang-changed', this._onLang);
+    window.removeEventListener('storage', this._onStorage);
+    document.removeEventListener('visibilitychange', this._onVisible);
+  }
+
+  clearLocal() {
+    try { localStorage.removeItem('ncrease-checkout-id'); localStorage.removeItem('ncrease-checkout-url'); localStorage.setItem('ncrease-cart-count', '0'); } catch (e) {}
+    window.dispatchEvent(new CustomEvent('ncrease-cart-updated'));
+  }
+
+  loadCheckout() {
+    var self = this;
+    var id = null;
+    try { id = localStorage.getItem('ncrease-checkout-id'); } catch (e) {}
+    // Only Cart API ids are valid; a stale legacy Checkout id is discarded.
+    if (id && id.indexOf('gid://shopify/Cart/') !== 0) { this.clearLocal(); id = null; }
+    if (!id) { this.setState({ loading: false, checkout: null }); return; }
+    this.gql('query cart($id: ID!) { cart(id: $id) { ' + this.CART_FIELDS + ' } }', { id: id }).then(function (d) {
+      var checkout = self.mapCart(d && d.cart);
+      // A cart that became an order (or expired) comes back null.
+      if (!checkout) {
+        try { localStorage.removeItem('ncrease-checkout-id'); localStorage.removeItem('ncrease-checkout-url'); localStorage.setItem('ncrease-cart-count', '0'); } catch (e) {}
+        window.dispatchEvent(new CustomEvent('ncrease-cart-updated'));
+        self.setState({ loading: false, checkout: null, busy: false });
+        return;
+      }
+      self.setState({ loading: false, checkout: checkout, busy: false });
+      self.syncCount(checkout);
+    }).catch(function (e) { console.warn('N-CREASE: cart fetch failed', e); self.setState({ loading: false, busy: false }); });
+  }
+
+  syncCount(checkout) {
+    var n = ((checkout && checkout.lineItems) || []).reduce(function (t, li) { return t + li.quantity; }, 0);
+    try { localStorage.setItem('ncrease-cart-count', String(n)); } catch (e) {}
+    window.dispatchEvent(new CustomEvent('ncrease-cart-updated'));
+  }
+
+  afterMutation(checkout) {
+    if (!checkout) { this.clearLocal(); this.setState({ checkout: null, busy: false }); return; }
+    try { if (this.checkoutUrlOf(checkout)) localStorage.setItem('ncrease-checkout-url', this.checkoutUrlOf(checkout)); } catch (e) {}
+    this.setState({ checkout: checkout, busy: false });
+    this.syncCount(checkout);
+  }
+
+  changeQty(lineItemId, qty) {
+    var self = this;
+    if (!this.state.checkout || this.state.busy) return;
+    if (qty <= 0) { this.removeItem(lineItemId); return; }
+    this.setState({ busy: true });
+    this.cartMutation('mutation u($cartId: ID!, $lines: [CartLineUpdateInput!]!) { cartLinesUpdate(cartId: $cartId, lines: $lines) { cart { ' + this.CART_FIELDS + ' } userErrors { message } } }', 'cartLinesUpdate', { cartId: this.state.checkout.id, lines: [{ id: lineItemId, quantity: qty }] })
+      .then(function (c) { self.afterMutation(c); })
+      .catch(function () { self.setState({ busy: false }); self.loadCheckout(); });
+  }
+
+  removeItem(lineItemId) {
+    var self = this;
+    if (!this.state.checkout || this.state.busy) return;
+    this.setState({ busy: true });
+    this.cartMutation(this.REMOVE_MUTATION(), 'cartLinesRemove', { cartId: this.state.checkout.id, lineIds: [lineItemId] })
+      .then(function (c) { self.afterMutation(c); })
+      .catch(function () { self.setState({ busy: false }); self.loadCheckout(); });
+  }
+
+  emptyBag() {
+    var self = this;
+    var checkout = this.state.checkout;
+    if (this.state.busy) return;
+    if (!checkout || !(checkout.lineItems || []).length) { this.setState({ checkout: null }); this.clearLocal(); return; }
+    this.setState({ busy: true });
+    var ids = checkout.lineItems.map(function (li) { return li.id; });
+    this.cartMutation(this.REMOVE_MUTATION(), 'cartLinesRemove', { cartId: checkout.id, lineIds: ids })
+      .then(function (c) { self.afterMutation(c); })
+      .catch(function () { self.setState({ busy: false }); self.loadCheckout(); });
+  }
+
+  REMOVE_MUTATION() { return 'mutation r($cartId: ID!, $lineIds: [ID!]!) { cartLinesRemove(cartId: $cartId, lineIds: $lineIds) { cart { ' + this.CART_FIELDS + ' } userErrors { message } } }'; }
+
+  // Money fields moved shape between the Checkout API and the Cart API, so read
+  // every known path rather than trusting one.
+  amt(v) {
+    if (v == null) return null;
+    if (typeof v === 'object') return this.amt(v.amount);
+    var n = parseFloat(v);
+    return isNaN(n) ? null : n;
+  }
+  pick() {
+    for (var i = 0; i < arguments.length; i++) { var n = this.amt(arguments[i]); if (n !== null) return n; }
+    return null;
+  }
+  currency() {
+    var c = this.state.checkout || {};
+    var src = c.subtotalPriceV2 || c.totalPriceV2 || (c.cost && c.cost.subtotalAmount) || {};
+    return src.currencyCode || 'EUR';
+  }
+  fmt(n) {
+    var code = this.currency();
+    var sym = { EUR: '€', USD: '$', GBP: '£' }[code];
+    var v = (n || 0).toFixed(2);
+    return sym ? sym + v.replace('.', ',') : code + ' ' + v;
+  }
+
+  checkoutUrlOf(c) { return (c && (c.webUrl || c.checkoutUrl)) || ''; }
+
+  // Shopify Checkout (shop.app) sends frame-ancestors headers and refuses to
+  // render inside an iframe, so navigating the frame gives ERR_BLOCKED_BY_
+  // RESPONSE. Embedded previews therefore get a real new tab; the live site,
+  // which is not framed, stays in the same tab as intended.
+  isFramed() {
+    try { return window.top !== window.self; } catch (err) { return true; }
+  }
+
+  renderVals() {
+    var self = this;
+    var checkout = this.state.checkout;
+    var lineItems = checkout ? (checkout.lineItems || []) : [];
+
+    var lineSum = 0;
+    var items = lineItems.map(function (li) {
+      var v = li.variant || {};
+      var unit = self.pick(v.priceV2, v.price, li.cost && li.cost.amountPerQuantity) || 0;
+      var lineTotal = self.pick(li.cost && li.cost.totalAmount, li.cost && li.cost.subtotalAmount);
+      if (lineTotal === null) lineTotal = unit * li.quantity;
+      lineSum += lineTotal;
+      return {
+        title: li.title,
+        variantTitle: v.title && v.title !== 'Default Title' ? v.title : '',
+        qty: li.quantity,
+        unitPrice: self.fmt(unit) + ' ' + self.s('each'),
+        lineTotal: self.fmt(lineTotal),
+        image: (v.image && v.image.src) || (li.image && li.image.src) || '',
+        onInc: function () { self.changeQty(li.id, li.quantity + 1); },
+        onDec: function () { self.changeQty(li.id, li.quantity - 1); },
+        onRemove: function () { self.removeItem(li.id); }
+      };
+    });
+
+    var c = checkout || {};
+    var subtotal = this.pick(c.subtotalPriceV2, c.subtotalPrice, c.cost && c.cost.subtotalAmount);
+    if (subtotal === null) subtotal = lineSum;
+    var total = this.pick(c.totalPriceV2, c.totalPrice, c.cost && c.cost.totalAmount);
+    if (total === null) total = subtotal;
+    var gross = this.pick(c.lineItemsSubtotalPrice, c.cost && c.cost.checkoutChargeAmount);
+    if (gross === null) gross = lineSum;
+    var discounts = c.discountApplications || [];
+    var discountValue = gross - subtotal;
+    var hasDiscount = discounts.length > 0 && discountValue > 0.005;
+    var code = discounts.length ? (discounts[0].code || discounts[0].title || '') : '';
+
+    return {
+      isLoading: this.state.loading,
+      isEmpty: !this.state.loading && lineItems.length === 0,
+      hasItems: !this.state.loading && lineItems.length > 0,
+      items: items,
+      subtotal: this.fmt(subtotal),
+      total: this.fmt(total),
+      hasDiscount: hasDiscount,
+      discountLabel: this.s('discount') + (code ? ' (' + code + ')' : ''),
+      discountAmount: '−' + this.fmt(discountValue),
+      checkoutUrl: this.checkoutUrlOf(checkout) || '#',
+      checkoutTarget: this.isFramed() ? '_blank' : '_self',
+      onEmpty: function () { self.emptyBag(); },
+      T_loading: this.s('loading'), T_beginHere: this.s('beginHere'), T_remove: this.s('remove'),
+      T_subtotal: this.s('subtotal'), T_total: this.s('total'), T_checkout: this.s('checkout'),
+      T_emptyBag: this.s('emptyBag'), T_continue: this.s('continue'),
+      T_taxNote: this.s('taxNote'), T_secure: this.s('secure')
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Legal &amp; Compliance — N-CREASE</title>
+  <meta name="description" content="N-CREASE imprint, terms and conditions, EU right of withdrawal, returns, GDPR privacy policy and cookie policy.">
+  <link rel="canonical" href="https://n-crease.com/legal">
+  <meta name="robots" content="index, follow">
+  <style>
+    html,body{margin:0;background:#F5F3EE;color:#0E0E0D;font-family:'Inter',sans-serif;overflow-x:hidden;max-width:100%;}
+    *{box-sizing:border-box;}
+    a{color:#0A8F87;text-decoration:none;}
+    a:hover{color:#0E0E0D;}
+  </style>
+</helmet>
+<dc-import name="Nav" active="legal" theme="dark" chrome="solid" hint-size="100%,84px"></dc-import>
+
+<section data-screen-label="Legal Header" style="padding:128px 24px 40px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div style="width:6px;height:6px;background:#0A8F87;"></div>
+    <div style="font-size:11px;letter-spacing:0.3em;color:#0E0E0D;text-transform:uppercase;font-weight:600;">{{ T_legal }}</div>
+  </div>
+  <h1 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:clamp(34px,5.5vw,60px);margin:0;line-height:1.05;">Legal &amp; Compliance</h1>
+  <p style="font-size:15px;color:rgba(14,14,13,0.6);max-width:600px;line-height:1.7;margin:0;">{{ T_subhead }}</p>
+</section>
+
+<section data-screen-label="Legal Body" style="padding:0 24px 96px;display:flex;justify-content:center;">
+  <div style="max-width:760px;width:100%;display:flex;flex-direction:column;gap:40px;">
+
+    <div id="imprint" style="display:flex;flex-direction:column;gap:14px;">
+      <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0;">{{ T_h1 }}</h2>
+      <p style="font-size:15px;line-height:1.85;color:rgba(14,14,13,0.78);margin:0;">
+        N-CREASE B.V.<br/>
+        {{ T_addrLine }}<br/>
+        {{ T_postalLine }}<br/>
+        {{ T_regNo }}<br/>
+        {{ T_vatId }}<br/>
+        {{ T_represented }}<br/>
+        Email: <a href="mailto:hello@n-crease.com">hello@n-crease.com</a>
+      </p>
+    </div>
+
+    <div id="terms" style="display:flex;flex-direction:column;gap:14px;">
+      <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0;">{{ T_h2 }}</h2>
+      <p style="font-size:15px;line-height:1.85;color:rgba(14,14,13,0.78);margin:0;">{{ T_termsBody }}</p>
+    </div>
+
+    <div id="withdrawal" style="display:flex;flex-direction:column;gap:14px;">
+      <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0;">{{ T_h3 }}</h2>
+      <p style="font-size:15px;line-height:1.85;color:rgba(14,14,13,0.78);margin:0;">{{ T_withdrawalBody1 }} <strong>{{ T_fourteenDays }}</strong> {{ T_withdrawalBody2 }} <a href="mailto:hello@n-crease.com">hello@n-crease.com</a> {{ T_withdrawalBody3 }}</p>
+    </div>
+
+    <div id="returns" style="display:flex;flex-direction:column;gap:14px;">
+      <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0;">{{ T_h4 }}</h2>
+      <p style="font-size:15px;line-height:1.85;color:rgba(14,14,13,0.78);margin:0;">{{ T_returnsBody }}</p>
+    </div>
+
+    <div id="privacy" style="display:flex;flex-direction:column;gap:14px;">
+      <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0;">{{ T_h5 }}</h2>
+      <p style="font-size:15px;line-height:1.85;color:rgba(14,14,13,0.78);margin:0;">{{ T_privacyBody1 }} <a href="mailto:privacy@n-crease.com">privacy@n-crease.com</a>. {{ T_privacyBody2 }}</p>
+    </div>
+
+    <div id="cookies" style="display:flex;flex-direction:column;gap:14px;">
+      <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0;">{{ T_h6 }}</h2>
+      <p style="font-size:15px;line-height:1.85;color:rgba(14,14,13,0.78);margin:0;">{{ T_cookieBody }}</p>
+    </div>
+
+    <div id="disputes" style="display:flex;flex-direction:column;gap:14px;">
+      <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;margin:0;">{{ T_h7 }}</h2>
+      <p style="font-size:15px;line-height:1.85;color:rgba(14,14,13,0.78);margin:0;">{{ T_disputeBody1 }} <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>. {{ T_disputeBody2 }}</p>
+    </div>
+
+    <p style="font-size:12px;color:rgba(14,14,13,0.4);margin:0;">{{ T_lastUpdated }}</p>
+  </div>
+</section>
+
+<footer data-screen-label="Footer" style="background:#0E0E0D;color:rgba(245,243,238,0.7);padding:64px 24px 28px;border-top:1px solid rgba(245,243,238,0.12);">
+  <div style="max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:40px;padding-bottom:48px;">
+    <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:18px;letter-spacing:0.3em;color:#F5F3EE;text-transform:uppercase;">N—CREASE</div>
+    <div style="display:flex;gap:48px;flex-wrap:wrap;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <a href="/shop" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Shop</a>
+        <a href="/lookbook" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Lookbook</a>
+        <a href="/about" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">About</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <a href="#" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Instagram</a>
+        <a href="mailto:hello@n-crease.com" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,243,238,0.7);">Contact</a>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;padding-top:24px;border-top:1px solid rgba(245,243,238,0.12);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,243,238,0.4);">N—CREASE</div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1600, &quot;height&quot;: 2600}}">
+class Component extends DCLogic {
+  state = { lang: 'en' };
+  STRINGS = {
+    legal: { en: 'Legal', fr: 'Mentions légales' },
+    subhead: { en: 'Information required under EU consumer protection, e-commerce and data protection law.', fr: 'Informations requises par le droit européen de la protection des consommateurs, du commerce électronique et de la protection des données.' },
+    h1: { en: '1. Imprint (Impressum)', fr: '1. Mentions légales (Impressum)' },
+    addrLine: { en: '[Street address, number]', fr: '[Adresse, numéro]' },
+    postalLine: { en: '[Postal code, city], [Country]', fr: '[Code postal, ville], [Pays]' },
+    regNo: { en: 'Company registration no.: [Chamber of Commerce number]', fr: 'Numéro d’entreprise : [numéro registre de commerce]' },
+    vatId: { en: 'VAT ID: [EU VAT number]', fr: 'TVA : [numéro de TVA européen]' },
+    represented: { en: 'Represented by: [Director name]', fr: 'Représenté par : [nom du dirigeant]' },
+    h2: { en: '2. Terms & Conditions', fr: '2. Conditions générales' },
+    termsBody: { en: 'By placing an order on this website you enter into a binding purchase agreement with N-CREASE B.V. Prices are shown in EUR and include applicable VAT unless stated otherwise. We reserve the right to refuse or cancel an order in cases of pricing errors, stock unavailability or suspected fraud. Title to goods passes upon full payment. Any disputes arising from these terms are governed by the law of [Country], without prejudice to mandatory consumer protections in your country of residence.',
+      fr: 'En passant commande sur ce site, vous concluez un contrat d’achat contraignant avec N-CREASE B.V. Les prix sont affichés en EUR et incluent la TVA applicable sauf indication contraire. Nous nous réservons le droit de refuser ou d’annuler une commande en cas d’erreur de prix, de rupture de stock ou de suspicion de fraude. La propriété des biens est transférée dès paiement intégral. Tout litige relatif à ces conditions est régi par le droit de [Pays], sans préjudice des protections impératives du consommateur de votre pays de résidence.' },
+    h3: { en: '3. Right of Withdrawal', fr: '3. Droit de rétractation' },
+    withdrawalBody1: { en: 'As an EU consumer, you have the right to withdraw from your purchase within', fr: 'En tant que consommateur européen, vous disposez du droit de vous rétracter de votre achat dans un délai de' },
+    fourteenDays: { en: '14 days', fr: '14 jours' },
+    withdrawalBody2: { en: 'of receiving your order, without giving any reason. To exercise this right, contact us at', fr: 'après réception de votre commande, sans avoir à justifier de motif. Pour exercer ce droit, contactez-nous à' },
+    withdrawalBody3: { en: 'with your order number. You must return the goods unused, in original condition and packaging, within 14 days of your withdrawal notice. Return shipping costs are borne by the customer unless the item is faulty. Refunds are issued to the original payment method within 14 days of receiving the returned goods.',
+      fr: 'avec votre numéro de commande. Vous devez retourner les articles non utilisés, dans leur état et emballage d’origine, dans les 14 jours suivant votre notification de rétractation. Les frais de retour sont à la charge du client sauf si l’article est défectueux. Le remboursement est effectué sur le moyen de paiement d’origine dans les 14 jours suivant la réception des articles retournés.' },
+    h4: { en: '4. Returns, Refunds & Shipping', fr: '4. Retours, remboursements et livraison' },
+    returnsBody: { en: 'Goods are shipped within [X] business days across the EU. Statutory warranty rights (minimum 2 years for conformity defects under EU law) apply in addition to the right of withdrawal above and are unaffected by any commercial return policy we may offer.',
+      fr: 'Les articles sont expédiés sous [X] jours ouvrables dans toute l’UE. Les droits de garantie légale (minimum 2 ans pour les défauts de conformité selon le droit européen) s’appliquent en plus du droit de rétractation ci-dessus et ne sont pas affectés par notre politique commerciale de retour.' },
+    h5: { en: '5. Privacy Policy (GDPR)', fr: '5. Politique de confidentialité (RGPD)' },
+    privacyBody1: { en: 'We process personal data (name, address, email, order and payment data) solely to fulfil orders, provide customer support and, with consent, send marketing communications. Legal basis: contract performance (Art. 6(1)(b) GDPR) and consent (Art. 6(1)(a) GDPR). Data is stored only as long as necessary and is never sold to third parties. Under GDPR you have the right to access, rectify, erase, restrict or port your data, and to object to processing — contact',
+      fr: 'Nous traitons les données personnelles (nom, adresse, email, données de commande et de paiement) uniquement pour exécuter les commandes, fournir un support client et, avec votre consentement, envoyer des communications marketing. Base légale : exécution du contrat (art. 6(1)(b) RGPD) et consentement (art. 6(1)(a) RGPD). Les données sont conservées uniquement le temps nécessaire et ne sont jamais vendues à des tiers. Selon le RGPD, vous avez le droit d’accéder, rectifier, effacer, limiter ou porter vos données, et de vous opposer au traitement — contactez' },
+    privacyBody2: { en: 'You may lodge a complaint with your national data protection authority.', fr: 'Vous pouvez introduire une plainte auprès de votre autorité nationale de protection des données.' },
+    h6: { en: '6. Cookie Policy', fr: '6. Politique de cookies' },
+    cookieBody: { en: 'This site uses strictly necessary cookies to operate the shopping cart and checkout, and, with your consent, analytics and marketing cookies. You can manage or withdraw consent at any time via the cookie banner or your browser settings.',
+      fr: 'Ce site utilise des cookies strictement nécessaires au fonctionnement du panier et du paiement, ainsi que, avec votre consentement, des cookies analytiques et marketing. Vous pouvez gérer ou retirer votre consentement à tout moment via la bannière de cookies ou les paramètres de votre navigateur.' },
+    h7: { en: '7. Dispute Resolution', fr: '7. Résolution des litiges' },
+    disputeBody1: { en: 'The European Commission provides an Online Dispute Resolution (ODR) platform for consumers at', fr: 'La Commission européenne met à disposition des consommateurs une plateforme de règlement en ligne des litiges (RLL) à l’adresse' },
+    disputeBody2: { en: 'We are not obliged to, and do not, participate in alternative dispute resolution proceedings before a consumer arbitration board.', fr: 'Nous ne sommes pas tenus de participer, et ne participons pas, à une procédure de règlement extrajudiciaire des litiges devant une commission d’arbitrage de consommation.' },
+    lastUpdated: { en: 'Last updated: August 2026. This page is a placeholder template and must be reviewed by a qualified lawyer before publishing, with the bracketed company details completed.',
+      fr: 'Dernière mise à jour : août 2026. Cette page est un modèle et doit être relue par un juriste qualifié avant publication, après complétion des informations entre crochets.' }
+  };
+  getLang() { try { return sessionStorage.getItem('ncrease-lang') || 'en'; } catch (e) { return 'en'; } }
+  s(key) { return (this.STRINGS[key] || {})[this.state.lang] || (this.STRINGS[key] || {}).en || key; }
+  componentDidMount() {
+    var self = this;
+    this.setState({ lang: this.getLang() });
+    this._onLang = function (e) { self.setState({ lang: (e.detail && e.detail.lang) || self.getLang() }); };
+    window.addEventListener('ncrease-lang-changed', this._onLang);
+  }
+  componentWillUnmount() { window.removeEventListener('ncrease-lang-changed', this._onLang); }
+  renderVals() {
+    var self = this;
+    var out = {};
+    Object.keys(this.STRINGS).forEach(function (k) { out['T_' + k] = self.s(k); });
+    return out;
+  }
+}
+</script>
+</body>
+</html>
