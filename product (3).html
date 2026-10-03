@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com"></link>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""></link>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></link>
+  <script src="./image-slot.js"></script>
+  <title>N-CREASE — Product</title>
+  <meta name="description" content="Shop N-CREASE essentials: minimalist streetwear designed in Belgium.">
+  <style>
+    html,body{margin:0;background:#FFFFFF;color:#0E0E0D;font-family:'Inter',sans-serif;overflow-x:hidden;max-width:100%;}
+    *{box-sizing:border-box;}
+    a{color:#0E0E0D;text-decoration:none;}
+    a:hover{color:#0E0E0D;}
+    @keyframes toastIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes prodPulse{0%{opacity:0.5;}50%{opacity:1;}100%{opacity:0.5;}}
+    image-slot::part(frame){background:#F2F2F2;}
+    @keyframes modalIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    @media (max-width:860px){[data-prod-grid]{grid-template-columns:1fr !important;gap:28px !important;}}
+    @media (max-width:520px){[data-prod-grid]{gap:22px !important;}}
+    .shopify-buy__option-select__select{appearance:none;-webkit-appearance:none;}
+    .shopify-buy-frame{width:100% !important;max-width:100% !important;margin:0 !important;}
+    .shopify-buy-frame iframe{width:100% !important;display:block !important;}
+  </style>
+  <script src="https://sdks.shopifycdn.com/js-buy-sdk/v3/latest/index.umd.min.js" async=""></script>
+</helmet>
+<dc-import name="Nav" active="shop" theme="dark" chrome="solid" hint-size="100%,84px"></dc-import>
+
+<section data-screen-label="Product" style="padding:104px 24px 64px;min-height:calc(100vh - 84px);">
+  <div style="max-width:1400px;margin:0 auto;">
+
+    <sc-if value="{{ productLoading }}" hint-placeholder-val="{{ false }}">
+      <div data-prod-grid="" style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+        <div style="aspect-ratio:4/5;background:#EAE7DF;border-radius:4px;animation:prodPulse 1.6s ease-in-out infinite;"></div>
+        <div style="display:flex;flex-direction:column;gap:14px;padding-top:8px;">
+          <div style="height:40px;width:70%;background:#EAE7DF;animation:prodPulse 1.6s ease-in-out infinite;"></div>
+          <div style="height:16px;width:50%;background:#EAE7DF;animation:prodPulse 1.6s ease-in-out infinite;"></div>
+          <div style="height:20px;width:20%;background:#EAE7DF;animation:prodPulse 1.6s ease-in-out infinite;"></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ productError }}" hint-placeholder-val="{{ false }}">
+      <div style="text-align:center;padding:80px 0;display:flex;flex-direction:column;align-items:center;gap:20px;">
+        <div style="font-size:15px;color:rgba(14,14,13,0.6);">{{ T_productNotFound }}</div>
+        <a href="/shop" style="padding:14px 32px;border:1px solid #0E0E0D;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;">{{ T_backToShop }}</a>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ productReady }}" hint-placeholder-val="{{ false }}">
+      <div data-prod-grid="" style="display:grid;grid-template-columns:1.15fr 1fr;gap:48px;align-items:start;">
+        <div style="display:flex;flex-direction:column;gap:14px;min-width:0;padding-top:8px;">
+          <div ref="{{ mainPhotoRef }}" style="position:relative;width:100%;min-width:0;aspect-ratio:4/5;overflow:hidden;background:#F2F2F2;border-radius:16px;">
+            <img src="{{ productImgSrc }}" alt="{{ productImgPlaceholder }}" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;display:block;" />
+          </div>
+          <sc-if value="{{ hasGallery }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+              <sc-for list="{{ galleryThumbs }}" as="th" hint-placeholder-count="0">
+                <button onClick="{{ th.onClick }}" aria-label="{{ th.label }}" style="{{ th.style }}">
+                  <img src="{{ th.src }}" alt="" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;display:block;pointer-events:none;" />
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;padding-top:8px;min-width:0;">
+          <div ref="{{ buyBlockRef }}" style="display:flex;flex-direction:column;gap:12px;">
+          <h1 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:clamp(30px,3.8vw,48px);margin:0;line-height:1.05;">{{ productName }}</h1>
+          <sc-if value="{{ productTagline }}" hint-placeholder-val="{{ false }}">
+            <p style="font-size:16px;color:rgba(14,14,13,0.65);max-width:420px;line-height:1.6;margin:0;">{{ productTagline }}</p>
+          </sc-if>
+          <div style="font-size:17px;font-weight:600;">{{ productPrice }}</div>
+
+          <div style="border:1px solid rgba(10, 143, 135,0.25);background:#FFFFFF;padding:16px 18px;display:flex;flex-direction:column;gap:10px;">
+            <sc-if value="{{ hasColorOptions }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(14,14,13,0.5);font-weight:600;white-space:nowrap;">{{ T_colorLabel }}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                  <sc-for list="{{ colorButtons }}" as="cl" hint-placeholder-count="1">
+                    <button onClick="{{ cl.onClick }}" style="{{ cl.style }}">{{ cl.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(14,14,13,0.5);font-weight:600;">{{ T_sizeLabel }}</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+              <sc-for list="{{ sizeButtons }}" as="sz" hint-placeholder-count="6">
+                <button onClick="{{ sz.onClick }}" disabled="{{ sz.disabled }}" style="{{ sz.style }}">{{ sz.label }}</button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ selectedSizeSoldOut }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;color:rgba(14,14,13,0.75);">{{ T_soldOutSize }}</div>
+            </sc-if>
+            <sc-if value="{{ isOversizedFit }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:4px;border-left:2px solid rgba(10, 143, 135,0.35);padding:2px 0 2px 12px;">
+                <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:#0A8F87;">{{ T_oversizedTitle }}</div>
+                <div style="font-size:12px;line-height:1.6;color:rgba(14,14,13,0.6);">{{ T_oversizedNote }}</div>
+              </div>
+            </sc-if>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <sc-if value="{{ hasSelectedSize }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:12px;color:rgba(14,14,13,0.6);">{{ T_yourSizeIs }} <strong style="color:#0E0E0D;">{{ selectedSize }}</strong></div>
+              </sc-if>
+              <sc-if value="{{ sizeChartAvailable }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ openChart }}" style="background:none;border:0;padding:0;cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:0.02em;color:#0A8F87;text-decoration:underline;width:fit-content;">{{ T_sizeChartBelow }}</button>
+              </sc-if>
+            </div>
+            <button onClick="{{ onCustomAddToCart }}" disabled="{{ addToCartDisabled }}" style="{{ customAddToCartStyle }}">{{ customAddToCartLabel }}</button>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(14,14,13,0.6);"><div style="width:6px;height:6px;background:#0A8F87;flex:none;"></div>{{ T_delivery }}</div>
+          </div>
+          </div>
+
+          <sc-if value="{{ accordionAvailable }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;margin-top:32px;border-top:1px solid rgba(14,14,13,0.12);">
+          <sc-if value="{{ infoAvailable }}" hint-placeholder-val="{{ false }}">
+            <div style="border-bottom:1px solid rgba(14,14,13,0.12);">
+              <button onClick="{{ toggleInfo }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;background:none;border:0;padding:16px 0;cursor:pointer;font-family:inherit;text-align:left;color:#0E0E0D;" style-hover="opacity:0.6;">
+                <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">{{ T_productInfo }}</span>
+                <span style="font-size:15px;line-height:1;color:rgba(14,14,13,0.45);font-weight:400;">{{ infoSign }}</span>
+              </button>
+              <sc-if value="{{ infoOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:18px;">
+                  <sc-for list="{{ productBullets }}" as="b" hint-placeholder-count="3">
+                    <div style="font-size:13px;color:rgba(14,14,13,0.55);">— {{ b }}</div>
+                  </sc-for>
+                  <sc-for list="{{ specs }}" as="sp" hint-placeholder-count="0">
+                    <div style="font-size:13px;color:rgba(14,14,13,0.55);">{{ sp }}</div>
+                  </sc-for>
+                  <sc-if value="{{ fitNoteAvailable }}" hint-placeholder-val="{{ false }}">
+                    <div style="font-size:13px;font-style:italic;color:rgba(14,14,13,0.5);">{{ fitNote }}</div>
+                  </sc-if>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ sizeChartAvailable }}" hint-placeholder-val="{{ false }}">
+            <div ref="{{ chartRef }}" style="border-bottom:1px solid rgba(14,14,13,0.12);">
+              <button onClick="{{ toggleChart }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;background:none;border:0;padding:16px 0;cursor:pointer;font-family:inherit;text-align:left;color:#0E0E0D;" style-hover="opacity:0.6;">
+                <span style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">{{ T_sizeChart }}</span>
+                <span style="font-size:15px;line-height:1;color:rgba(14,14,13,0.45);font-weight:400;">{{ chartSign }}</span>
+              </button>
+              <sc-if value="{{ chartOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="padding-bottom:18px;overflow-x:auto;">
+              <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+                <div style="display:flex;border:1px solid rgba(14,14,13,0.18);">
+                  <button onClick="{{ setUnitCm }}" style="{{ unitCmStyle }}">cm</button>
+                  <button onClick="{{ setUnitIn }}" style="{{ unitInStyle }}">in</button>
+                </div>
+              </div>
+              <div style="display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap;">
+              <table style="border-collapse:collapse;font-size:12.5px;min-width:300px;">
+                <thead><tr>
+                  <th style="text-align:left;padding:8px 14px;border-bottom:1px solid rgba(14,14,13,0.15);color:rgba(14,14,13,0.5);font-weight:600;"></th>
+                  <th style="text-align:left;padding:8px 14px;border-bottom:1px solid rgba(14,14,13,0.15);color:rgba(14,14,13,0.5);font-weight:600;">{{ chartColA }}</th>
+                  <th style="text-align:left;padding:8px 14px;border-bottom:1px solid rgba(14,14,13,0.15);color:rgba(14,14,13,0.5);font-weight:600;">{{ chartColB }}</th>
+                  <th style="text-align:left;padding:8px 14px;border-bottom:1px solid rgba(14,14,13,0.15);color:rgba(14,14,13,0.5);font-weight:600;">{{ chartColC }}</th>
+                </tr></thead>
+                <tbody>
+                  <sc-for list="{{ sizeChart }}" as="row" hint-placeholder-count="6">
+                    <tr>
+                      <td style="padding:8px 14px;border-bottom:1px solid rgba(14,14,13,0.08);font-weight:600;">{{ row.size }}</td>
+                      <td style="padding:8px 14px;border-bottom:1px solid rgba(14,14,13,0.08);color:rgba(14,14,13,0.65);">{{ row.a }}</td>
+                      <td style="padding:8px 14px;border-bottom:1px solid rgba(14,14,13,0.08);color:rgba(14,14,13,0.65);">{{ row.b }}</td>
+                      <td style="padding:8px 14px;border-bottom:1px solid rgba(14,14,13,0.08);color:rgba(14,14,13,0.65);">{{ row.c }}</td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+              <sc-if value="{{ chartDiagramAvailable }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                  {{ chartDiagramImg }}
+                </div>
+              </sc-if>
+              </div>
+            </div>
+              </sc-if>
+            </div>
+          </sc-if>
+          </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isFriendMode }}" hint-placeholder-val="{{ false }}">
+      <div style="max-width:520px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center;gap:26px;">
+
+        <sc-if value="{{ friendReady }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:15px;color:rgba(14,14,13,0.75);">{{ senderLine }}</div>
+          <div style="width:100%;max-width:300px;aspect-ratio:4/5;position:relative;overflow:hidden;background:#F2F2F2;border-radius:16px;">
+            <img src="{{ productImgSrc }}" alt="{{ productImgPlaceholder }}" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;display:block;" />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <h2 style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:clamp(26px,3vw,36px);margin:0;">{{ productName }}</h2>
+            <div style="font-size:15px;color:rgba(14,14,13,0.65);">{{ productPrice }}</div>
+          </div>
+
+          <sc-if value="{{ showReactions }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:16px;margin-top:6px;">
+              <button onClick="{{ onFire }}" style="width:72px;height:72px;border-radius:50%;border:1px solid rgba(14,14,13,0.2);background:#F5F3EE;font-size:28px;cursor:pointer;transition:all 0.3s ease;" style-hover="border-color:#0E0E0D;transform:scale(1.06);">🔥</button>
+              <button onClick="{{ onFits }}" style="width:72px;height:72px;border-radius:50%;border:1px solid rgba(14,14,13,0.2);background:#F5F3EE;font-size:28px;cursor:pointer;transition:all 0.3s ease;" style-hover="border-color:#0E0E0D;transform:scale(1.06);">✅</button>
+              <button onClick="{{ onNo }}" style="width:72px;height:72px;border-radius:50%;border:1px solid rgba(14,14,13,0.2);background:#F5F3EE;font-size:28px;cursor:pointer;transition:all 0.3s ease;" style-hover="border-color:#0E0E0D;transform:scale(1.06);">❌</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ showThanks }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:16px 32px;border:1px solid #0A8F87;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;">{{ T_thanksInput }}</div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ friendNotFound }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:15px;color:rgba(14,14,13,0.6);padding:80px 0;">{{ T_linkInvalid }}</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+  </div>
+</section>
+
+<sc-if value="{{ showAddedModal }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(14,14,13,0.55);display:flex;align-items:center;justify-content:center;padding:24px;z-index:300;">
+    <div style="background:#FFFFFF;max-width:420px;width:100%;padding:34px 28px;display:flex;flex-direction:column;gap:16px;text-align:center;animation:modalIn 0.35s ease;">
+      <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:#0A8F87;font-weight:600;">{{ T_addedTitle }}</div>
+      <div style="font-family:'Anton',sans-serif;font-style:italic;font-weight:400;font-size:26px;line-height:1.1;">{{ productName }}</div>
+      <div style="font-size:13px;color:rgba(14,14,13,0.6);">{{ addedLine }}</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+        <a href="/cart" style="padding:16px;background:#0E0E0D;color:#F5F3EE;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;">{{ T_goToCart }}</a>
+        <a href="/shop" style="padding:16px;background:#FFFFFF;color:#0E0E0D;border:1px solid rgba(14,14,13,0.2);font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;">{{ T_continueShopping }}</a>
+      </div>
+      <button onClick="{{ onCloseAdded }}" style="background:none;border:none;color:rgba(14,14,13,0.45);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;text-decoration:underline;cursor:pointer;padding:2px;">{{ T_close }}</button>
+    </div>
+  </div>
+</sc-if>
+
+<div style="position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:200;">
+  <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
+    <div style="padding:14px 20px;background:#0E0E0D;color:#F5F3EE;font-size:13px;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,0.2);animation:toastIn 0.4s ease;">{{ t.text }}</div>
+  </sc-for>
+</div>
+
+<footer data-screen-label="Footer" style="background:#0E0E0D;color:rgba(245,243,238,0.7);padding:72px 24px 28px;border-top:1px solid rgba(245,243,238,0.12);">
+  <div style="max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:48px 24px;padding-bottom:56px;">
+    <div style="font-family:'Anton',sans-serif;font-style:italic;font-size:18px;letter-spacing:0.3em;color:#F5F3EE;text-transform:uppercase;">N—CREASE</div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;font-weight:600;color:rgba(245,243,238,0.45);margin-bottom:6px;">Shop</div>
+      <a href="/shop" style="font-size:15px;color:rgba(245,243,238,0.78);width:fit-content;" style-hover="color:#F5F3EE;">All products</a>
+      <a href="/lookbook" style="font-size:15px;color:rgba(245,243,238,0.78);width:fit-content;" style-hover="color:#F5F3EE;">Lookbook</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;font-weight:600;color:rgba(245,243,238,0.45);margin-bottom:6px;">Company</div>
+      <a href="/about" style="font-size:15px;color:rgba(245,243,238,0.78);width:fit-content;" style-hover="color:#F5F3EE;">About</a>
+      <a href="/stanley-stella" style="font-size:15px;color:rgba(245,243,238,0.78);width:fit-content;" style-hover="color:#F5F3EE;">Stanley/Stella</a>
+      <a href="/legal" style="font-size:15px;color:rgba(245,243,238,0.78);width:fit-content;" style-hover="color:#F5F3EE;">Legal</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="font-size:11px;letter-spacing:0.24em;text-transform:uppercase;font-weight:600;color:rgba(245,243,238,0.45);margin-bottom:6px;">Connect</div>
+      <a href="/account" style="font-size:15px;color:rgba(245,243,238,0.78);width:fit-content;" style-hover="color:#F5F3EE;">Account</a>
+      <a href="#" style="font-size:15px;color:rgba(245,243,238,0.78);width:fit-content;" style-hover="color:#F5F3EE;">Instagram</a>
+      <a href="mailto:neiltack009@gmail.com" style="font-size:15px;color:rgba(245,243,238,0.78);width:fit-content;" style-hover="color:#F5F3EE;">Contact</a>
+    </div>
+  </div>
+  <div style="max-width:1400px;margin:0 auto;padding-top:24px;border-top:1px solid rgba(245,243,238,0.12);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,243,238,0.4);">© 2025 N—CREASE</div>
+</footer>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    mode: 'product',
+    productHandle: null,
+    shopifyProduct: null,
+    processedImages: [],
+    productError: false,
+    sizeAvailability: {},
+    selectedSize: null,
+    selectedColor: null,
+    shareCode: null,
+    shareRow: null,
+    friendLookedUp: false,
+    friendReacted: false,
+    checkingOut: false,
+    added: false,
+    showAddedModal: false,
+    selectedImageIndex: 0,
+    pendingSize: null,
+    toasts: [],
+    sizeUnit: 'cm',
+    lang: 'en'
+  };
+
+  // Measurements come from Shopify in mm; the chart renders them in the unit the
+  // shopper picked, remembered across products and visits.
+  readSizeUnit() {
+    try { return localStorage.getItem('ncrease-size-unit') === 'in' ? 'in' : 'cm'; } catch (e) { return 'cm'; }
+  }
+
+  setSizeUnit(u) {
+    try { localStorage.setItem('ncrease-size-unit', u); } catch (e) {}
+    this.setState({ sizeUnit: u });
+  }
+
+  fmtMeasure(cell, unit) {
+    if (!cell) return '';
+    if (cell.mm == null) return cell.raw || '';
+    var v = unit === 'in' ? cell.mm / 25.4 : cell.mm / 10;
+    return (Math.round(v * 10) / 10).toString().replace('.', ',') + (unit === 'in' ? '"' : ' cm');
+  }
+
+  SHOPIFY_DOMAIN = '1ymgaz-rp.myshopify.com';
+  SHOPIFY_TOKEN = 'd832dca775dd2ee7facf5abe9d91a7f2';
+
+  SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  // Never purchasable on this site, even when Shopify carries the variant.
+  BLOCKED_SIZES = ['3XL', 'XXXL', '4XL', 'XXXXL'];
+
+  SIZE_CHART_TABLE = [
+    { size: 'XS', a: '635 mm', b: '550 mm', c: '210 mm' },
+    { size: 'S', a: '675 mm', b: '570 mm', c: '225 mm' },
+    { size: 'M', a: '715 mm', b: '610 mm', c: '240 mm' },
+    { size: 'L', a: '735 mm', b: '640 mm', c: '245 mm' },
+    { size: 'XL', a: '755 mm', b: '670 mm', c: '250 mm' },
+    { size: 'XXL', a: '775 mm', b: '710 mm', c: '255 mm' }
+  ];
+
+  STRINGS = {
+    colorLabel: { en: 'Color:', fr: 'Couleur :' },
+    sizeLabel: { en: 'Size', fr: 'Taille' },
+    yourSizeIs: { en: 'Your size is', fr: 'Votre taille est' },
+    takeFitFinder: { en: 'Take the fit finder', fr: 'Faites le guide des tailles' },
+    continueShopping: { en: 'Continue Shopping', fr: 'Continuer mes achats' },
+    goToCart: { en: 'Go to Cart', fr: 'Voir le panier' },
+    soldOut: { en: 'Sold Out', fr: 'Épuisé' },
+    added: { en: 'Added ✓', fr: 'Ajouté ✓' },
+    processing: { en: 'Processing…', fr: 'Traitement…' },
+    addToCart: { en: 'Add to Cart', fr: 'Ajouter au panier' },
+    sizeChart: { en: 'Size Chart', fr: 'Guide des tailles' },
+    sizeChartBelow: { en: 'See the size chart below ↓', fr: 'Voir le guide des tailles ci-dessous ↓' },
+    productInfo: { en: 'Product Info', fr: 'Infos produit' },
+    colWidth: { en: 'A — Width', fr: 'A — Largeur' },
+    colLength: { en: 'B — Length', fr: 'B — Longueur' },
+    colSleeve: { en: 'C — Sleeve', fr: 'C — Manche' },
+    thanksInput: { en: 'Thanks for your input!', fr: 'Merci pour votre avis !' },
+    linkInvalid: { en: "This link isn't valid anymore.", fr: "Ce lien n'est plus valide." },
+    wantsOpinion: { en: 'wants your opinion.', fr: 'aimerait avoir votre avis.' },
+    aFriend: { en: 'A friend', fr: 'Un ami' },
+    checkoutUnavailable: { en: 'Checkout not available yet — please try again in a moment.', fr: "Le paiement n'est pas encore disponible — veuillez réessayer." },
+    reactFire: { en: 'Someone reacted: 🔥', fr: 'Quelqu\'un a réagi : 🔥' },
+    reactFits: { en: 'Someone reacted: ✅ Fits you', fr: 'Quelqu\'un a réagi : ✅ Ça vous va' },
+    reactNo: { en: 'Someone reacted: ❌ Not their style', fr: "Quelqu'un a réagi : ❌ Pas son style" },
+    loadingProduct: { en: 'Loading product…', fr: 'Chargement du produit…' },
+    productNotFound: { en: "This product couldn't be found.", fr: "Ce produit n'a pas été trouvé." },
+    backToShop: { en: 'Back to Shop', fr: 'Retour à la boutique' },
+    addedTitle: { en: 'Added to your cart', fr: 'Ajouté à votre panier' },
+    close: { en: 'Close', fr: 'Fermer' },
+    pickSizeFirst: { en: 'Please select a size first.', fr: "Veuillez d'abord choisir une taille." },
+    variantUnavailable: { en: 'This option is currently unavailable.', fr: "Cette option n'est pas disponible pour le moment." },
+    soldOutSize: { en: 'This size is sold out', fr: 'Cette taille est épuisée' },
+    oversizedTitle: { en: 'Oversized fit', fr: 'Coupe oversized' },
+    oversizedNote: { en: 'Designed to sit loose. Take your usual size for the intended oversized fit — size down if you want a more boxy fit.', fr: "Conçu pour tomber ample. Prenez votre taille habituelle pour la coupe oversized voulue — prenez une taille en dessous pour une coupe plus boxy." },
+    delivery: { en: 'Delivered within approx. 5–7 business days · Free shipping from €70', fr: 'Livré sous environ 5 à 7 jours ouvrables · Livraison gratuite dès 70 €' },
+  };
+
+  getLang() { try { return sessionStorage.getItem('ncrease-lang') || 'en'; } catch (e) { return 'en'; } }
+  s(key) { return (this.STRINGS[key] || {})[this.state.lang] || (this.STRINGS[key] || {}).en || key; }
+  optVal(v) { return (v && typeof v === 'object') ? v.value : v; }
+  normSize(v) { return String(v == null ? '' : v).trim().toUpperCase().replace(/\s+/g, ''); }
+  isBlockedSize(v) { return this.BLOCKED_SIZES.indexOf(this.normSize(v)) !== -1; }
+
+  // Shopify returns option values in the order they were created; present them
+  // in garment order and drop everything we don't sell.
+  orderedSizes(values) {
+    var self = this;
+    var order = this.SIZE_ORDER;
+    return (values || [])
+      .map(function (v) { return self.optVal(v); })
+      .filter(function (v) { return v && !self.isBlockedSize(v); })
+      .sort(function (a, b) {
+        var ia = order.indexOf(self.normSize(a)), ib = order.indexOf(self.normSize(b));
+        if (ia === -1 && ib === -1) return String(a).localeCompare(String(b));
+        if (ia === -1) return 1;
+        if (ib === -1) return -1;
+        return ia - ib;
+      });
+  }
+
+  // Fit comes from Shopify itself: the blank's product type names it
+  // ("Boxy Heavyweight…", "Oversized Unisex Hoodie"), with title and tags as
+  // extra signal. Nothing per-product is hardcoded, so a new product is
+  // classified the moment it exists in Shopify.
+  fitText(sp) {
+    if (!sp) return '';
+    var tags = (sp.tags || []).map(function (t) { return (t && t.value) ? t.value : t; }).join(' ');
+    return [sp.title, sp.productType, tags].join(' ').toLowerCase();
+  }
+  // Socks have no fit advice and no size finder at all.
+  isSocks(sp) { return /\bsocks?\b|sokken|chaussettes/.test(this.fitText(sp)); }
+  fitProfile(sp) {
+    var t = this.fitText(sp);
+    if (this.isSocks(sp)) return 'regular';
+    // The Running Club tees are a regular cut, not an oversized one.
+    if (/running\s*club|\brunning\b|\bloop\b/.test(t)) return 'regular';
+    if (/oversiz|boxy|baggy/.test(t)) return 'oversized';
+    if (/relaxed|loose/.test(t)) return 'relaxed';
+    if (/slim|muscle|fitted/.test(t)) return 'slim';
+    return 'regular';
+  }
+
+  optionOf(variant, re) {
+    var opt = (variant.selectedOptions || []).filter(function (o) { return re.test(o.name || ''); })[0];
+    return opt ? String(opt.value || '').trim() : '';
+  }
+
+  // The one place that resolves a Shopify variant, so page, cart and
+  // availability can never disagree.
+  variantFor(size, color) {
+    var self = this;
+    var sp = this.state.shopifyProduct;
+    if (!sp || !size) return null;
+    return (sp.variants || []).filter(function (v) {
+      if (self.normSize(self.optionOf(v, /size|maat|taille/i)) !== self.normSize(size)) return false;
+      if (!color) return true;
+      var c = self.optionOf(v, /colou?r|kleur|couleur/i);
+      return !c || c.toLowerCase() === String(color).trim().toLowerCase();
+    })[0] || null;
+  }
+
+  extractDescriptionParts(sp) {
+    var html = sp.descriptionHtml || '';
+    var plain = sp.description || '';
+    var blocks = [];
+    if (html) {
+      blocks = html
+        .split(/<\s*br\s*\/?>|<\/\s*(?:p|li|div|h[1-6])\s*>/i)
+        .map(function (s) { return s.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/\s+/g, ' ').trim(); })
+        .filter(Boolean);
+    }
+    if (blocks.length < 2 && plain) {
+      var sentences = plain.match(/[^.!?]+[.!?]+/g) || [];
+      var joinedLen = sentences.join('').length;
+      if (sentences.length > 1 && joinedLen >= plain.length * 0.7) {
+        blocks = sentences.map(function (s) { return s.trim(); }).filter(Boolean);
+      } else if (plain.trim()) {
+        blocks = [plain.trim()];
+      }
+    }
+    // Some suppliers write the whole description as one paragraph with
+    // "- " dash markers instead of a list. Split those so their copy ends up
+    // in the collapsible Product Info section like every other product's,
+    // rather than sitting permanently expanded as the tagline.
+    if (blocks.length === 1) {
+      var parts = blocks[0].split(/\s+[-•]\s+/).map(function (s) { return s.trim(); }).filter(Boolean);
+      if (parts.length > 2) blocks = parts;
+    }
+    // drop lines that are just size-chart measurement dumps (we render our own size table)
+    blocks = blocks.filter(function (b) { return (b.match(/\d+\s?mm/gi) || []).length < 3; });
+    // T-Pop's supplier copy includes a self-promotional line we don't publish.
+    blocks = blocks.filter(function (b) { return !/^top\s+quality\s+product\.?$/i.test(b.trim()); });
+    // Supplier brand credit line ("Brand: Stanley/Stella") is not shown.
+    blocks = blocks.filter(function (b) { return !/^brand\s*:/i.test(b.trim()); });
+    // Placeholder/test lines left in a Shopify description are never published.
+    blocks = blocks.filter(function (b) { return !/^(test|testing|test\s*\d+)[.!]?$/i.test(b.trim()); });
+    return blocks;
+  }
+
+  // Spreadconnect ships each product's own measurement table inside its
+  // Shopify description (div.size-table: a size column plus A/B/C measure
+  // columns in mm, and a diagram that defines what A/B/C mean for THAT
+  // garment). Parse it so every product shows its real measurements instead
+  // of one generic chart. Returns null when a product has no table (socks).
+  parseSizeTable(sp) {
+    var html = (sp && sp.descriptionHtml) || '';
+    if (!html || html.indexOf('measure-cell') === -1) return null;
+    var doc;
+    try { doc = new DOMParser().parseFromString(html, 'text/html'); } catch (e) { return null; }
+    var table = doc.querySelector('.size-table table') || doc.querySelector('table');
+    if (!table) return null;
+    var cols = Array.prototype.map.call(table.querySelectorAll('th.measure-name'), function (th) {
+      return (th.textContent || '').trim();
+    }).filter(Boolean);
+    // Keep the raw millimetres so the chart can render cm or inches on demand.
+    var toCell = function (txt) {
+      var t = (txt || '').trim();
+      var mm = /([\d.,]+)\s*mm/i.exec(t);
+      if (mm) return { mm: parseFloat(mm[1].replace(',', '.')), raw: t };
+      var cm = /([\d.,]+)\s*cm/i.exec(t);
+      if (cm) return { mm: parseFloat(cm[1].replace(',', '.')) * 10, raw: t };
+      return { mm: null, raw: t };
+    };
+    var rows = [];
+    Array.prototype.forEach.call(table.querySelectorAll('tbody tr'), function (tr) {
+      var sizeCell = tr.querySelector('.size-cell') || tr.querySelector('td');
+      if (!sizeCell) return;
+      var cells = Array.prototype.map.call(tr.querySelectorAll('.measure-cell'), function (td) {
+        return toCell(td.textContent);
+      });
+      if (!cells.length) return;
+      rows.push({ size: (sizeCell.textContent || '').trim(), a: cells[0] || null, b: cells[1] || null, c: cells[2] || null });
+    });
+    if (!rows.length) return null;
+    var img = doc.querySelector('.size-image-wrapper img');
+    return {
+      rows: rows,
+      cols: cols.length ? cols : ['A', 'B', 'C'],
+      diagram: img ? img.getAttribute('src') : '',
+      hint: (function () { var h = doc.querySelector('.size-hint'); return h ? (h.textContent || '').trim() : ''; })()
+    };
+  }
+
+  ensureShopifyReady(handle) {
+    var self = this;
+    if (!handle) { this.setState({ productError: true }); return; }
+    function init() {
+      if (!self._shopifyClient) self._shopifyClient = window.ShopifyBuy.buildClient({ domain: self.SHOPIFY_DOMAIN, storefrontAccessToken: self.SHOPIFY_TOKEN });
+      self._shopifyClient.product.fetchByHandle(handle).then(function (p) {
+        if (!p) { self.setState({ productError: true }); return; }
+        self._shopifyProduct = p;
+        var avail = {};
+        (p.variants || []).forEach(function (v) {
+          var opt = (v.selectedOptions || []).find(function (o) { return /size|maat|taille/i.test(o.name || ''); });
+          if (opt && opt.value) avail[self.normSize(opt.value)] = !!v.available;
+        });
+        self.setState({ shopifyProduct: p, sizeAvailability: avail, productError: false, processedImages: [], selectedImageIndex: 0 });
+        // A size handed over by the Fit Finder (?size=) only counts if Shopify
+        // really has it for this product and we are allowed to sell it.
+        var pending = self.state.pendingSize;
+        if (pending && !self.isBlockedSize(pending)) {
+          var sizeOpt0 = (p.options || []).filter(function (o) { return /size|maat|taille/i.test(o.name || ''); })[0];
+          var match = sizeOpt0 ? self.orderedSizes(sizeOpt0.values).filter(function (v) { return self.normSize(v) === self.normSize(pending); })[0] : null;
+          if (match) self.setState({ selectedSize: match });
+          self.setState({ pendingSize: null });
+        }
+        if (!self.state.selectedColor) {
+          var colorOpt = (p.options || []).filter(function (o) { return /colou?r|kleur/i.test(o.name || ''); })[0];
+          if (colorOpt && colorOpt.values && colorOpt.values[0]) self.setState({ selectedColor: self.optVal(colorOpt.values[0]) });
+        }
+        self.applySeo();
+      }).catch(function (err) {
+        console.error('N-CREASE: Shopify product fetch failed', err);
+        self.setState({ productError: true });
+      });
+    }
+    if (window.ShopifyBuy) { init(); return; }
+    var t = setInterval(function () { if (window.ShopifyBuy) { clearInterval(t); init(); } }, 50);
+  }
+
+  selectSizeOption(sizeLabel) {
+    if (this.isBlockedSize(sizeLabel)) return;
+    this.setState({ selectedSize: sizeLabel, added: false, showAddedModal: false });
+  }
+
+  selectColorOption(colorName) {
+    this.setState({ selectedColor: colorName, added: false, showAddedModal: false });
+  }
+
+  selectImage(i) { this.setState({ selectedImageIndex: i }); }
+
+  onCloseAdded() { this.setState({ showAddedModal: false }); }
+
+  onCustomAddToCart() {
+    var self = this;
+    var sp = this.state.shopifyProduct;
+    if (!sp) return;
+    var size = this.state.selectedSize;
+    if (!size) { this.pushToast(this.s('pickSizeFirst')); return; }
+    if (this.isBlockedSize(size)) { this.pushToast(this.s('variantUnavailable')); return; }
+    var variant = this.variantFor(size, this.state.selectedColor);
+    if (!variant || variant.available === false || !sp.availableForSale) {
+      this.pushToast(this.s('variantUnavailable'));
+      return;
+    }
+    if (this.state.checkingOut) return;
+    this.setState({ checkingOut: true });
+    this.addToShopifyCart(variant.id, 1).then(function (cart) {
+      try {
+        localStorage.setItem('ncrease-checkout-id', cart.id);
+        localStorage.setItem('ncrease-checkout-url', self.fixCheckoutUrl(cart.checkoutUrl));
+        localStorage.setItem('ncrease-cart-count', String(cart.totalQuantity || 0));
+      } catch (e) {}
+      window.dispatchEvent(new CustomEvent('ncrease-cart-updated'));
+      self.setState({ checkingOut: false, added: true, showAddedModal: true });
+    }).catch(function (e) {
+      console.warn('N-CREASE: add to cart failed', e);
+      self.setState({ checkingOut: false });
+      self.pushToast(self.s(e && e.unavailable ? 'variantUnavailable' : 'checkoutUnavailable'));
+    });
+  }
+
+  // Cart operations use the Storefront Cart API directly; the JS Buy SDK's
+  // checkout resource is deprecated and unsupported since 1 Jan 2026.
+  CART_API_VERSION = '2026-04';
+
+  cartGql(query, variables) {
+    return fetch('https://' + this.SHOPIFY_DOMAIN + '/api/' + this.CART_API_VERSION + '/graphql.json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': this.SHOPIFY_TOKEN },
+      body: JSON.stringify({ query: query, variables: variables || {} })
+    }).then(function (r) {
+      if (!r.ok) throw new Error('Storefront API ' + r.status);
+      return r.json();
+    }).then(function (j) {
+      if (j.errors && j.errors.length) throw new Error(j.errors[0].message || 'Storefront API error');
+      return j.data;
+    });
+  }
+
+  // SDK ids are normally plain GIDs; older SDK builds base64-encoded them.
+  toGid(id) {
+    var s = String(id || '');
+    if (s.indexOf('gid://') === 0) return s;
+    try { var d = atob(s); if (d.indexOf('gid://') === 0) return d; } catch (e) {}
+    return s;
+  }
+
+  // checkoutUrl is issued on the primary domain; when that domain serves this
+  // frontend, /cart/c/… would 404, so it is pointed at the myshopify domain.
+  fixCheckoutUrl(url) {
+    if (!url) return '';
+    try { var u = new URL(url); if (!/\.myshopify\.com$/i.test(u.hostname)) { u.host = this.SHOPIFY_DOMAIN; u.protocol = 'https:'; } return u.toString(); } catch (e) { return url; }
+  }
+
+  // Adds to the existing bag when it is still open; a cart that became an
+  // order, expired, or is a legacy Checkout id is replaced by a new cart.
+  addToShopifyCart(variantId, qty) {
+    var self = this;
+    var fields = 'cart { id checkoutUrl totalQuantity } userErrors { message } warnings { code message }';
+    var lines = [{ merchandiseId: this.toGid(variantId), quantity: qty }];
+    var baseId = function (id) { return String(id || '').split('?')[0]; };
+    // Stock ran out after the page loaded: Shopify only warns and adds nothing.
+    var checkStock = function (r) {
+      var w = (r && r.warnings) || [];
+      for (var i = 0; i < w.length; i++) {
+        if (/OUT_OF_STOCK|NOT_ENOUGH_STOCK|SOLD_OUT/i.test(w[i].code || '') || /sold out/i.test(w[i].message || '')) {
+          var err = new Error(w[i].message || 'out of stock'); err.unavailable = true; throw err;
+        }
+      }
+    };
+    var existingId = null;
+    try { existingId = localStorage.getItem('ncrease-checkout-id'); } catch (e) {}
+    var addToExisting = (existingId && existingId.indexOf('gid://shopify/Cart/') === 0)
+      ? this.cartGql('mutation a($cartId: ID!, $lines: [CartLineInput!]!) { cartLinesAdd(cartId: $cartId, lines: $lines) { ' + fields + ' } }', { cartId: existingId, lines: lines })
+          .then(function (d) {
+            var r = d && d.cartLinesAdd;
+            if (!r || !r.cart) return null;
+            checkStock(r);
+            // A cart that no longer exists (ordered/expired) comes back as a
+            // fresh cart holding this line, together with a "does not exist" error.
+            if ((r.userErrors || []).length && baseId(r.cart.id) === baseId(existingId)) throw new Error(r.userErrors[0].message || 'cartLinesAdd failed');
+            return r.cart;
+          }, function () { return null; })
+      : Promise.resolve(null);
+    return addToExisting.then(function (cart) {
+      if (cart) return cart;
+      return self.cartGql('mutation c($input: CartInput!) { cartCreate(input: $input) { ' + fields + ' } }', { input: { lines: lines } })
+        .then(function (d) {
+          var r = d && d.cartCreate;
+          if (!r || !r.cart) throw new Error((r && r.userErrors && r.userErrors[0] && r.userErrors[0].message) || 'cartCreate failed');
+          checkStock(r);
+          return r.cart;
+        });
+    });
+  }
+
+  applySeo() {
+    var sp = this.state.shopifyProduct;
+    if (!sp) return;
+    document.title = sp.title + ' — N-CREASE';
+    var desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute('content', sp.title + ' — N-CREASE.');
+  }
+
+  // The main photo is sized to the buy block beside it (top of the title to the
+  // bottom of the add-to-cart card) so the whole shot fits on screen at once.
+  syncPhotoHeight() {
+    var photo = this._photoEl, block = this._blockEl;
+    if (!photo || !block) return;
+    if (window.innerWidth <= 860) { photo.style.height = ''; photo.style.aspectRatio = '4/5'; return; }
+    var h = Math.round(block.getBoundingClientRect().height);
+    if (!h) return;
+    photo.style.aspectRatio = 'auto';
+    photo.style.height = h + 'px';
+  }
+
+  componentDidUpdate() { this.syncPhotoHeight(); }
+
+  componentDidMount() {
+    var self = this;
+    this._syncPhoto = function () { self.syncPhotoHeight(); };
+    window.addEventListener('resize', this._syncPhoto);
+    if (window.ResizeObserver) {
+      this._photoRO = new ResizeObserver(this._syncPhoto);
+    }
+    this.syncPhotoHeight();
+    this.setState({ lang: this.getLang(), sizeUnit: this.readSizeUnit() });
+    this._onLang = function (e) { self.setState({ lang: (e.detail && e.detail.lang) || self.getLang() }); };
+    window.addEventListener('ncrease-lang-changed', this._onLang);
+    var params = new URLSearchParams(window.location.search);
+    var p = params.get('p');
+    var share = params.get('share');
+    if (share) {
+      this.setState({ mode: 'friend', shareCode: share });
+      try { if (localStorage.getItem('ncrease-reacted-' + share)) this.setState({ friendReacted: true }); } catch (e) {}
+      this.loadShare(share);
+    } else {
+      var wantedSize = params.get('size');
+      this.setState({ productHandle: p || null, pendingSize: wantedSize || null });
+      this.ensureShopifyReady(p);
+      this.subscribeMyReactions();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._syncPhoto);
+    if (this._photoRO) this._photoRO.disconnect();
+    if (this._unsub) this._unsub();
+    window.removeEventListener('ncrease-lang-changed', this._onLang);
+  }
+
+  genCode() {
+    return Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 6);
+  }
+
+  async ensureClient() {
+    if (this._client !== undefined) return this._client;
+    try {
+      var mod = await import('./supabase-config.js');
+      this._cfg = mod;
+      this._client = await mod.getSupabase();
+    } catch (e) { this._client = null; }
+    return this._client;
+  }
+
+  localCreateShare(productId, senderName) {
+    var code = this.genCode();
+    var shares = {};
+    try { shares = JSON.parse(localStorage.getItem('ncrease-shares') || '{}'); } catch (e) {}
+    shares[code] = { id: code, productId: productId, senderName: senderName, createdAt: Date.now() };
+    try { localStorage.setItem('ncrease-shares', JSON.stringify(shares)); } catch (e) {}
+    return { code: code, id: code };
+  }
+  localGetShare(code) {
+    var shares = {};
+    try { shares = JSON.parse(localStorage.getItem('ncrease-shares') || '{}'); } catch (e) {}
+    return shares[code] || null;
+  }
+  localAddReaction(shareId, reaction) {
+    var reactions = {};
+    try { reactions = JSON.parse(localStorage.getItem('ncrease-reactions') || '{}'); } catch (e) {}
+    if (!reactions[shareId]) reactions[shareId] = [];
+    reactions[shareId].push({ reaction: reaction, createdAt: Date.now() });
+    try { localStorage.setItem('ncrease-reactions', JSON.stringify(reactions)); } catch (e) {}
+    window.dispatchEvent(new CustomEvent('ncrease-reaction-added', { detail: { shareId: shareId, reaction: reaction } }));
+  }
+
+  async createShare(productId, senderName) {
+    var client = await this.ensureClient();
+    if (!client) return this.localCreateShare(productId, senderName);
+    var anonId = this._cfg.getAnonId();
+    var res = await client.from('shares').insert({ code: this.genCode(), product_id: productId, sender_id: anonId, sender_name: senderName }).select().single();
+    if (res.error || !res.data) return this.localCreateShare(productId, senderName);
+    return { code: res.data.code, id: res.data.id };
+  }
+
+  async fetchShare(code) {
+    var client = await this.ensureClient();
+    if (!client) return this.localGetShare(code);
+    var res = await client.from('shares').select('*').eq('code', code).maybeSingle();
+    if (res.error || !res.data) return this.localGetShare(code);
+    return { id: res.data.id, productId: res.data.product_id, senderName: res.data.sender_name };
+  }
+
+  async pushReaction(shareId, reaction) {
+    var client = await this.ensureClient();
+    if (!client) { this.localAddReaction(shareId, reaction); return; }
+    var res = await client.from('reactions').insert({ share_id: shareId, reaction: reaction });
+    if (res.error) this.localAddReaction(shareId, reaction);
+  }
+
+  async loadShare(code) {
+    var row = await this.fetchShare(code);
+    if (!row) { this.setState({ friendLookedUp: true, shareRow: null }); return; }
+    this.setState({ friendLookedUp: true, shareRow: row, productHandle: row.productId });
+    this.ensureShopifyReady(row.productId);
+  }
+
+  async subscribeMyReactions() {
+    var self = this;
+    var mine = [];
+    try { mine = JSON.parse(localStorage.getItem('ncrease-my-shares') || '[]'); } catch (e) {}
+    if (!mine.length) return;
+    var ids = mine.map(function (m) { return m.id; });
+    var client = await this.ensureClient();
+    if (client) {
+      var channel = client.channel('reactions-listen')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'reactions' }, function (payload) {
+          if (ids.indexOf(payload.new.share_id) !== -1) self.pushToast(self.reactionText(payload.new.reaction));
+        })
+        .subscribe();
+      this._unsub = function () { client.removeChannel(channel); };
+    } else {
+      var onLocal = function (e) { if (ids.indexOf(e.detail.shareId) !== -1) self.pushToast(self.reactionText(e.detail.reaction)); };
+      var onStorage = function (e) { if (e.key === 'ncrease-reactions') self.pushToast('New reaction on your share!'); };
+      window.addEventListener('ncrease-reaction-added', onLocal);
+      window.addEventListener('storage', onStorage);
+      this._unsub = function () { window.removeEventListener('ncrease-reaction-added', onLocal); window.removeEventListener('storage', onStorage); };
+    }
+  }
+
+  reactionText(r) {
+    if (r === 'fire') return this.s('reactFire');
+    if (r === 'fits') return this.s('reactFits');
+    return this.s('reactNo');
+  }
+
+  pushToast(text) {
+    var self = this;
+    var id = Date.now() + Math.random();
+    this.setState(function (s) { return { toasts: s.toasts.concat([{ id: id, text: text }]) }; });
+    setTimeout(function () {
+      self.setState(function (s) { return { toasts: s.toasts.filter(function (t) { return t.id !== id; }) }; });
+    }, 5000);
+  }
+
+  onShareClick() {
+    var name = '';
+    try { name = localStorage.getItem('ncrease-display-name') || ''; } catch (e) {}
+    if (!name) { this.setState({ showNamePrompt: true }); return; }
+    this.doShare(name);
+  }
+
+  onConfirmName() {
+    var name = (this.state.nameDraft || '').trim();
+    if (!name) return;
+    try { localStorage.setItem('ncrease-display-name', name); } catch (e) {}
+    this.setState({ showNamePrompt: false });
+    this.doShare(name);
+  }
+
+  async doShare(name) {
+    var self = this;
+    var pid = this.state.productHandle;
+    var res = await this.createShare(pid, name);
+    try {
+      var mine = JSON.parse(localStorage.getItem('ncrease-my-shares') || '[]');
+      mine.push({ code: res.code, id: res.id, productId: pid });
+      localStorage.setItem('ncrease-my-shares', JSON.stringify(mine));
+    } catch (e) {}
+    this.subscribeMyReactions();
+
+    var base = (this._cfg && this._cfg.EDGE_FUNCTION_BASE) ? this._cfg.EDGE_FUNCTION_BASE + '/share-preview/' + res.code
+      : (this._cfg && this._cfg.SITE_URL ? this._cfg.SITE_URL : window.location.origin + window.location.pathname.replace(/[^/]+$/, '')) + 'product?share=' + res.code;
+
+    var sp = this.state.shopifyProduct;
+    if (navigator.share && sp) {
+      try { await navigator.share({ title: sp.title + ' — N-CREASE', text: name + ' wants your opinion on the ' + sp.title, url: base }); this.flashShareLabel('Shared ✓'); return; } catch (e) {}
+    }
+    try {
+      await navigator.clipboard.writeText(base);
+      this.flashShareLabel('Link Copied ✓');
+    } catch (e) {
+      this.flashShareLabel('Link: ' + base);
+    }
+  }
+
+  flashShareLabel(text) {
+    var self = this;
+    this.setState({ shareLabel: text });
+    setTimeout(function () { self.setState({ shareLabel: 'Share with Friends' }); }, 2200);
+  }
+
+  react(type) {
+    if (this.state.friendReacted || !this.state.shareRow) return;
+    this.pushReaction(this.state.shareRow.id, type);
+    try { localStorage.setItem('ncrease-reacted-' + this.state.shareCode, '1'); } catch (e) {}
+    this.setState({ friendReacted: true });
+  }
+
+  renderVals() {
+    var self = this;
+    var sp = this.state.shopifyProduct;
+    var hasSp = !!sp;
+    var isFriend = this.state.mode === 'friend';
+    var row = this.state.shareRow;
+    var avail = this.state.sizeAvailability || {};
+    var effectiveSoldOut = hasSp ? !sp.availableForSale : false;
+
+    var variants = hasSp ? (sp.variants || []) : [];
+    var minAmt = null;
+    variants.forEach(function (v) {
+      var amt = parseFloat(v.priceV2 ? v.priceV2.amount : (v.price ? v.price.amount : 0));
+      if (minAmt === null || amt < minAmt) minAmt = amt;
+    });
+    if (minAmt === null) minAmt = 0;
+    var priceStr = hasSp ? ('\u20ac' + minAmt.toFixed(2).replace('.', ',')) : '';
+
+    var images = hasSp ? (sp.images || []) : [];
+    var processedImgs = this.state.processedImages || [];
+    var srcAt = function (i) { return processedImgs[i] || (images[i] ? images[i].src : ''); };
+    var activeIdx = Math.min(this.state.selectedImageIndex || 0, Math.max(0, images.length - 1));
+    var mainImgSrc = srcAt(activeIdx);
+    var galleryThumbs = images.map(function (im, i) {
+      var active = i === activeIdx;
+      return {
+        imgId: hasSp ? ('product-gallery-' + sp.handle + '-' + i) : ('product-gallery-' + i),
+        src: srcAt(i),
+        label: 'Photo ' + (i + 1),
+        onClick: function () { self.selectImage(i); },
+        style: 'position:relative;aspect-ratio:4/5;overflow:hidden;background:#F2F2F2;border-radius:14px;padding:0;cursor:pointer;transition:border-color 0.25s ease;border:2px solid ' + (active ? '#0E0E0D' : 'rgba(14,14,13,0.06)') + ';'
+      };
+    });
+
+    var sizeOpt = hasSp ? (sp.options || []).filter(function (o) { return /size|maat|taille/i.test(o.name || ''); })[0] : null;
+    // Only sizes Shopify actually carries for THIS product, in garment order,
+    // with the sizes we never sell removed.
+    var sizeOptions = sizeOpt ? this.orderedSizes(sizeOpt.values) : [];
+    var colorOpt = hasSp ? (sp.options || []).filter(function (o) { return /colou?r|kleur|couleur/i.test(o.name || ''); })[0] : null;
+    var colorOptions = colorOpt ? colorOpt.values.map(function (v) { return self.optVal(v); }) : [];
+
+    var descBlocks = hasSp ? this.extractDescriptionParts(sp) : [];
+    // No tagline under the product title on any product — the full supplier copy
+    // lives in the collapsible Product Info section instead.
+    var tagline = '';
+    var bullets = descBlocks;
+
+    var specsArr = [];
+
+
+    var fitNote = '';
+
+    // The static chart holds the Stanley/Stella TEE's own measurements — showing
+    // it on a different garment type (e.g. a hoodie) would be misleading, so it
+    // only applies where the size labels line up AND the product isn't a hoodie.
+    var isHoodie = hasSp && /hoodie/i.test(sp.title || '');
+    var isSocks = hasSp && this.isSocks(sp);
+    // Prefer the product's OWN measurements from Shopify; the static chart is
+    // only a fallback for tees whose description carries no table.
+    var parsedChart = hasSp ? this.parseSizeTable(sp) : null;
+    var sizeChartRows = [];
+    var chartCols = ['A', 'B', 'C'];
+    var chartDiagram = '';
+    var chartHint = '';
+    if (parsedChart) {
+      chartCols = parsedChart.cols;
+      chartDiagram = parsedChart.diagram;
+      chartHint = parsedChart.hint;
+      sizeChartRows = sizeOptions.length ? parsedChart.rows.filter(function (row) {
+        return sizeOptions.some(function (so) { return so.trim().toUpperCase() === row.size.toUpperCase(); });
+      }) : parsedChart.rows;
+      if (!sizeChartRows.length) sizeChartRows = parsedChart.rows;
+    }
+    // No generic fallback: a product without its own Shopify table shows no
+    // chart rather than another garment's measurements.
+    var unit = this.state.sizeUnit === 'in' ? 'in' : 'cm';
+    var fmt = this.fmtMeasure.bind(this);
+    var sizeChartDisplay = sizeChartRows.map(function (r) {
+      return { size: r.size, a: fmt(r.a, unit), b: fmt(r.b, unit), c: fmt(r.c, unit) };
+    });
+    var unitBtn = function (active) {
+      return 'padding:5px 12px;font-family:inherit;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;border:0;cursor:pointer;'
+        + (active ? 'background:#0E0E0D;color:#F5F3EE;' : 'background:transparent;color:rgba(14,14,13,0.5);');
+    };
+
+    var selectedVariant = this.state.selectedSize ? this.variantFor(this.state.selectedSize, this.state.selectedColor) : null;
+    var selectedSizeSoldOut = !!(this.state.selectedSize && (!selectedVariant || selectedVariant.available === false));
+
+    return {
+      isProductMode: !isFriend,
+      isFriendMode: isFriend,
+      productLoading: !isFriend && !hasSp && !this.state.productError,
+      productError: !isFriend && this.state.productError,
+      productReady: !isFriend && hasSp,
+
+      productImg: hasSp ? ('product-' + sp.handle) : 'product-placeholder',
+      productImgSrc: mainImgSrc,
+      productImgPlaceholder: hasSp ? (sp.title + ' — studio, off-white backdrop') : 'Product photo',
+      hasGallery: galleryThumbs.length > 1,
+      galleryThumbs: galleryThumbs,
+
+      hasColorOptions: colorOptions.length > 0,
+      colorButtons: colorOptions.map(function (c) {
+        var selected = self.state.selectedColor === c;
+        var base = 'padding:8px 14px;font-size:11px;font-weight:600;text-transform:capitalize;border:1px solid rgba(14,14,13,0.15);cursor:pointer;transition:all 0.2s ease;';
+        var look = selected ? 'background:#0E0E0D;color:#F5F3EE;border-color:#0E0E0D;' : 'background:#F5F3EE;color:#0E0E0D;';
+        return { label: c, style: base + look, onClick: function () { self.selectColorOption(c); } };
+      }),
+      sizeButtons: sizeOptions.filter(function (sizeLabel) {
+        // A size with no matching variant for the chosen colour doesn't exist.
+        return !!self.variantFor(sizeLabel, self.state.selectedColor);
+      }).map(function (sizeLabel) {
+        var selected = self.state.selectedSize === sizeLabel;
+        var v = self.variantFor(sizeLabel, self.state.selectedColor);
+        var sizeSoldOut = !v || v.available === false;
+        var base = 'padding:16px 8px;font-size:14px;font-weight:600;text-align:center;border:1px solid rgba(10, 143, 135,0.3);transition:all 0.2s ease;min-height:52px;';
+        var look = selected ? 'background:#0A8F87;color:#FFFFFF;border-color:#0A8F87;' : 'background:#FFFFFF;color:#0E0E0D;';
+        // Sold out stays visible AND selectable so shoppers can see the size
+        // exists — only adding it to the cart is blocked.
+        if (sizeSoldOut) look += 'text-decoration:line-through;' + (selected ? '' : 'opacity:0.5;');
+        look += 'cursor:pointer;';
+        return {
+          label: sizeLabel,
+          disabled: false,
+          style: base + look,
+          onClick: function () { self.selectSizeOption(sizeLabel); }
+        };
+      }),
+      hasSelectedSize: !!this.state.selectedSize,
+      selectedSize: this.state.selectedSize,
+      // Left clickable without a size on purpose: the click is what surfaces
+      // the "please select a size first" message.
+      addToCartDisabled: selectedSizeSoldOut || effectiveSoldOut || this.state.checkingOut,
+      customAddToCartLabel: (selectedSizeSoldOut || effectiveSoldOut) ? this.s('soldOut') : (this.state.added ? this.s('added') : (this.state.checkingOut ? this.s('processing') : this.s('addToCart'))),
+      customAddToCartStyle: (!this.state.selectedSize || selectedSizeSoldOut || effectiveSoldOut || this.state.checkingOut)
+        ? 'padding:16px;background:rgba(14,14,13,0.08);color:rgba(14,14,13,0.4);border:none;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;cursor:' + (this.state.selectedSize ? 'not-allowed' : 'pointer') + ';'
+        : 'padding:16px;background:#0E0E0D;color:#F5F3EE;border:none;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;cursor:pointer;transition:background 0.3s ease;',
+      onCustomAddToCart: function () { self.onCustomAddToCart(); },
+      showAddedModal: !!this.state.showAddedModal,
+      onCloseAdded: function () { self.onCloseAdded(); },
+      addedLine: [this.state.selectedSize ? (this.s('sizeLabel') + ' ' + this.state.selectedSize) : '', priceStr].filter(Boolean).join('  ·  '),
+
+      accordionAvailable: bullets.length > 0 || specsArr.length > 0 || !!fitNote || sizeChartRows.length > 0,
+      infoAvailable: bullets.length > 0 || specsArr.length > 0 || !!fitNote,
+      infoOpen: !!this.state.infoOpen,
+      infoSign: this.state.infoOpen ? '−' : '+',
+      toggleInfo: function () { self.setState({ infoOpen: !self.state.infoOpen }); },
+      chartOpen: !!this.state.chartOpen,
+      chartSign: this.state.chartOpen ? '−' : '+',
+      toggleChart: function () { self.setState({ chartOpen: !self.state.chartOpen }); },
+      chartRef: function (el) { self._chartEl = el; },
+      openChart: function () {
+        self.setState({ chartOpen: true }, function () {
+          requestAnimationFrame(function () {
+            var el = self._chartEl; if (!el) return;
+            var sc = el.parentElement;
+            while (sc && sc !== document.documentElement) {
+              var ov = getComputedStyle(sc).overflowY;
+              if ((ov === 'auto' || ov === 'scroll') && sc.scrollHeight > sc.clientHeight) break;
+              sc = sc.parentElement;
+            }
+            if (!sc || sc === document.documentElement) {
+              window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 90, behavior: 'smooth' });
+            } else {
+              sc.scrollTo({ top: sc.scrollTop + el.getBoundingClientRect().top - sc.getBoundingClientRect().top - 90, behavior: 'smooth' });
+            }
+          });
+        });
+      },
+      T_sizeChartBelow: this.s('sizeChartBelow'),
+      T_productInfo: this.s('productInfo'),
+
+      sizeChart: sizeChartDisplay,
+      sizeChartAvailable: sizeChartDisplay.length > 0,
+      unitCmStyle: unitBtn(unit === 'cm'),
+      unitInStyle: unitBtn(unit === 'in'),
+      setUnitCm: function () { self.setSizeUnit('cm'); },
+      setUnitIn: function () { self.setSizeUnit('in'); },
+      chartColA: chartCols[0] || 'A',
+      chartColB: chartCols[1] || 'B',
+      chartColC: chartCols[2] || 'C',
+      chartHasC: sizeChartDisplay.some(function (r) { return !!r.c; }),
+      // Built here rather than as a template src="{{ }}" hole: an attribute
+      // hole is fetched with its literal placeholder text before any value
+      // exists, which fires a 404 on every page load.
+      chartDiagramImg: chartDiagram ? React.createElement('img', {
+        src: chartDiagram,
+        alt: hasSp ? sp.title : '',
+        width: 132, height: 132,
+        style: { width: '132px', height: '132px', objectFit: 'contain', mixBlendMode: 'multiply' }
+      }) : null,
+      chartDiagramAvailable: !!chartDiagram,
+      chartHint: chartHint,
+      specs: specsArr,
+      specsAvailable: specsArr.length > 0,
+      fitNote: fitNote,
+      fitNoteAvailable: !!fitNote,
+
+      sizeFinderHref: hasSp ? ('/size-finder?p=' + encodeURIComponent(sp.handle)) : '/size-finder',
+
+      mainPhotoRef: function (el) { self._photoEl = el; if (el) self.syncPhotoHeight(); },
+      buyBlockRef: function (el) {
+        if (self._blockEl && self._photoRO) self._photoRO.unobserve(self._blockEl);
+        self._blockEl = el;
+        if (el && self._photoRO) self._photoRO.observe(el);
+        if (el) self.syncPhotoHeight();
+      },
+      productName: hasSp ? sp.title : '',
+      productTagline: tagline,
+      productPrice: priceStr,
+      productBullets: bullets,
+      bulletsAvailable: bullets.length > 0,
+
+      T_colorLabel: this.s('colorLabel'), T_sizeLabel: this.s('sizeLabel'), T_yourSizeIs: this.s('yourSizeIs'), T_takeFitFinder: this.s('takeFitFinder'),
+      T_continueShopping: this.s('continueShopping'), T_goToCart: this.s('goToCart'), T_soldOut: this.s('soldOut'), T_sizeChart: this.s('sizeChart'),
+      T_colWidth: this.s('colWidth'), T_colLength: this.s('colLength'), T_colSleeve: this.s('colSleeve'), T_thanksInput: this.s('thanksInput'), T_linkInvalid: this.s('linkInvalid'),
+      T_productNotFound: this.s('productNotFound'), T_backToShop: this.s('backToShop'),
+      T_addedTitle: this.s('addedTitle'), T_close: this.s('close'),
+      T_soldOutSize: this.s('soldOutSize'), T_oversizedTitle: this.s('oversizedTitle'), T_oversizedNote: this.s('oversizedNote'), T_delivery: this.s('delivery'),
+      selectedSizeSoldOut: selectedSizeSoldOut,
+      isOversizedFit: hasSp && ['oversized', 'relaxed'].indexOf(this.fitProfile(sp)) !== -1,
+      sizeFinderAvailable: hasSp && !isSocks,
+
+      friendReady: isFriend && this.state.friendLookedUp && !!row,
+      friendNotFound: isFriend && this.state.friendLookedUp && !row,
+      senderLine: row ? ((row.senderName || this.s('aFriend')) + ' ' + this.s('wantsOpinion')) : '',
+      showReactions: !this.state.friendReacted,
+      showThanks: this.state.friendReacted,
+      onFire: function () { self.react('fire'); },
+      onFits: function () { self.react('fits'); },
+      onNo: function () { self.react('no'); },
+
+      toasts: this.state.toasts
+    };
+  }
+}
+
+</script>
+</body>
+</html>
